@@ -1,0 +1,32 @@
+---
+###########
+# Add apt repository and key
+#
+# DESCRIPTION:
+#     Adds APT repository. If key url is provided, add key as well.
+#
+# VARIABLES:
+#     - parameter_apt_repository_url          - REQUIRED - URL of a repository
+#     - parameter_apt_repository_name         - OPTIONAL - Name of repository
+#     - parameter_apt_repository_key_url      - OPTIONAL - if defined repository key will be added from given url
+#     - parameter_apt_repository_key_id       - OPTIONAL - if defined and if repository_key_url is defined, given key will be used to check if key is already installed before readding it
+###########
+- name: Adding key for repository "{{ parameter_apt_repository_name | default( parameter_apt_repository_url ) }}"
+  apt_key: url="{{ parameter_apt_repository_key_url }}"
+           state=present
+           id={{ parameter_apt_repository_key_id | default('') }}
+  sudo: true
+  when: parameter_apt_repository_key_url is defined
+  register: result_key_added
+
+- name: Adding repository "{{ parameter_apt_repository_name | default( parameter_apt_repository_url ) }}"
+  apt_repository: repo="{{ parameter_apt_repository_url }}"
+                  state=present
+                  update_cache=yes
+  sudo: true
+  register: result_repo_added
+
+- name: Updating APT repository data and packages due to added key and/or repository
+  apt: upgrade=dist
+  when: result_key_added.changed or result_repo_added.changed
+  sudo: true

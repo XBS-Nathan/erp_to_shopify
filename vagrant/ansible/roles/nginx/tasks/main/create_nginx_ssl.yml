@@ -1,0 +1,20 @@
+---
+- name: Create Nginx SSL Path
+  file: path={{ role_nginx_ssl_dir }}
+        state=directory
+        owner=root
+        group=root
+  sudo: true
+
+- name: Create Nginx SSL Cert
+  command: openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C={{ role_nginx_ssl_cert_country_code}}/ST={{ role_nginx_ssl_cert_location }}/L={{ role_nginx_ssl_cert_location }}/O={{ role_nginx_ssl_cert_organization_name }}/CN={{ role_nginx_ssl_cert_common_name }}" -keyout {{ role_nginx_ssl_dir }}/{{ role_nginx_ssl_key_file }}  -out {{ role_nginx_ssl_dir }}/{{ role_nginx_ssl_cert_file }}
+           creates="{{ role_nginx_ssl_dir }}/{{ role_nginx_ssl_cert_file }}"
+  sudo: true
+  sudo_user: root
+
+- name: Create Nginx2 SSL Key
+  command: openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C={{ role_nginx_ssl_cert_country_code}}/ST={{ role_nginx_ssl_cert_location }}/L={{ role_nginx_ssl_cert_location }}/O={{ role_nginx_ssl_cert_organization_name }}/CN={{ role_nginx_ssl_cert_common_name }}" -keyout {{ role_nginx_ssl_dir }}/{{ role_nginx_ssl_key_file }}  -out {{ role_nginx_ssl_dir }}/{{ role_nginx_ssl_cert_file }}
+           creates="{{ role_nginx_ssl_dir }}/{{ role_nginx_ssl_key_file }}"
+  sudo: true
+  sudo_user: root
+

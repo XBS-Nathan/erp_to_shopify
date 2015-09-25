@@ -1,0 +1,5 @@
+---
+- include: ../php5_fpm_www_config/php5_fpm_change_listen_config.yml
+  vars:
+    parameter_php5_fpm_listen_port: "{{ role_php5_fpm_listen_port }}"
+    parameter_php5_fpm_listen_host: "{{ role_php5_fpm_listen_host }}"

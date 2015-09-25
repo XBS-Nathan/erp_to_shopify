@@ -1,0 +1,20 @@
+---
+###########
+# Remove bash aliases
+#
+# DESCRIPTION:
+#     Removes bash aliases
+#
+# VARIABLES:
+#     - parameter_bash_aliases[]   - REQUIRED - list of aliases to remove
+#     - role_common_aliases_file   - PREDEFINED - Name of .bash_aliases file
+#     - role_common_user_home_path - PREDEFINED - users home path
+###########
+- name: Removing Aliases
+  lineinfile: dest={{ role_common_user_home_path ~ '/' ~ role_common_aliases_file  }}
+              regexp="^alias {{ item }}='(.*)'$"
+              state=absent
+  sudo: true
+  with_items: parameter_bash_aliases
+  register: result_removed_aliases
+  until: not result_removed_aliases.changed

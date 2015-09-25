@@ -14,3 +14,9 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+old_sound_rabbit_mq:
+    producers:
+        products:
+            connection:       default
+            exchange_options: {name: 'products', type: direct}

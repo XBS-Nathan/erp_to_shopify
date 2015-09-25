@@ -1,0 +1,6 @@
+---
+role_openssl_ssl_cert_country_code: UK
+role_openssl_ssl_cert_state_or_province: Devon
+role_openssl_ssl_cert_location: Exeter
+role_openssl_ssl_cert_organization_name: WebDev Org
+role_openssl_ssl_cert_common_name: localhost

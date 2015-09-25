@@ -1,0 +1,8 @@
+---
+- name: Creating dev-site logs folder
+  file: path={{ role_dev_site_logs_system_path }}
+        owner=www-data
+        group=root
+        mode=0775
+        state=directory
+  sudo: true

@@ -1,0 +1,23 @@
+---
+###########
+# Copy custom commands
+#
+# DESCRIPTION:
+#     Copies custom commands
+#
+# VARIABLES:
+#     - parameter_custom_commands_template_dir - REQUIRED - dir with custom commands templates
+#     - role_common_custom_commands_dir        - PREDEFINED - subdir in vagrant user directory where to place custom commands
+#     - role_common_user                       - PREDEFINED - user owner of the custom commands
+#     - role_common_usergroup                  - PREDEFINED - group owner of the custom commands
+#     - role_common_user_home_path             - PREDEFINED - users home path
+###########
+- name: Copy custom commands
+  template: src={{ item }}
+            dest="{{ role_common_user_home_path ~ '/' ~ role_common_custom_commands_dir ~ '/' ~(item[:(item|length-3)]|basename) }}"
+            owner="{{ role_common_user }}"
+            group="{{ role_common_usergroup }}"
+            mode=0755
+  with_fileglob:
+    - "{{ parameter_custom_commands_template_dir }}/*.j2"
+  sudo: true

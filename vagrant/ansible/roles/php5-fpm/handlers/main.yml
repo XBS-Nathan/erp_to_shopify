@@ -1,0 +1,5 @@
+---
+- name: Restart Php5 Fpm Service
+  service: name={{ role_php5_fpm_service }}
+           state=restarted
+  sudo: true

@@ -1,0 +1,23 @@
+---
+###########
+# Add path
+#
+# DESCRIPTION:
+#     Adds to enviorment $PATH variable
+#
+# VARIABLES:
+#     - parameter_path                    - REQUIRED   - path to add
+#     - role_common_environment_file_path - PREDEFINED - Path to environments file
+###########
+- include: remove_path.yml
+
+- name: Adding "{{ parameter_path }}" to $PATH
+  lineinfile: dest={{ role_common_environment_file_path }}
+              regexp='^PATH=""$'
+              line='PATH="{{ parameter_path }}"'
+              backrefs=yes
+  lineinfile: dest={{ role_common_environment_file_path }}
+              regexp='^PATH="([^\"]*)"$'
+              line='PATH="\1:{{ parameter_path }}"'
+              backrefs=yes
+  sudo: true

@@ -1,0 +1,24 @@
+---
+###########
+# Install apt packages
+#
+# DESCRIPTION:
+#     Installs latest apt packages and package dependencies.
+#     Skipes on recommended and suggested packages.
+#
+# VARIABLES:
+#     - parameter_apt_packages           - REQUIRED - Array of apt packages to install
+#     - parameter_install_title          - REQUIRED - Descriptive title of what is being installed
+#     - parameter_apt_packages_prefix    - OPTIONAL - Prefix to add to all installations
+#     - parameter_apt_packages_postfix   - OPTIONAL - Postfix to add to all installations
+#     - parameter_apt_notify             - OPTIONAL - Call ansible notify for installation
+#     - parameter_apt_install_recommends - OPTIONAL - Should recommended packages also be installed
+###########
+- name: "{{ parameter_install_title }}"
+  apt: package={{ parameter_apt_packages_prefix | default('') ~ item[1] ~ parameter_apt_packages_postfix | default('') }}
+       state=latest
+       install_recommends={{ parameter_apt_install_recommends | default('no') }}
+  sudo: true
+  with_indexed_items: parameter_apt_packages
+  notify: "{{ parameter_apt_packages_nofify | default('Dummy Notification') }}"
+

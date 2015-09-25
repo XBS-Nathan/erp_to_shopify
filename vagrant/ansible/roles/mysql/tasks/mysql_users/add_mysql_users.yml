@@ -1,0 +1,22 @@
+---
+###########
+# Add MySQL users
+#
+# DESCRIPTION:
+#     Adds MySQL users
+#
+# VARIABLES:
+#     - parameter_mysql_users[]          - REQUIRED - List of users to add
+#     -                        .name     - REQUIRED - Username to add
+#     -                        .password - REQUIRED - Users password
+#     -                        .priv     - OPTIONAL - Privilages to grant. If not specified, all privilages are granted
+#     -                        .host     - OPTIONAL - Host from which access is granted. If not specified defaults to localhost
+###########
+- name: Adding MySQL users
+  mysql_user: name={{ item.name }}
+              password={{ item.password }}
+              priv={{ item.priv | default('*.*:ALL,GRANT') }}
+              host={{ item.host | default('localhost') }}
+  sudo: true
+  with_items: parameter_mysql_users
+  notify: Restart Mysql Service

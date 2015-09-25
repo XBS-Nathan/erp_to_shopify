@@ -1,0 +1,6 @@
+---
+- include: ../php5_modules/install_php5_modules.yml
+  vars:
+    parameter_php5_modules: "{{ role_php5_default_modules }}"
+    parameter_php5_modules_dont_run_enable: false
+

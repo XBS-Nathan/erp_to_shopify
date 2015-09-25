@@ -1,0 +1,10 @@
+role_common_ansible_common_module_requirements:
+  - python-configparser
+  - python-httplib2
+  - python-urllib3
+role_common_custom_commands_dir: custom_commands
+role_common_environment_file_path: /etc/environment
+role_common_aliases_file: .bash_aliases
+role_common_user_home_path: /home/vagrant
+role_common_user: vagrant
+role_common_usergroup: "{{ role_common_user }}"

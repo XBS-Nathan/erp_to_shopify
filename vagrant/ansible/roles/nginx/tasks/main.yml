@@ -1,0 +1,4 @@
+---
+- include: main/install_nginx.yml
+- include: main/remove_default_nginx_site.yml
+- include: main/create_nginx_ssl.yml

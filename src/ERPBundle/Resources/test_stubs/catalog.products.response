@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Catalog xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" PriceListCode="CSGWEB" EffectiveDate="2015-04-24">
+    <Category Code="LAI">
+        <Product ItemNo="CSG-1050CANTF" LastUpdated="2015-04-09T13:58:59.93">
+            <Description>Commercial Grade GT 10'x10' Tent-rolling bag and steel frame</Description>
+            <ColorCode>BLACK</ColorCode>
+            <Pricing EffectiveDate="2015-04-24">
+                <UnitPrice>750.00</UnitPrice>
+                <UOM>EA</UOM>
+            </Pricing>
+            <Availability StatusType="Actual" EffectiveDate="2015-04-24">
+                <WarehouseCode>ALL</WarehouseCode>
+                <UOM>EA</UOM>
+                <QtyAvailable>0</QtyAvailable>
+            </Availability>
+            <SupplementalData Content="image" Format="URI">http://images.lapineinc.com/CSG-1050CANTF.jpg</SupplementalData>
+            <SupplementalData Content="detail" Format="URI">http://robots.lapineinc.com/catalogs/CSGWEB/CSG-1050CANTF/all</SupplementalData>
+            <SupplementalData Content="webcategory" Format="Text">Cannondale</SupplementalData>
+            <SupplementalData Content="ParentSKU" Format="Text">LOR-049B</SupplementalData>
+        </Product>
+        <Product ItemNo="CSG-1234" LastUpdated="2015-04-09T13:58:59.93">
+            <Description>Test description 2</Description>
+            <ColorCode>BLUE</ColorCode>
+            <Pricing EffectiveDate="2015-04-24">
+                <UnitPrice>750.00</UnitPrice>
+                <UOM>EA</UOM>
+            </Pricing>
+            <Availability StatusType="Actual" EffectiveDate="2015-04-24">
+                <WarehouseCode>ALL</WarehouseCode>
+                <UOM>EA</UOM>
+                <QtyAvailable>0</QtyAvailable>
+            </Availability>
+            <SupplementalData Content="image" Format="URI">http://images.lapineinc.com/CSG-1050CANTF.jpg</SupplementalData>
+            <SupplementalData Content="detail" Format="URI">http://robots.lapineinc.com/catalogs/CSGWEB/CSG-1050CANTF/all</SupplementalData>
+            <SupplementalData Content="webcategory" Format="Text">Cannondale</SupplementalData>
+            <SupplementalData Content="ParentSKU" Format="Text">LOR-049B</SupplementalData>
+        </Product>
+    </Category>
+</Catalog>

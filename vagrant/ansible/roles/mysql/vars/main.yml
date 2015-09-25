@@ -1,0 +1,15 @@
+---
+role_mysql_ansible_mysql_module_requirements:
+  - python-mysqldb
+  - python-configparser
+role_mysql_packages:
+  - mysql-common
+  - mysql-client
+  - mysql-server
+  - mytop
+role_mysql_service: mysql
+role_mysql_my_cnf_path: /etc/mysql/my.cnf
+role_mysql_default_user_insert:
+  - name: "{{ role_mysql_default_user_username }}"
+    password: "{{ role_mysql_default_user_password }}"
+    host: "{{ role_mysql_default_user_host }}"

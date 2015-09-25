@@ -1,0 +1,6 @@
+---
+- name: Restart RabbitMq Service
+  service: name={{ role_rabbitmq_rabbitmq_service }}
+           state=restarted
+           sleep=2
+  sudo: true

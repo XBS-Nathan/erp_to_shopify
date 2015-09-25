@@ -1,0 +1,6 @@
+---
+role_composer_vcs_system_packages:
+  - git
+  - subversion
+  - mercurial
+role_composer_url: https://getcomposer.org/composer.phar

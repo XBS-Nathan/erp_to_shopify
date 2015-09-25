@@ -1,0 +1,23 @@
+---
+###########
+# Write Php5 fpm service config
+#
+# DESCRIPTION:
+#     Writes fpm service configuration
+#
+# VARIABLES:
+#     - parameter_php5_fpm_www_conf[]         - REQUIRED   - Configuration to write to Php5 Fpm www config file
+#     -                              .section - REQUIRED   - Seciton name to write to
+#     -                              .option  - REQUIRED   - Option to update
+#     -                              .value   - REQUIRED   - New option value
+#     - parameter_php5_fpm_www_conf_ini_title - OPTIONAL   - Descriptive name of operation
+#     - role_php5_fpm_www_conf_ini            - PREDEFINED - Path to www.config ini file
+###########
+- name: "{{ parameter_php5_fpm_www_conf_ini_title if parameter_php5_fpm_www_conf_ini_title is defined else 'Writing PHP5 fpm www config' }}"
+  ini_file: dest="{{ role_php5_fpm_www_conf_ini }}"
+            section={{ item.section }}
+            option={{ item.option }}
+            value={{ item.value }}
+  with_items: parameter_php5_fpm_www_conf
+  sudo: true
+  notify: Restart Php5 Fpm Service

@@ -1,0 +1,6 @@
+---
+- include: ../../../common/tasks/apt/install_apt_packages.yml
+  vars:
+    parameter_apt_packages: "{{ role_php5_php_packages }}"
+    parameter_install_title: "Installing Php 5"
+    parameter_apt_install_recommends: no

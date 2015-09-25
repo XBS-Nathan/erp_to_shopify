@@ -1,0 +1,5 @@
+---
+- include: ../apt/update_repositories_and_packages.yml
+  vars:
+    parameter_cache_valid_time: 43200
+    parameter_force_update: true

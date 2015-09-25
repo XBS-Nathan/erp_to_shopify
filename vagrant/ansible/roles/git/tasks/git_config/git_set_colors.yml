@@ -1,0 +1,47 @@
+---
+###########
+# Git set colors
+#
+# DESCRIPTION:
+#     Enables git colors and sets them
+#
+# VARIABLES:
+#     - parameter_parameter_colors[]        - REQUIRED - Array of colors to set
+#     -                             .status - REQUIRED - One of the statuses
+#                                   .color  - REQUIRED - Color name and effects to set
+# STATUSES:
+#     - header           - the header text of the status message
+#     - added or updated - files which are added but not committed
+#     - changed          - files which are changed but not added in the index
+#     - untracked        - files which are not tracked by git
+#     - branch           - the current branch
+#     - nobranch         - the color the no branch warning is shown in, defaulting to red
+#
+# COLORS:
+#     - normal
+#     - black
+#     - red
+#     - green
+#     - yellow
+#     - blue
+#     - magenta
+#     - cyan
+#     - white
+#
+# EFFECTS:
+#     - bold
+#     - dim
+#     - ul
+#     - blink
+#     - reverse
+###########
+- name: Enabling git colors
+  command: "git config --global color.ui true"
+  sudo: true
+  sudo_user: "{{ role_git_user }}"
+
+- name: Appling git colors
+  command: 'git config --global color.status.{{ item.status }} "{{ item.color }}"'
+  sudo: true
+  sudo_user: "{{ role_git_user }}"
+  with_items: parameter_git_colors

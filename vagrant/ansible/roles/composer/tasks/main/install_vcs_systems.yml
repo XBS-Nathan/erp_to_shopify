@@ -1,0 +1,5 @@
+---
+- include: ../../../common/tasks/apt/install_apt_packages.yml
+  vars:
+    parameter_apt_packages: "{{ role_composer_vcs_system_packages }}"
+    parameter_install_title: Installing Composer VCS systems

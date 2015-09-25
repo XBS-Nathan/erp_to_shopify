@@ -1,0 +1,21 @@
+---
+- name: Download wkhtmltox
+  action: command wget -P /tmp http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
+
+#- name: Installing dependencies from apt
+#  action: apt pkg={{ item }} state=installed
+#  with_items:
+#  - fontconfig
+#  - libxrender1
+
+- include: ../../../common/tasks/apt/install_apt_packages.yml
+  vars:
+    parameter_install_title: Installing wkhtmltox dependencies from apt
+    parameter_apt_packages:
+      - xfonts-75dpi
+      - fontconfig
+      - libxrender1
+
+- name: Install wkhtmltox
+  action: command dpkg -i /tmp/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
+  sudo: true

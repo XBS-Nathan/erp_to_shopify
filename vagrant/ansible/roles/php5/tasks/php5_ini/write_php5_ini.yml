@@ -1,0 +1,27 @@
+---
+###########
+# Write php5 ini
+#
+# DESCRIPTION:
+#     Writes to php5 ini
+#
+# VARIABLES:
+#     - parameter_php5_ini_title                           - REQUIRED - Title to use for action
+#     - parameter_php5_ini_file                            - REQUIRED - Path to php5 ini file to update
+#     - parameter_php5_ini_config[]                        - REQUIRED - Configuration to write
+#                                  .module                 - REQUIRED - Name of module being updated (section in Php ini file)
+#                                  .module_config[]        - REQUIRED - Configuration to write to module
+#                                                  .option - REQUIRED - Option name
+#                                                  .value  - REQUIRED - Value to write
+#     - parameter_php5_ini_notify                          - OPTIONAL - Notification to trigger on update of files
+###########
+- name: "{{ parameter_php5_ini_title }}"
+  ini_file: dest="{{ parameter_php5_ini_file }}"
+    section={{ item.0.module }}
+    option={{ item.1.option }}
+    value={{ item.1.value }}
+  with_subelements:
+  - parameter_php5_ini_config
+  - module_config
+  notify: "{{ parameter_php5_ini_notify | default('Dummy Notification') }}"
+  sudo: true

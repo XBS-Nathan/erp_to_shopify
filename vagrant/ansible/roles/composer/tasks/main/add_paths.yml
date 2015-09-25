@@ -1,0 +1,8 @@
+---
+- include: ../../../common/tasks/path/add_path.yml
+  vars:
+    parameter_path: "{{ role_composer_path|dirname }}"
+
+- include: ../../../common/tasks/path/add_path.yml
+  vars:
+    parameter_path: "{{ role_composer_path|dirname ~ '/vendor/bin' }}"

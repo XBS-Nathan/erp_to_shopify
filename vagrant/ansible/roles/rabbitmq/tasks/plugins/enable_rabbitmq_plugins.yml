@@ -1,0 +1,15 @@
+---
+###########
+# Enable RabbitMq plugin
+#
+# DESCRIPTION:
+#     Enables RabbitMq plugin
+#
+# VARIABLES:
+#     - parameter_rabbitmq_plugins          - REQUIRED - Plugin names to enable
+###########
+- name: Enabling rabbitmq plugins
+  shell: rabbitmq-plugins enable {{ item[1] }}
+  sudo: true
+  with_indexed_items: parameter_rabbitmq_plugins
+  notify: Restart RabbitMq Service

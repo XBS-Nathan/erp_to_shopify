@@ -1,0 +1,7 @@
+---
+role_php5_fpm_apt_packages:
+  - php5-fpm
+role_php5_fpm_service: php5-fpm
+role_php5_fpm_ini_path: /etc/php5/fpm/php.ini
+role_php5_fpm_www_conf_ini: /etc/php5/fpm/pool.d/www.conf
+role_php5_fpm_listen_host: 127.0.0.1

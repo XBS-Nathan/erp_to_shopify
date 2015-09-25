@@ -1,0 +1,3 @@
+role_dev_site_site_system_path: /web-root
+role_dev_site_site_web_root_system_path: "{{ role_dev_site_site_system_path }}/web"
+role_dev_site_logs_system_path: /var/log/devsite

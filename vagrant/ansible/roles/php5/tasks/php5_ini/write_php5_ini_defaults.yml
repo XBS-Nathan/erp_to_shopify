@@ -1,0 +1,61 @@
+---
+###########
+# Write php5 ini defaults
+#
+# DESCRIPTION:
+#     Writes php5 ini defaults
+#
+# VARIABLES:
+#     - parameter_php5_ini_file                   - REQUIRED - Path to php5 ini file to update
+#     - parameter_php5_ini_cli_config             - OPTIONAL - If defined it switches CLI dependent content writing. If not defined cli dependent content is skipped.
+#     - parameter_php5_ini_include_modules_config - OPTIONAL - If defined it switches module config content writing. If not defined module config content is skipped.
+# SUBVARIABLES:
+#     - write_php5_ini.yml:
+#         - parameter_php5_ini_notify             - OPTIONAL - Notification to trigger on update of files
+###########
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 configuration {{ parameter_php5_ini_file }} (1/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_common_default }}"
+
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 configuration {{ parameter_php5_ini_file }} (2/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_common }}"
+
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 cli configuration {{ parameter_php5_ini_file }} (1/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_cli_default }}"
+  when: parameter_php5_ini_cli_config is defined and parameter_php5_ini_cli_config
+
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 cli configuration {{ parameter_php5_ini_file }} (2/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_cli }}"
+  when: parameter_php5_ini_cli_config is defined and parameter_php5_ini_cli_config
+
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 non cli configuration {{ parameter_php5_ini_file }} (1/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_non_cli_default }}"
+  when: parameter_php5_ini_cli_config is defined and not parameter_php5_ini_cli_config
+
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 non cli configuration {{ parameter_php5_ini_file }} (2/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_non_cli }}"
+  when: parameter_php5_ini_cli_config is defined and not parameter_php5_ini_cli_config
+
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 configuration with modules configuration {{ parameter_php5_ini_file }} (1/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_modules_default }}"
+  when: parameter_php5_ini_include_modules_config is defined and parameter_php5_ini_include_modules_config
+
+- include: write_php5_ini.yml
+  vars:
+    parameter_php5_ini_title: "Updating common PHP5 configuration with modules configuration {{ parameter_php5_ini_file }} (2/2)"
+    parameter_php5_ini_config: "{{ role_php5_ini_config_modules }}"
+  when: parameter_php5_ini_include_modules_config is defined and parameter_php5_ini_include_modules_config
+    

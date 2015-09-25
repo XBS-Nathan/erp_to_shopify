@@ -1,0 +1,16 @@
+---
+###########
+# Add Nginx site templates
+#
+# DESCRIPTION:
+#     Adds sites to Nginx based on site templates
+#
+# VARIABLES:
+#     - parameter_nginx_site_templates_role              - REQUIRED   - Directory with nginx site templates
+#     - parameter_nginx_site_templates_role_templats_dir - REQUIRED   - Directory with nginx site templates
+#     - parameter_prevent_enable_sites                   - OPTIONAL   - If defined can revent enableing of sites
+#     - role_nginx_available_sites_path                  - PREDEFINED - Location where to place nginx configs
+###########
+- include: add_nginx_site_templates.yml
+  vars:
+    parameter_nginx_site_templates_dir: "../../../{{ parameter_nginx_site_templates_role }}/templates/{{ parameter_nginx_site_templates_role_templats_dir }}"

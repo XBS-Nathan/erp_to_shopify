@@ -1,0 +1,5 @@
+---
+- include: ../apt/install_apt_packages.yml
+  vars:
+    parameter_install_title: Installing Ansible common module requirements
+    parameter_apt_packages: "{{ role_common_ansible_common_module_requirements }}"

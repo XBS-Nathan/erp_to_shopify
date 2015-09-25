@@ -1,0 +1,4 @@
+- include: ../../../nginx/tasks/nginx_sites/add_nginx_site_templates_from_role.yml
+  vars:
+    parameter_nginx_site_templates_role: nginx-php5-fpm
+    parameter_nginx_site_templates_role_templats_dir: nginx_site_config

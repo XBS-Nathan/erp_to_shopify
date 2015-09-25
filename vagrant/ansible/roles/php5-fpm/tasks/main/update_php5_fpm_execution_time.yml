@@ -1,0 +1,9 @@
+---
+- include: ../php5_fpm_www_config/write_php5_fpm_www_config.yml
+  vars:
+    parameter_php5_fpm_www_conf_ini_title: "Updating Php Execution time setting for Php5 FPM server"
+    parameter_php5_fpm_www_conf:
+      -
+        section: www
+        option: request_terminate_timeout
+        value: "{{ role_php5_execution_time_limit }}"

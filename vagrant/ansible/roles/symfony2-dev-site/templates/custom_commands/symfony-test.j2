@@ -1,0 +1,23 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+UNITTEST_COMMAND_PATH="$SCRIPT_DIR/symfony-test-unittest";
+SECURITYTEST_COMMAND_PATH="$SCRIPT_DIR/symfony-test-securitycheck";
+RETURN=0;
+
+if [ ! -f $UNITTEST_COMMAND_PATH ]; then
+        echo "Unable to find UNITTEST COMMAND at ------> $UNITTEST_COMMAND_PATH";
+        RETURN=$(($RETURN + 2));
+fi;
+
+if [ ! -f $SECURITYTEST_COMMAND_PATH ]; then
+        echo "Unable to find SECURITY TEST COMMAND at -> $SECURITYTEST_COMMAND_PATH";
+        RETURN=$(($RETURN + 4));
+fi;
+
+if [ "$RETURN" -gt "0" ]; then
+        echo "Exiting with error code $RETURN";
+        exit $RETURN;
+fi;
+
+"$UNITTEST_COMMAND_PATH" && "$SECURITYTEST_COMMAND_PATH";

@@ -1,0 +1,3 @@
+---
+- include: main/add_symfony_bash_aliases.yml
+- include: main/copy_custom_commands.yml

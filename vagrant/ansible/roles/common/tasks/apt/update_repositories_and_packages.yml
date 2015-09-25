@@ -1,0 +1,21 @@
+---
+###########
+# Update repositories and packages
+#
+# DESCRIPTION:
+#     Updates APT cache if needed (cache age evaluation), and updates software packages if cache refreshed
+#
+# VARIABLES:
+#     - parameter_cache_valid_time - OPTIONAL - if defined it will represent age of valid APT cache in seconds
+#     - parameter_force_update     - OPTIONAL - if set it defines if forced update is required (regardles of cache update result)
+###########
+- name: Update APT Cache if needed
+  apt: update_cache=yes
+       cache_valid_time={{ parameter_cache_valid_time | default (0) }}
+  register: registered_result_update_apt_cache
+  sudo: true
+
+- name: Update software packages if needed
+  apt: upgrade=dist
+  when: registered_result_update_apt_cache.changed or (parameter_force_update | default( false ) )
+  sudo: true

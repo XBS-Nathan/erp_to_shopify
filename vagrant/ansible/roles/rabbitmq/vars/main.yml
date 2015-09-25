@@ -1,0 +1,4 @@
+---
+role_rabbitmq_packages:
+  - rabbitmq-server
+role_rabbitmq_rabbitmq_service: rabbitmq-server

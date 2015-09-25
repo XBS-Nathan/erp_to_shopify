@@ -1,0 +1,30 @@
+#!/bin/bash
+
+PROJECT_PATH="{{ role_dev_site_site_system_path }}";
+APP_CONSOLE_PATH="$PROJECT_PATH/app/console";
+COMPOSER_LOCK_PATH="$PROJECT_PATH/composer.lock";
+RETURN=0;
+
+if [ ! -d $PROJECT_PATH ]; then
+        echo "Unable to find PROJECT at -------> $PROJECT_PATH";
+        RETURN=$(($RETURN + 1));
+fi;
+
+if [ ! -f $APP_CONSOLE_PATH ]; then
+        echo "Unable to find APP CONSOLE at ---> $APP_CONSOLE_PATH";
+        RETURN=$(($RETURN + 2));
+fi;
+
+if [ ! -f $COMPOSER_LOCK_PATH ]; then
+        echo "Unable to find COMPOSER LOCK at -> $COMPOSER_LOCK_PATH";
+        RETURN=$(($RETURN + 4));
+fi;
+
+if [ "$RETURN" -gt "0" ]; then
+        echo "Exiting with error code $RETURN";
+        exit $RETURN;
+fi;
+
+
+cd "$PROJECT_PATH";
+php "$APP_CONSOLE_PATH" security:check "$COMPOSER_LOCK_PATH"

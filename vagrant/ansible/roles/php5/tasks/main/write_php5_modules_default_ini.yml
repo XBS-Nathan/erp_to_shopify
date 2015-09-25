@@ -1,0 +1,10 @@
+---
+- include: ../php5_modules/write_php5_modules_ini.yml
+  vars:
+    parameter_php5_ini_title: Writing Php5 modules config (1/2)
+    parameter_php5_ini_config: "{{ role_php5_ini_config_modules_default }}"
+
+- include: ../php5_modules/write_php5_modules_ini.yml
+  vars:
+    parameter_php5_ini_title: Writing Php5 modules config (2/2)
+    parameter_php5_ini_config: "{{ role_php5_ini_config_modules }}"

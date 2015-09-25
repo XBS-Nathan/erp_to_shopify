@@ -19,7 +19,10 @@
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "shopifyextras/shopify-php-api-wrapper": "dev-master"
+        "shopifyextras/shopify-php-api-wrapper": "dev-master",
+        "oldsound/rabbitmq-bundle": "^1.6@dev",
+        "guzzlehttp/guzzle": "5.0.3",
+        "phpunit/phpunit": "4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

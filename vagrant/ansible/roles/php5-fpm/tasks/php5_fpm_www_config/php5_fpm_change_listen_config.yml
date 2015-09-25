@@ -1,0 +1,21 @@
+---
+###########
+# PHP5 Fpm Change listen config
+#
+# DESCRIPTION:
+#     Changes listen configuration for php5 fpm
+#
+# VARIABLES:
+#     - parameter_php5_fpm_listen_port - REQUIRED - New listen config port
+#     - parameter_php5_fpm_listen_host - REQUIRED - New listen config host
+# ADDITIONAL SUBVARIABLES:
+#     - write_php5_fpm_www_config.yml:
+#         - role_php5_fpm_www_conf_ini - PREDEFINED - Path to www.config ini file
+###########
+- include: write_php5_fpm_www_config.yml
+  vars:
+    parameter_php5_fpm_www_conf_ini_title: "Setting Php5-fpm listen directive"
+    parameter_php5_fpm_www_conf:
+      - section: www
+        option: listen
+        value: "{{ parameter_php5_fpm_listen_host }}:{{ parameter_php5_fpm_listen_port }}"

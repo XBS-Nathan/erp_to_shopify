@@ -1,0 +1,16 @@
+---
+role_git_packages: git
+role_git_colors:
+  - status: header
+    color: white normal dim
+  - status: added
+    color: green normal
+  - status: changed
+    color: yellow normal
+  - status: untracked
+    color: blue normal
+  - status: branch
+    color: cyan normal ul
+  - status: nobranch
+    color: red bold ul blink
+role_git_user: vagrant

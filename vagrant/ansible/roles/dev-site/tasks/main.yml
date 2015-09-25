@@ -1,0 +1,5 @@
+---
+- include: main/create_dev_site_folder.yml
+- include: main/create_dev_site_logs_folder.yml
+- include: main/copy_custom_commands.yml
+- include: main/add_dev_site_bash_aliases.yml

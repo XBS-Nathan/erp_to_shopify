@@ -1,0 +1,3 @@
+- name: Setting hostname
+  hostname: name={{ role_common_hostname }}
+  sudo: true

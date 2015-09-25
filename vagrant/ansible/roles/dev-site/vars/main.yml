@@ -1,0 +1,6 @@
+---
+role_dev_site_aliases:
+  - alias: goto-site
+    command: "cd {{ role_dev_site_site_system_path }}"
+  - alias: goto-logs
+    command: "cd {{ role_dev_site_logs_system_path }}"

@@ -1,0 +1,31 @@
+---
+- name: Creating Composer directory
+  file: path="{{ role_composer_path|dirname }}"
+        owner="{{ role_composer_owner_user }}"
+        group="{{ role_composer_owner_group }}"
+        mode=775
+        state=directory
+  sudo: true
+
+- name: Downloading Composer
+  get_url: dest="{{ role_composer_path }}"
+           url="{{ role_composer_url }}"
+           validate_certs=no
+           force=no
+  register: result_download_composer
+  sudo: true
+
+- name: Setting Composer permissions
+  file: path="{{ role_composer_path }}"
+        owner="{{ role_composer_owner_user }}"
+        group="{{ role_composer_owner_group }}"
+        mode=775
+        state=file
+  sudo: true
+  when: result_download_composer.changed
+
+- name: Updating Composer via self-update
+  shell: "{{ role_composer_path }} self-update"
+  sudo: true
+  sudo_user: "{{ role_composer_owner_user }}"
+  when: not result_download_composer.changed

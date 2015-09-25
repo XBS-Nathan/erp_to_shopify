@@ -1,0 +1,6 @@
+---
+- name: Restart Mysql Service
+  service: name={{ role_mysql_service }}
+           state=restarted
+           sleep=1
+  sudo: true

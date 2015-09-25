@@ -1,0 +1,16 @@
+---
+role_php_composer_tools_packages:
+  - package: phpunit/phpunit
+    version: 4.*
+  - package: squizlabs/php_codesniffer
+    version: 1.*
+  - package: phploc/phploc
+    version: 2.*
+  - package: pdepend/pdepend
+    version: 2.*
+  - package: phpmd/phpmd
+    version: 2.*
+  - package: sebastian/phpcpd
+    version: 2.*
+  - package: theseer/phpdox
+    version: "*"

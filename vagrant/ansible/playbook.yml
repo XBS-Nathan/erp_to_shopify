@@ -1,0 +1,83 @@
+---
+- name: System setup
+  hosts: all
+  roles:
+    - mysql
+    - nginx-php5-fpm
+    - symfony2-dev-site
+    - rabbitmq
+
+  vars:
+    ##
+    ## MACHINE ENVIRONMENT ##
+    ##
+    role_common_hostname: Erp
+
+    ##
+    ## DEVELOPMENT SITE PATHS ##
+    ##
+    role_dev_site_site_system_path: /opt/erp
+    role_dev_site_site_web_root_system_path: "{{ role_dev_site_site_system_path }}/web"
+    role_dev_site_logs_system_path: /var/log/devsite
+
+    ##
+    ## XDEBUG CONFIG ##
+    ##
+    role_php5_xdebug_remote_host: 192.168.100.1
+    role_php5_xdebug_remote_port: 9001
+    role_php5_xdebug_idekey: PHPSTORM
+    role_php5_xdebug_server_name: Erp
+
+    ##
+    ## HTTP PORTS FOR WEB SERVERS TO RUN ON ## 
+    ##
+    role_nginx_php5_fpm_web_port:             80
+    ##
+    ## HTTPS PORTS FOR WEB SERVERS TO RUN ON ## 
+    ##
+    role_nginx_php5_fpm_web_ssl_port:         443
+
+    ##
+    ## Default SSL site settings
+    ##
+    role_openssl_ssl_cert_country_code: UK
+    role_openssl_ssl_cert_state_or_province: Devon
+    role_openssl_ssl_cert_location: Exeter
+    role_openssl_ssl_cert_organization_name: WebDev Org
+    role_openssl_ssl_cert_common_name: localhost
+
+    ##
+    ## SOME DEFAULT PHP CONFIGS ##
+    ##
+    role_php5_execution_time_limit: 300
+    role_php5_date_timezone: UTC
+    role_php5_memmory_limit: "{{ ( ansible_memtotal_mb * 0.8 )|int }}M"
+
+    ##
+    ## MYSQL DEFAULT USER (NOT EFFECTING THE ROOT USER) ##
+    ##
+    role_mysql_default_user_username: admin
+    role_mysql_default_user_password: password
+    role_mysql_default_user_host: '%'
+
+    ##
+    ## PHP Installs
+    ##
+    role_php5_default_modules_dependencies:
+      #- geoip-bin
+      #- geoip-database
+      #- mongodb-clients
+      - mcrypt
+    role_php5_default_modules:
+      - curl
+      #- gd
+      #- geoip
+      #- imagick
+      - intl
+      - json
+      - mcrypt
+      #- mongo
+      - mysql
+      - xdebug
+      - xmlrpc
+      - xsl

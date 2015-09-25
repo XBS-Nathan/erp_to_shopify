@@ -1,0 +1,5 @@
+---
+- include: main/install_php5_fpm.yml
+- include: main/write_php5_fpm_ini_defaults.yml
+- include: main/change_php5_fpm_listen_config.yml
+- include: main/update_php5_fpm_execution_time.yml

@@ -1,0 +1,4 @@
+---
+role_composer_path: /composer/composer
+role_composer_owner_user: root
+role_composer_owner_group: "{{ role_composer_owner_user }}"

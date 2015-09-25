@@ -1,0 +1,5 @@
+---
+- include: ../../../common/tasks/apt/install_apt_packages.yml
+  vars:
+    parameter_install_title: Installing Command Line Interface Monitors (CLI Monitors)
+    parameter_apt_packages: "{{ role_cli_monitors_packages }}"

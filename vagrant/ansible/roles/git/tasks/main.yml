@@ -1,0 +1,4 @@
+---
+- include: main/install_git.yml
+- include: main/apply_git_colors.yml
+  

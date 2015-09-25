@@ -1,0 +1,3 @@
+- include: main/add_nginx_sites.yml
+- include: main/copy_custom_commands.yml
+

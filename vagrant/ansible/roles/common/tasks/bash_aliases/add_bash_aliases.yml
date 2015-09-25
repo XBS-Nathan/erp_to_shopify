@@ -1,0 +1,34 @@
+---
+###########
+# Add aliases
+#
+# DESCRIPTION:
+#     Adds bash aliases
+#
+# VARIABLES:
+#     - parameter_bash_aliases[]    - REQUIRED   - list of aliases to remove
+#     -                    .alias   - REQUIRED   - Alias name
+#     -                    .command - REQUIRED   - Alias command
+#     - role_common_aliases_file    - PREDEFINED - Name of .bash_aliases file
+#     - role_common_user            - PREDEFINED - user owner of the custom commands
+#     - role_common_usergroup       - PREDEFINED - group owner of the custom commands
+#     - role_common_user_home_path  - PREDEFINED - users home path
+###########
+- name: Removing Bash aliases prior reinserting them
+  lineinfile: dest={{ role_common_user_home_path ~ '/' ~ role_common_aliases_file  }}
+              regexp="^alias {{ item.alias }}='(.*)'$"
+              state=absent
+  sudo: true
+  with_items: parameter_bash_aliases
+  register: result_removed_aliases
+  until: not result_removed_aliases.changed
+
+- name: Adding Bash aliases
+  lineinfile: dest={{ role_common_user_home_path ~ '/' ~ role_common_aliases_file  }}
+              line="alias {{ item.alias }}='{{ item.command }}'"
+              owner="{{ role_common_user }}"
+              group="{{ role_common_usergroup }}"
+              create=yes
+  sudo: true
+  sudo_user: vagrant
+  with_items: parameter_bash_aliases

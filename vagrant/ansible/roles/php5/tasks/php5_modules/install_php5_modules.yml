@@ -1,0 +1,31 @@
+---
+###########
+# Install php5 modules
+#
+# DESCRIPTION:
+#     Installs Php5 modules
+#
+# VARIABLES:
+#     - parameter_php5_modules                 - REQUIRED   - Array of Php5 modules
+#     - parameter_php5_modules_dont_run_enable - OPTIONAL   - Flag to not run module activation script on given php modules
+#     - role_php5_module_package_prefix        - PREDEFINED - Prefix of APT packages for Php5 modules
+#     - role_php5_module_package_postfix       - PREDEFINED - Postfix of APT packages for Php5 modules
+# SUBVARIABLES:
+#     - ensure_php5_module_configs_exist.yml:
+#         - role_php5_module_ini_directory   - PREDEFINED - directory path to php5 modules ini config directory
+#         - role_php5_module_ini_owner_user  - PREDEFINED - User to set ownership of files to
+#         - role_php5_module_ini_owner_group - PREDEFINED - Group to set ownership of files to
+###########
+- include: ../../../common/tasks/apt/install_apt_packages.yml
+  vars:
+    parameter_apt_packages: "{{ parameter_php5_modules }}"
+    parameter_install_title: "Installing Php 5 Modules"
+    parameter_apt_install_recommends: no
+    parameter_apt_packages_prefix: "{{ role_php5_module_package_prefix }}"
+    parameter_apt_packages_postfix: "{{ role_php5_module_package_postfix }}"
+
+- include: enable_php5_modules.yml
+  when: not (parameter_php5_modules_dont_run_enable | default( false ))
+
+- include: ensure_php5_module_configs_exist.yml
+

@@ -1,0 +1,20 @@
+---
+###########
+# Copy custom commands from role
+#
+# DESCRIPTION:
+#     Copies custom commands from role
+#
+# VARIABLES:
+#     - parameter_custom_commands_role_template_dir - REQUIRED - dir with custom commands templates
+#     - parameter_custom_commands_role              - REQUIRED - role from which to copy
+# SUBVARIABLES:
+#     - copy_custom_commands.yml:
+#         - role_common_custom_commands_dir        - PREDEFINED - subdir in vagrant user directory where to place custom commands
+#         - role_common_user                       - PREDEFINED - user owner of the custom commands
+#         - role_common_usergroup                  - PREDEFINED - group owner of the custom commands
+#         - role_common_user_home_path             - PREDEFINED - users home path
+###########
+- include: copy_custom_commands.yml
+  vars:
+    parameter_custom_commands_template_dir: "../../../{{ parameter_custom_commands_role }}/templates/{{ parameter_custom_commands_role_template_dir }}"

@@ -1,0 +1,13 @@
+---
+role_nginx_nginx_packages:
+  - nginx
+
+role_nginx_nginx_service: nginx
+
+role_nginx_enabled_sites_path: /etc/nginx/sites-enabled
+role_nginx_available_sites_path: /etc/nginx/sites-available
+
+
+role_nginx_ssl_dir: /etc/nginx/ssl
+role_nginx_ssl_cert_file: nginx.crt
+role_nginx_ssl_key_file: nginx.key

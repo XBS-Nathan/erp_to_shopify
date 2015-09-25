@@ -1,0 +1,4 @@
+---
+- include: ../../../common/tasks/bash_aliases/add_bash_aliases.yml
+  vars:
+    parameter_bash_aliases: "{{ role_symfony2_dev_site_aliases }}"

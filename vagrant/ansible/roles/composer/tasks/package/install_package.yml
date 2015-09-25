@@ -1,0 +1,20 @@
+---
+###########
+# Install composer package
+#
+# DESCRIPTION:
+#     Installs composer package
+#
+# VARIABLES:
+#     - parameter_packages[]         - REQUIRED   - List of packages to install
+#     -                     .package - REQUIRED   - Package name
+#     -                     .version - OPTIONAL   - Specific package version
+#     - parameter_working_dir        - OPTIONAL   - Alternative working directory
+#     - parameter_user               - OPTIONAL   - User to run composer as
+#     - role_composer_path           - PREDEFINED - Path to composer
+###########
+- name: Installing composer packages
+  command: "{{ role_composer_path }} --working-dir='{{ parameter_working_dir if parameter_working_dir is defined else role_composer_path|dirname }}' require {{ item.package }}:{{ item.version|default('*') }}"
+  with_items: parameter_packages
+  sudo: true
+  sudo_user: "{{ parameter_user if parameter_user is defined else role_composer_owner_user }}"

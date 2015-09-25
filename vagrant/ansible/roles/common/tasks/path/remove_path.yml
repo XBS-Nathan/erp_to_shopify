@@ -1,0 +1,44 @@
+---
+###########
+# Remove path
+#
+# DESCRIPTION:
+#     Removes from enviorment $PATH variable
+#
+# VARIABLES:
+#     - parameter_path                    - REQUIRED   - path to add
+#     - role_common_environment_file_path - PREDEFINED - Path to environments file
+###########
+- name: Removing "{{ parameter_path }}" from $PATH middle
+  lineinfile: dest={{ role_common_environment_file_path }}
+              regexp='^PATH="([^\"]*):{{ parameter_path }}:([^\"]*)"$'
+              line='PATH="\1:\2"'
+              backrefs=yes
+  register: result_remove_path_middle
+  until: not result_remove_path_middle.changed
+  sudo: true
+
+- name: Removing "{{ parameter_path }}" from $PATH left
+  lineinfile: dest={{ role_common_environment_file_path }}
+              regexp='^PATH="{{ parameter_path }}:([^\"]*)"$'
+              line='PATH="\1"'
+              backrefs=yes
+  register: result_remove_path_left
+  until: not result_remove_path_left.changed
+  sudo: true
+
+- name: Removing "{{ parameter_path }}" from $PATH right
+  lineinfile: dest={{ role_common_environment_file_path }}
+              regexp='^PATH="([^\"]*):{{ parameter_path }}"$'
+              line='PATH="\1"'
+              backrefs=yes
+  register: result_remove_path_right
+  until: not result_remove_path_right.changed
+  sudo: true
+
+- name: Removing "{{ parameter_path }}" from $PATH if only one left
+  lineinfile: dest={{ role_common_environment_file_path }}
+              regexp='^PATH="{{ parameter_path }}"$'
+              line='PATH=""'
+              backrefs=yes
+  sudo: true

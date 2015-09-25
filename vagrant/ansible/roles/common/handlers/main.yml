@@ -1,0 +1,4 @@
+---
+- name: Dummy Notification
+  debug: msg="Dummy notification"
+  when: false

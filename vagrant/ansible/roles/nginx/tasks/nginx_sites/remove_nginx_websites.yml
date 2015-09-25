@@ -1,0 +1,20 @@
+---
+###########
+# Remove Nginx websites
+#
+# DESCRIPTION:
+#     Removes nginx websites
+#
+# VARIABLES:
+#     - parameter_nginx_sites_pattern - OPTIONAL   - Pattern used to decide which sites to remove
+#     - role_nginx_enabled_sites_path - PREDEFINED - Location where active nginx configs are found
+###########
+- include: disable_nginx_websites.yml
+
+- name: "Remove Nginx websites"
+  file: path={{ item }}
+        state=absent
+  with_fileglob:
+    - "{{ role_nginx_available_sites_path ~ '/' ~ (parameter_nginx_sites_pattern | default('*')) }}"
+  sudo: true
+  notify: Restart Nginx Service

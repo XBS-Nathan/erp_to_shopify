@@ -1,0 +1,5 @@
+---
+- include: main/install_mysql.yml
+- include: main/install_ansible_mysql_module_requirements.yml
+- include: main/add_default_mysql_user.yml
+- include: main/bind_mysql_to_all.yml

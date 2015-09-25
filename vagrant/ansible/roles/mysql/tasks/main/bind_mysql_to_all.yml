@@ -1,0 +1,9 @@
+---
+- name: Bind MySQL to all addresses
+  lineinfile: dest="{{ role_mysql_my_cnf_path }}"
+              regexp='^(\s*)bind-address(\s*)=(\s*)(\S+)(\s*)$'
+              line='bind-address = 0.0.0.0'
+              state=present
+              insertafter='^(\s*)\[mysqld\]$(\s*)'
+  sudo: true
+  notify: Restart Mysql Service

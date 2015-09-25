@@ -1,0 +1,4 @@
+---
+- include: ../git_config/git_set_colors.yml
+  vars:
+    parameter_git_colors: "{{ role_git_colors }}"

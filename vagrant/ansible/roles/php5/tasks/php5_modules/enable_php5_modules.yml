@@ -1,0 +1,14 @@
+---
+###########
+# Enable php5 modules
+#
+# DESCRIPTION:
+#     Enables Php5 modules
+#
+# VARIABLES:
+#     - parameter_php5_modules - REQUIRED - Array of Php5 modules
+###########
+- name: Enabling Php5 modules
+  command: "php5enmod {{ item }}"
+  with_items: parameter_php5_modules
+  sudo: true

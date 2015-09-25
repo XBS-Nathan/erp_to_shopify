@@ -1,0 +1,6 @@
+---
+- include: ../../../common/tasks/apt/install_apt_packages.yml
+  vars:
+    parameter_install_title: Installing Php5 fpm
+    parameter_apt_packages: "{{ role_php5_fpm_apt_packages }}"
+    parameter_apt_packages_nofify: Restart Php5 Fpm Service

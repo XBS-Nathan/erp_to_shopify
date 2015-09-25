@@ -1,0 +1,6 @@
+---
+- include: ../php5_ini/write_php5_ini_defaults.yml
+  vars:
+    parameter_php5_ini_file: "{{ role_php5_ini_cli_path }}"
+    parameter_php5_ini_cli_config: true
+    parameter_php5_ini_include_modules_config: false

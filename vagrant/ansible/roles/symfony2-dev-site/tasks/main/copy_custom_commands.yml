@@ -1,0 +1,5 @@
+---
+- include: ../../../common/tasks/custom_commands/copy_custom_commands_from_role.yml
+  vars:
+    parameter_custom_commands_role: symfony2-dev-site
+    parameter_custom_commands_role_template_dir: custom_commands

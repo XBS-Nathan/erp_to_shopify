@@ -1,0 +1,31 @@
+#!/bin/bash
+
+PROJECT_PATH="{{ role_dev_site_site_system_path }}";
+APP_PATH="$PROJECT_PATH/app";
+PHPUNIT_PATH="$PROJECT_PATH/bin/phpunit";
+RETURN=0;
+
+if [ ! -d $PROJECT_PATH ]; then
+        echo "Unable to find PROJECT at -----> $PROJECT_PATH";
+        RETURN=$(($RETURN + 1));
+fi;
+
+if [ ! -d $APP_PATH ]; then
+        echo "Unable to find APPLICATION at -> $APP_PATH";
+        RETURN=$(($RETURN + 2));
+fi;
+
+if [ ! -f $PHPUNIT_PATH ]; then
+        echo "Unable to find PHP-Unit at ----> $PHPUNIT_PATH";
+        RETURN=$(($RETURN + 4));
+fi;
+
+if [ "$RETURN" -gt "0" ]; then
+        echo "Exiting with error code $RETURN";
+        exit $RETURN;
+fi;
+
+
+cd "$PROJECT_PATH";
+"$PHPUNIT_PATH" -c "$APP_PATH" $@
+

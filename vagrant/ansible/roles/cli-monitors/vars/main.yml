@@ -1,0 +1,5 @@
+---
+role_cli_monitors_packages:
+  - mytop
+  - iptraf
+  - iftop

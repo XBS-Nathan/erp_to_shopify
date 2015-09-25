@@ -1,0 +1,31 @@
+---
+###########
+# Ensure php5 module configs exist
+#
+# DESCRIPTION:
+#     Creates php5 module config files if they don't already exists.
+#     Additionaly adds ini headers based on module names in case they don't exist
+#     Adding of these headers doesn't effect PHP5 config, but enables ease of changing config trough ansible
+#
+# VARIABLES:
+#     - parameter_php5_modules           - REQUIRED   - Array of Php5 modules
+#     - role_php5_module_ini_directory   - PREDEFINED - directory path to php5 modules ini config directory
+#     - role_php5_module_ini_owner_user  - PREDEFINED - User to set ownership of files to
+#     - role_php5_module_ini_owner_group - PREDEFINED - Group to set ownership of files to
+###########
+- name: Ensuring Php5 modules config files have headers
+  lineinfile: dest="{{ role_php5_module_ini_directory }}/{{ item }}.ini"
+              create=yes
+              line="[{{ item }}]"
+              state=present
+              insertbefore=BOF
+  with_items: parameter_php5_modules
+  sudo: true
+
+- name: Setting Php5 modules config files ownership
+  file: path="{{ role_php5_module_ini_directory }}/{{ item }}.ini"
+        owner={{ role_php5_module_ini_owner_user }}
+        group={{ role_php5_module_ini_owner_group }}
+  with_items: parameter_php5_modules
+  sudo: true
+  

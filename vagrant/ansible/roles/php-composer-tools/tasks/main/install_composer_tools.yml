@@ -1,0 +1,4 @@
+---
+- include: ../../../composer/tasks/package/install_package.yml
+  vars:
+    parameter_packages: "{{ role_php_composer_tools_packages }}"

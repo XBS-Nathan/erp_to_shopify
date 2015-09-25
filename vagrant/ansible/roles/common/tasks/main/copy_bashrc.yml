@@ -1,0 +1,8 @@
+---
+- name: Copy bashrc
+  template: src=../../templates/bashrc.j2
+            dest="/home/vagrant/.bashrc"
+            owner=vagrant
+            group=vagrant
+            mode=0755
+  sudo: true

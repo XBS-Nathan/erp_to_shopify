@@ -1,0 +1,8 @@
+---
+- name: Creating bash custom commands dir
+  file: path={{ '/home/vagrant/' ~ role_common_custom_commands_dir }}
+        owner=vagrant
+        group=vagrant
+        mode=0755
+        state=directory
+  sudo: true

@@ -1,0 +1,60 @@
+---
+role_php5_php_packages:
+  - php5-common
+  - php5-json
+  - php5-cli
+  - php5-readline
+role_php5_module_package_prefix: php5-
+role_php5_module_package_postfix: ''
+role_php5_module_ini_directory: /etc/php5/mods-available
+role_php5_module_ini_owner_user: root
+role_php5_module_ini_owner_group: root
+role_php5_ini_cli_path: /etc/php5/cli/php.ini
+role_php5_xdebug_bash_aliases:
+  - alias: xdebug-start
+    command: 'export  XDEBUG_CONFIG=\"idekey={{ role_php5_xdebug_idekey }}\"; export PHP_IDE_CONFIG=\"serverName={{ role_php5_xdebug_server_name }}\"'
+  - alias: xdebug-stop
+    command: 'unset XDEBUG_CONFIG; unset PHP_IDE_CONFIG'
+role_php5_default_module_config_files:
+  - opcache
+  - pdo
+role_php5_ini_config_modules_default:
+  - module: "xdebug"
+    module_config:
+      - option: "xdebug.remote_enable"
+        value: "true"
+      - option: "xdebug.remote_handler"
+        value: "dbgp"
+      - option: "xdebug.remote_mode"
+        value: "req"
+      - option: "xdebug.remote_host"
+        value: "{{ role_php5_xdebug_remote_host }}"
+      - option: "xdebug.remote_port"
+        value: "{{ role_php5_xdebug_remote_port }}"
+      - option: "xdebug.idekey"
+        value: "{{ role_php5_xdebug_idekey }}"
+      - option: "xdebug.autostart"
+        value: "0"
+      - option: "xdebug.max_nesting_level"
+        value: "1000"
+role_php5_ini_config_common_default:
+  - module: PHP
+    module_config:
+      - option: memory_limit
+        value: "{{ role_php5_memmory_limit }}"
+      - option: max_execution_time
+        value: "{{ role_php5_execution_time_limit }}"
+  - module: Date
+    module_config:
+      - option: date.timezone
+        value: "{{ role_php5_date_timezone | default('UTC') }}"
+role_php5_ini_config_cli_default:
+  - module: PHP
+    module_config:
+      - option: html_errors
+        value: "Off"
+role_php5_ini_config_non_cli_default:
+  - module: PHP
+    module_config:
+      - option: html_errors
+        value: "On"

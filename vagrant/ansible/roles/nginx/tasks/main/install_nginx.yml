@@ -1,0 +1,6 @@
+---
+- include: ../../../common/tasks/apt/install_apt_packages.yml
+  vars:
+    parameter_install_title: Installing Nginx
+    parameter_apt_packages: "{{ role_nginx_nginx_packages }}"
+    parameter_apt_packages_nofify: Restart Nginx Service

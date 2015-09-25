@@ -1,0 +1,7 @@
+---
+- include: ../../../php5/tasks/php5_ini/write_php5_ini_defaults.yml
+  vars:
+    parameter_php5_ini_file: "{{ role_php5_fpm_ini_path }}"
+    parameter_php5_ini_cli_config: false
+    parameter_php5_ini_include_modules_config: false
+    parameter_php5_ini_notify: Restart Php5 Fpm Service

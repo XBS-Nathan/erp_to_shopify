@@ -1,28 +1,34 @@
-Vagrant.configure("2") do |config|
-    # Configure the box to use
-    config.vm.box       = 'precise64'
-    config.vm.box_url   = 'http://files.vagrantup.com/precise64.box'
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
 
-    # Configure the network interfaces
-    config.vm.network :private_network, ip:    "192.168.33.10"
-    config.vm.network :forwarded_port,  guest: 80,    host: 8080
-    config.vm.network :forwarded_port,  guest: 8081,  host: 8081
-    config.vm.network :forwarded_port,  guest: 3306,  host: 3306
-    config.vm.network :forwarded_port,  guest: 27017, host: 27017
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
 
-    # Configure shared folders
-    config.vm.synced_folder ".",  "/vagrant", id: "vagrant-root", :nfs => false
-    config.vm.synced_folder "..", "/var/www", id: "application",  :nfs => false
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-    # Configure VirtualBox environment
-    config.vm.provider :virtualbox do |v|
-        v.name = (0...8).map { (65 + rand(26)).chr }.join
-        v.customize [ "modifyvm", :id, "--memory", 512 ]
-    end
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "ubuntu/trusty64"
 
-    # Provision the box
-    config.vm.provision :ansible do |ansible|
-        ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
-        ansible.playbook = "ansible/site.yml"
-    end
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder "./vagrant", "/vagrant", disabled: false
+  config.vm.synced_folder ".", "/opt/erp", disabled: false, create: true
+
+  config.vm.provision "shell",
+    inline: "chmod u+x /vagrant/provision.sh && /vagrant/provision.sh"
+  
+  config.vm.provider "virtualbox" do |vb|
+    # Don't boot with headless mode
+    vb.gui = false
+  
+    # Use VBoxManage to customize the VM. For example to change memory:
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+  end
 end

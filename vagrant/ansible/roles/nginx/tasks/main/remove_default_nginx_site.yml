@@ -1,0 +1,4 @@
+---
+- include: ../nginx_sites/remove_nginx_websites.yml
+  vars:
+    parameter_nginx_sites_pattern: default

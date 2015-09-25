@@ -1,0 +1,4 @@
+---
+- include: main/install_vcs_systems.yml
+- include: main/download_composer.yml
+- include: main/add_paths.yml

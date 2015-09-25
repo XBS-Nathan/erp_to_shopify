@@ -1,0 +1,25 @@
+---
+###########
+# Add Nginx site templates
+#
+# DESCRIPTION:
+#     Adds sites to Nginx based on site templates
+#
+# VARIABLES:
+#     - parameter_nginx_site_templates_dir - REQUIRED   - Directory with nginx site templates
+#     - parameter_prevent_enable_sites     - OPTIONAL   - If defined can revent enableing of sites
+#     - role_nginx_available_sites_path    - PREDEFINED - Location where to place nginx configs
+###########
+- name: Placing new Nginx website configurations
+  template: src={{ item }}
+            dest="{{ role_nginx_available_sites_path ~ "/" ~(item[:(item|length-3)]|basename) }}"
+            owner=root
+            group=root
+            mode=0644
+  with_fileglob:
+    - "{{ parameter_nginx_site_templates_dir }}/*.j2"
+  notify: Restart Nginx Service
+  sudo: true
+  
+- include: enable_nginx_websites.yml
+  when: not (parameter_prevent_enable_sites is defined and parameter_prevent_enable_sites)

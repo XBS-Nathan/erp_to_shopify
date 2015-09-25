@@ -1,0 +1,7 @@
+---
+- include: main/run_updates.yml
+- include: main/install_ansible_common_module_requirements.yml
+- include: main/set_hostname.yml
+- include: main/copy_bashrc.yml
+- include: main/create_custom_commands_dir.yml
+- include: main/copy_custom_commands.yml

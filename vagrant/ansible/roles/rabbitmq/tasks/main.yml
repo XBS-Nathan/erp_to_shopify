@@ -1,0 +1,14 @@
+---
+- include: main/install_rabbitmq.yml
+- include: main/enable_default_rabbitmq_plugins.yml
+
+- name: RabbitMQ management | restart service to enable rabbitmq plugin
+  service: name=rabbitmq-server state=restarted
+  sudo: true
+
+- name: RabbitMQ management | download rabbitmqadmin
+  shell: sudo wget http://localhost:15672/cli/rabbitmqadmin -O /usr/local/bin/rabbitmqadmin
+
+# - name: RabbitMQ management | init exchanges
+#   shell: /opt/exchange-support-app/app/bin/rabbit-setup
+#  sudo: true

@@ -1,0 +1,8 @@
+---
+- include: main/install_php5.yml
+- include: main/install_php5_default_modules_dependencies.yml
+- include: main/install_php5_default_modules.yml
+- include: main/write_php5_cli_ini_defaults.yml
+- include: main/write_php5_modules_default_ini.yml
+- include: main/copy_custom_commands.yml
+- include: main/add_xdebug_bash_aliases.yml

@@ -1,0 +1,7 @@
+---
+role_nginx_ssl_cert_country_code: "{{ role_openssl_ssl_cert_country_code }}"
+role_nginx_ssl_cert_state_or_province: "{{ role_openssl_ssl_cert_state_or_province }}"
+role_nginx_ssl_cert_location: "{{ role_openssl_ssl_cert_location }}"
+role_nginx_ssl_cert_organization_name: "{{ role_openssl_ssl_cert_organization_name }}"
+role_nginx_ssl_cert_common_name: "{{ role_openssl_ssl_cert_common_name }}"
+

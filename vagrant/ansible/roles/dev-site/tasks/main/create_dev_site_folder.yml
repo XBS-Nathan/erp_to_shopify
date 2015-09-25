@@ -1,0 +1,12 @@
+---
+- name: Creating dev-site folder
+  file: path={{ role_dev_site_site_system_path }}
+        state=directory
+        recurse=yes
+  sudo: true
+
+- name: Creating dev-site web root folder
+  file: path={{ role_dev_site_site_web_root_system_path }}
+        state=directory
+        recurse=yes
+  sudo: true

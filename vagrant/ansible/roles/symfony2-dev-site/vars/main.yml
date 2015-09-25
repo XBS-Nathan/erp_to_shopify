@@ -1,0 +1,6 @@
+---
+role_symfony2_dev_site_aliases:
+  - alias: symfony-download
+    command: "{{ role_composer_path }} create-project symfony/framework-standard-edition {{ role_dev_site_site_system_path }}"
+  - alias: symfony-cmd
+    command: "php {{ role_dev_site_site_system_path }}/app/console"

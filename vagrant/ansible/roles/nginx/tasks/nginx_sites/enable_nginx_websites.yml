@@ -1,0 +1,22 @@
+---
+###########
+# Enable Nginx websites
+#
+# DESCRIPTION:
+#     Enables nginx websites
+#
+# VARIABLES:
+#     - parameter_nginx_sites_pattern   - OPTIONAL   - Pattern used to decide whcih sites to enable
+#     - role_nginx_enabled_sites_path   - PREDEFINED - Location where to link nginx configs to
+#     - role_nginx_available_sites_path - PREDEFINED - Location where to nginx configs are found
+###########
+- name: Enabling new Nginx website configurations
+  file: src={{ item }}
+        dest="{{ role_nginx_enabled_sites_path }}/{{ (item|basename) }}"
+        owner=root
+        group=root
+        state=link
+  with_fileglob:
+    - "{{ role_nginx_available_sites_path ~ '/' ~ (parameter_nginx_sites_pattern | default('*')) }}"
+  sudo: true
+  notify: Restart Nginx Service

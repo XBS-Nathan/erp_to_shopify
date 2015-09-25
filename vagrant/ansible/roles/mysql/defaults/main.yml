@@ -1,0 +1,5 @@
+---
+role_mysql_default_user_username: admin
+role_mysql_default_user_password: password
+role_mysql_default_user_host: localhost
+

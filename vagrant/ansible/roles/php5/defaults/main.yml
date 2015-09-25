@@ -1,0 +1,82 @@
+---
+role_php5_default_modules_dependencies:
+  - enchant
+  - exactimage
+  - geoip-database
+  - geoip-bin
+  - imagemagick
+  - mongodb-clients
+role_php5_default_modules:
+  - adodb
+  - apcu
+  - curl
+  - enchant
+  - exactimage
+  - gd
+  - geoip
+  - imagick
+  - imap
+  - intl
+  - json
+  - ldap
+  - mcrypt
+  - mongo
+  - memcache
+  - memcached
+  - mysql
+  - readline
+  - sqlite
+  - xdebug
+  - xmlrpc
+  - xsl
+role_php5_xdebug_remote_host: 127.0.0.1
+role_php5_xdebug_remote_port: 9000
+role_php5_date_timezone: UTC
+role_php5_xdebug_idekey: VAGRANTPHP
+role_php5_xdebug_server_name: ProjectServer
+role_php5_memmory_limit: "{{ ( ansible_memtotal_mb * 0.8 )|int }}M"
+role_php5_execution_time_limit: 30
+role_php5_ini_config_modules:
+  - module: "xdebug"
+    module_config:
+      - option: "xdebug.var_display_max_children"
+        value: "-1"
+      - option: "xdebug.var_display_max_data"
+        value: "-1"
+      - option: "xdebug.var_display_max_depth"
+        value: "5"
+      - option: "xdebug.max_nesting_level"
+        value: "1000"
+      - option: "xdebug.force_display_errors"
+        value: "1"
+      - option: "xdebug.force_error_reporting"
+        value: "1"
+      - option: "xdebug.overload_var_dump"
+        value: "1"
+role_php5_ini_config_common:
+  - module: PHP
+    module_config:
+      - option: error_reporting
+        value: E_ALL
+      - option: display_errors
+        value: "On"
+      - option: report_memleaks
+        value: "On"
+      - option: short_open_tag
+        value: "Off"
+      - option: asp_tags
+        value: "Off"
+      - option: realpath_cache_size
+        value: "16M"
+      - option: realpath_cache_ttl
+        value: 1800
+role_php5_ini_config_cli:
+  - module: xdebug
+    module_config:
+      - option: "xdebug.collect_params"
+        value: "0"
+role_php5_ini_config_non_cli:
+  - module: xdebug
+    module_config:
+      - option: "xdebug.collect_params"
+        value: "2"

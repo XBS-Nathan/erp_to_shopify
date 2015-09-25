@@ -1,0 +1,6 @@
+---
+dependencies:
+  - { role: common }
+  - { role: php5 }
+  - { role: dev-site }
+  - { role: composer }

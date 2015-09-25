@@ -1,0 +1,4 @@
+---
+- include: ../mysql_users/add_mysql_users.yml
+  vars:
+    parameter_mysql_users: "{{ role_mysql_default_user_insert }}"

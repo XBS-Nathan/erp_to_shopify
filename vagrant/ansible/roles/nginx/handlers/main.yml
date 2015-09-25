@@ -1,0 +1,5 @@
+---
+- name: Restart Nginx Service
+  service: name={{ role_nginx_nginx_service }}
+           state=restarted
+           sleep=2

@@ -1,0 +1,33 @@
+services:
+
+    old_sound_rabbit_mq.product_consumer:
+        class: ERPBundle\Consumer\ProductConsumer
+        arguments:
+            - @erp.client.erp
+
+    erp.client.erp:
+        class: ERPBundle\Services\Client\ErpClient
+        arguments:
+            - @erp.guzzle.factory.client.erp
+
+    erp.client.shopifyWrapper:
+        class: ERPBundle\Services\Client\ShopifyApiClientWrapper
+        arguments:
+            - @erp.guzzle.factory.client.erp
+
+    erp.services.productCatalog:
+        class: ERPBundle\Services\ProductCatalogService
+        arguments:
+            - @erp.client.shopifyWrapper
+            - @erp.options.shopify
+
+    erp.guzzle.factory.client.erp:
+        class: ERPBundle\Factory\Client\ErpClientFactory
+        factory_class: ERPBundle\Factory\Client\ErpClientFactory
+
+    erp.guzzle.factory.client.erp:
+        class: ERPBundle\Factory\Client\ShopifyApiClientFactory
+        factory_class: ERPBundle\Factory\Client\ShopifyApiClientFactory
+
+    erp.options.shopify:
+        class: ERPBundle\Options\ShopifyOptions
