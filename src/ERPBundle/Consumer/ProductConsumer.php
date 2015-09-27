@@ -7,6 +7,7 @@ use ERPBundle\Services\ProductCatalogService;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Shopify\Client;
+use OldSound\RabbitMqBundle\RabbitMq;
 
 class ProductConsumer implements ConsumerInterface
 {
@@ -32,11 +33,13 @@ class ProductConsumer implements ConsumerInterface
     {
         //$msg->body being the data sent over RabbitMQ.
 
-        $catalog = $msg->body->catalog;
+        $msgBody = json_decode($msg->body);
 
-        $catalogProducts = $this->erpClient->getProducts($catalog);
+        $catalog = $msgBody->payload->catalog;
 
-        $productArray = $this->productCatalog->sortProductsByCreateOrUpdate($catalogProducts);
+        $productCatalog = $this->erpClient->getProducts($catalog);
+
+        $productArray = $this->productCatalog->createProducts($productCatalog);
 
         //Get products from ERP
         //Get What products needs to be update/created
@@ -44,4 +47,5 @@ class ProductConsumer implements ConsumerInterface
 
         //Send notificaiton to watch tower
     }
+
 }

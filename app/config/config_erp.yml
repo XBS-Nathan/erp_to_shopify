@@ -18,6 +18,6 @@ old_sound_rabbit_mq:
     consumers:
         product:
             connection:       default
-            exchange_options: {name: 'product', type: direct}
+            exchange_options: {name: 'erp', type: direct}
             queue_options:    {name: 'product'}
-            callback:         product_consumer
+            callback:         erp.product_consumer

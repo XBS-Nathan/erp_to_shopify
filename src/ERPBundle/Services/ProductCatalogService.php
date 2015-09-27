@@ -2,6 +2,8 @@
 
 namespace ERPBundle\Services;
 
+use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Repository\SkuToShopifyProductRepository;
 use ERPBundle\Services\Client\ShopifyApiClientWrapper;
 use Shopify\Client;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,13 +22,36 @@ class ProductCatalogService
 
     private $shopifyProductLimit;
 
-    public function __construct(ShopifyApiClientWrapper $shopifyClient, OptionsResolver $shopifyApiConfig)
+    protected $skuToProductRepo;
+
+    public function __construct(
+        ShopifyApiClientWrapper $shopifyClient,
+        OptionsResolver $shopifyApiConfig,
+        SkuToShopifyProductRepository $skuToShopifyProductRepository
+    )
     {
         $this->shopifyClient = $shopifyClient;
-        $this->shopifyProductLimit = $shopifyApiConfig->offsetGet('product_limit');
+        $this->shopifyProductLimit = '250';
+        $this->skuToProductRepo = $skuToShopifyProductRepository;
     }
 
-    public function sortProductsByCreateOrUpdate(array $products)
+    public function createProducts(ProductCatalogEntity $catalog)
+    {
+        foreach($catalog->getProducts() as $product)
+        {
+            $existingProduct = $this->skuToProductRepo->findOneBySku($product->getSku());
+
+            if(!$existingProduct)
+            {
+                $this->shopifyClient->saveProduct($product);
+            }
+        }
+
+
+
+    }
+
+    public function sortProductsByCreateOrUpdate(ProductCatalogEntity $catalog)
     {
         //Get shopify product count
         $productCount = $this->shopifyClient->getProductCount();

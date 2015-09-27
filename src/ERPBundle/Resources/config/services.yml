@@ -1,33 +1,52 @@
-services:
+parameters:
+    erp.guzzle.client.config:
+        base_url: %erp_base_url%
+    erp.shopify.client.config:
+        base_url: %shopify_base_url%
+        token: %shopify_token%
 
-    old_sound_rabbit_mq.product_consumer:
+services:
+    erp.product_consumer:
         class: ERPBundle\Consumer\ProductConsumer
         arguments:
             - @erp.client.erp
+            - @erp.services.productCatalog
+            - @erp.shopify.api.client
 
     erp.client.erp:
         class: ERPBundle\Services\Client\ErpClient
         arguments:
-            - @erp.guzzle.factory.client.erp
+            - @erp.guzzle.client.erp
 
     erp.client.shopifyWrapper:
         class: ERPBundle\Services\Client\ShopifyApiClientWrapper
         arguments:
-            - @erp.guzzle.factory.client.erp
+            - @erp.shopify.api.client
 
     erp.services.productCatalog:
         class: ERPBundle\Services\ProductCatalogService
         arguments:
             - @erp.client.shopifyWrapper
             - @erp.options.shopify
+            - @erp.repository.skuToProduct
 
-    erp.guzzle.factory.client.erp:
-        class: ERPBundle\Factory\Client\ErpClientFactory
-        factory_class: ERPBundle\Factory\Client\ErpClientFactory
+    erp.guzzle.client.erp:
+        class: GuzzleHttp\Client
+        arguments: [%erp.guzzle.client.config%]
 
-    erp.guzzle.factory.client.erp:
-        class: ERPBundle\Factory\Client\ShopifyApiClientFactory
-        factory_class: ERPBundle\Factory\Client\ShopifyApiClientFactory
+    erp.shopify.api.client:
+        class: Shopify\Client
+        factory: ["ERPBundle\Factory\Client\ShopifyApiClientFactory", "createClient"]
+        arguments:
+          - @erp.options.shopify
 
     erp.options.shopify:
         class: ERPBundle\Options\ShopifyOptions
+        arguments: [%erp.shopify.client.config%]
+
+    erp.repository.skuToProduct:
+          class: Doctrine\ORM\EntityRepository
+          factory_service: doctrine.orm.default_entity_manager
+          factory_method: getRepository
+          arguments:
+              - ERPBundle\Entity\SkuToProductEntity

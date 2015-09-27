@@ -2,7 +2,9 @@
 
 namespace ERPBundle\Services\Client;
 
+use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Services\ProductCatalogEntity;
+use ERPBundle\Services\ShopifyProductEntity;
 use Shopify\Client;
 
 
@@ -31,7 +33,7 @@ class ShopifyApiClientWrapper
      */
     public function getProducts($limit, $page)
     {
-        $shopifyProductsResponse = $this->shopifyClient->getProducts($limit, $page);
+        $shopifyProductsResponse = $this->client->getProducts($limit, $page);
 
         $shopifyProducts = $shopifyProductsResponse->products;
 
@@ -42,5 +44,35 @@ class ShopifyApiClientWrapper
         }
 
         return $productCatalog;
+    }
+
+    public function saveProduct(ErpProductEntity $erpProduct)
+    {
+        $productData = [
+            'product' => [
+                'published' => true,
+                'title' => $erpProduct->getTitle(),
+                'product_type' => $erpProduct->getCategory(),
+                'body_html' => $erpProduct->getDescription(), //$this->product['Body'],
+                'images' => [
+                    'src' => $erpProduct->getImage()
+                ],
+                'variants' => [
+                    [
+                        'price' => $erpProduct->getPrice(),
+                        'sku' => $erpProduct->getSku(),
+                        'inventory_management' => $erpProduct->getStockManagement(),
+                        'inventory_policy' => $erpProduct->getInventoryPolicy(),
+                        'inventory_quantity' => $erpProduct->getQty()
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->client->createProduct($productData);
+
+        $product = ShopifyProductEntity::createFromResponse($response);
+
+        return $product;
     }
 }

@@ -1,10 +1,18 @@
 <?php
 
 namespace ERPBundle\Tests\Consumer;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpKernel\KernelInterface;
 
-abstract class BaseWebTestCase extends WebTestCase
+use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as SymfonyWebTestCase;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Process\Process;
+use Symfony\Component\HttpKernel\KernelInterface;
+use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Subscriber\History;
+
+
+abstract class BaseWebTestCase extends SymfonyWebTestCase
 {
     protected $container;
 
@@ -59,6 +67,8 @@ abstract class BaseWebTestCase extends WebTestCase
         $application->add($command);
         $command = $application->find($commandName);
         $commandTester = new CommandTester($command);
+
+        $command->setContainer($kernel->getContainer());
 
         $commandParameters = $options;
         $commandParameters[] = ['command' => $command->getName()];
@@ -153,7 +163,7 @@ abstract class BaseWebTestCase extends WebTestCase
     protected function addMessageToExchange($kernel, $message)
     {
         $this->producerService = $kernel->getContainer()->get(
-            'old_sound_rabbit_mq.pitch_selected_producer'
+            'old_sound_rabbit_mq.product_producer'
         );
 
         $msg = json_encode($message);
@@ -182,7 +192,7 @@ abstract class BaseWebTestCase extends WebTestCase
      */
     public function getGuzzleHistory($clientName, KernelInterface $kernel)
     {
-        return $this->getService('blur_guzzle.subscriber.'.$clientName.'.history', $kernel);
+        return $kernel->getContainer()->get('erp.guzzle.client.'.$clientName);
     }
 
     /**
@@ -194,7 +204,12 @@ abstract class BaseWebTestCase extends WebTestCase
      */
     public function getGuzzleMock($clientName, KernelInterface $kernel)
     {
-        return $this->getService('blur_guzzle.subscriber.'.$clientName.'.mock', $kernel);
+        $mock = new Mock();
+
+        $client = $kernel->getContainer()->get('erp.guzzle.client.'.$clientName);
+        $client->getEmitter()->attach($mock);
+
+        return $mock;
     }
 
     /**
@@ -207,7 +222,7 @@ abstract class BaseWebTestCase extends WebTestCase
     public function setGuzzleMockedResponses($clientName, KernelInterface $kernel, array $responses = array())
     {
         $mock = $this->getGuzzleMock($clientName, $kernel);
-        $path = __DIR__.'/../Resources/test_stubs/'.$clientName.'/';
+        $path = __DIR__.'/../../Resources/test_stubs/'.$clientName.'/';
         foreach ($responses as $response) {
             $file = $path.$response.'.response';
             if (!file_exists($file)) {

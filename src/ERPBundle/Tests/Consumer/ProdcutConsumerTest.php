@@ -8,7 +8,7 @@ class ProductConsumerTest extends BaseWebTestCase
 {
     public function setUp()
     {
-        $this->initKernel();
+        $this->initKernel(['environment' => 'test']);
         $this->initEntityManager(self::$kernel);
 
         //empty the queue
@@ -20,9 +20,7 @@ class ProductConsumerTest extends BaseWebTestCase
           $this->addMessageToExchange(self::$kernel, [
             'id'      => 'MONGO-ID',
             'payload' => [
-                'projectId'      => 'blu-N64567',
-                'expertUserId'   => 'U-TESTEXPERT',
-                'customerUserId' => 'U-TESTCUSTOMER',
+                'catalog'      => 'erp',
             ]
         ]);
 
@@ -37,7 +35,7 @@ class ProductConsumerTest extends BaseWebTestCase
 
         $commandName = 'rabbitmq:consumer';
         $command = new ConsumerCommand();
-        $options = ['name' => 'products', '-m' => '1'];
+        $options = ['name' => 'product', '-m' => '1'];
 
         $responseText = $this->executeAppCommand(self::$kernel, $command, $commandName, $options);
 var_dump($responseText);

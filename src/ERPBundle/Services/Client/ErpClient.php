@@ -2,8 +2,8 @@
 
 namespace ERPBundle\Services\Client;
 
-
-use ERPBundle\Services\ProductCatalogEntity;
+use ERPBundle\Entity\ErpProductEntity;
+use ERPBundle\Entity\ProductCatalogEntity;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\RequestInterface;
 
@@ -24,18 +24,34 @@ class ErpClient
         $this->client = $client;
     }
 
-    /**
-     * @param $catalog
-     */
-    public function getProducts($catalog)
+
+    public function getProducts($catalog, $extra = false)
     {
         $request = $this->client->createRequest('GET', sprintf('catalogs/%s', $catalog));
 
         $response = $this->sendRequest($request)->xml();
 
-        $productCatalog = ProductCatalogEntity::createFromResponse($response);
+        $productCatalog = ProductCatalogEntity::createFromXMLResponse($response);
+
+        if($extra) {
+            foreach ($productCatalog->getProducts() as $product) {
+                $this->getProductExtraInformation($catalog, $product);
+            }
+        }
 
         return $productCatalog;
+    }
+
+    public function getProductExtraInformation($catalog, ErpProductEntity $product)
+    {
+        $request = $this->client->createRequest('GET', sprintf('catalogs/%s/%s/all', $catalog, $product->getSku()));
+
+        $response = $this->sendRequest($request)->xml();
+
+        //Inject the response into the product object.
+        //ErpProductEntity::updateProduct($product, $data);
+
+        return $response;
     }
 
     /**
@@ -44,7 +60,7 @@ class ErpClient
     public function sendRequest(RequestInterface $request)
     {
         try {
-            $this->client->send($request);
+            return $this->client->send($request);
         } catch(RequestException $e ) {
             //Catch the error and handle it accordingly.
         }

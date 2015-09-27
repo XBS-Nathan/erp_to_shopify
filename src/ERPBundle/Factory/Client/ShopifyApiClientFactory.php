@@ -2,6 +2,7 @@
 
 namespace ERPBundle\Factory\Client;
 
+use ERPBundle\Options\ShopifyOptions;
 use Shopify\Client;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,14 +22,13 @@ class ShopifyApiClientFactory
      * @param OptionsResolver $optionsResolver
      * @return Client
      */
-    public function createClient(OptionsResolver $optionsResolver)
+    public static function createClient(ShopifyOptions $optionsResolver)
     {
-        $baseUrl = $optionsResolver->offsetGet('base_url');
-        $accessToken = $optionsResolver->offsetGet('access_token');
+        $config = $optionsResolver->getConfig();
 
-        $client = Shopify::settings(array(
-            "shopUrl" => $baseUrl,
-            "X-Shopify-Access-Token" => $accessToken
+        $client = new Client(array(
+            "shopUrl" => $config['base_url'],
+            "X-Shopify-Access-Token" => $config['token']
         ));
 
         return $client;
