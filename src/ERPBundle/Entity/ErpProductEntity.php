@@ -222,7 +222,7 @@ class ErpProductEntity
         $self->setImage((string) $product->SupplementalData[0]);
         $self->setCategory((string) $product->SupplementalData[2]);
         $self->setPrice((string) $product->Pricing->UnitPrice);
-        $self->setQty((string) $product->Availability->QtyAvailable);
+        $self->setQty((int) (string) $product->Availability->QtyAvailable);
 
 
         return $self;
@@ -238,8 +238,8 @@ class ErpProductEntity
             throw new \InvalidArgumentException(sprintf('product %s is not the same as the response product %s', $product->getSku(), $data->attributes()->ItemNo));
         }
 
-        $product->setInventoryPolicy(($data->product['StockManagement'] ? 'continue' : 'deny'));
-        $product->setStockManagement(($data->product['StockManagement'] ? '' : 'shopify'));
+        $product->setInventoryPolicy(($data->ItemSpecialString && $data->ItemSpecialString == "1" ? 'continue' : 'deny'));
+        $product->setStockManagement(($data->ItemSpecialString && $data->ItemSpecialString == "1" ? '' : 'shopify'));
 
         $fullDescription = '';
         foreach($data->TextDescription as $line)
@@ -248,13 +248,5 @@ class ErpProductEntity
         }
 
         $product->setFullDesription($fullDescription);
-
-        if ($data->ItemSpecialString && $data->ItemSpecialString == "1")
-        {
-            $product->setStockManagement(1);
-        } else {
-            $product->setStockManagement(0);
-        }
-
-    }
+     }
 }

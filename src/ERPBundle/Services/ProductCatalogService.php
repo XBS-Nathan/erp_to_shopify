@@ -2,9 +2,12 @@
 
 namespace ERPBundle\Services;
 
+use Doctrine\ORM\NoResultException;
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Entity\ShopifyStoreEntity;
 use ERPBundle\Entity\SkuToProductEntity;
+use ERPBundle\Repository\CatalogRepository;
 use ERPBundle\Repository\SkuToShopifyProductRepository;
 use ERPBundle\Services\Client\ShopifyApiClientWrapper;
 use Shopify\Client;
@@ -28,6 +31,11 @@ class ProductCatalogService
      * @var SkuToShopifyProductRepository
      */
     protected $skuToProductRepo;
+
+    /**
+     * @var CatalogRepository
+     */
+    protected $catalogRepository;
 
     public function __construct(
         ShopifyApiClientWrapper $shopifyClient,

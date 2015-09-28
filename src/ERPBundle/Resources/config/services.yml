@@ -1,11 +1,20 @@
 parameters:
     erp.guzzle.client.config:
         base_url: %erp_base_url%
+        defaults:
+            auth: [%erp_base_username%, %erp_base_password%]
     erp.shopify.client.config:
         base_url: %shopify_base_url%
         token: %shopify_token%
 
 services:
+
+    erp.command.updateCatalog:
+        class: ERPBundle\Commands\UpdateCatalog
+        arguments: [@erp.services.shopifyStore, @old_sound_rabbit_mq.product_producer]
+        tags:
+            -  { name: console.command }
+
     erp.product_consumer:
         class: ERPBundle\Consumer\ProductConsumer
         arguments:
@@ -22,6 +31,12 @@ services:
         class: ERPBundle\Services\Client\ShopifyApiClientWrapper
         arguments:
             - @erp.guzzle.client.shopify
+
+    erp.services.shopifyStore:
+        class: ERPBundle\Services\ShopifyStoreService
+        arguments:
+            - @erp.repository.catalog
+            - @erp.repository.store
 
     erp.services.productCatalog:
         class: ERPBundle\Services\ProductCatalogService
@@ -50,3 +65,17 @@ services:
           factory_method: getRepository
           arguments:
               - ERPBundle\Entity\SkuToProductEntity
+
+    erp.repository.catalog:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - ERPBundle\Entity\CatalogEntity
+
+    erp.repository.store:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - ERPBundle\Entity\StoreEntity

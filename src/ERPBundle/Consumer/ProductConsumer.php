@@ -9,15 +9,33 @@ use PhpAmqpLib\Message\AMQPMessage;
 use Shopify\Client;
 use OldSound\RabbitMqBundle\RabbitMq;
 
+/**
+ * Class ProductConsumer
+ * @package ERPBundle\Consumer
+ */
 class ProductConsumer implements ConsumerInterface
 {
 
+    /**
+     * @var ErpClient
+     */
     protected $erpClient;
 
+    /**
+     * @var ProductCatalogService
+     */
     protected $productCatalog;
 
+    /**
+     * @var Client
+     */
     protected $shopifyClient;
 
+    /**
+     * @param ErpClient $erpClient
+     * @param ProductCatalogService $productCatalogService
+     * @param Client $shopifyClient
+     */
     public function __construct(ErpClient $erpClient, ProductCatalogService $productCatalogService, Client $shopifyClient)
     {
         $this->erpClient = $erpClient;
@@ -38,11 +56,6 @@ class ProductConsumer implements ConsumerInterface
         $productCatalog = $this->erpClient->getProducts($catalog, true);
 
         $this->productCatalog->createProductsOrUpdate($productCatalog);
-
-        //Get What products needs to be update/created
-        //Send products accordingly
-
-        //Send notificaiton to watch tower
     }
 
 }

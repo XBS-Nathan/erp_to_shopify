@@ -50,7 +50,6 @@ class ShopifyApiClientWrapper
     public function saveProduct(ErpProductEntity $erpProduct)
     {
         $productData = [
-            'product' => [
                 'published' => true,
                 'title' => $erpProduct->getTitle(),
                 'product_type' => $erpProduct->getCategory(),
@@ -67,10 +66,9 @@ class ShopifyApiClientWrapper
                         'inventory_quantity' => $erpProduct->getQty()
                     ]
                 ]
-            ]
         ];
 
-        $response = $this->client->createProduct($productData);
+        $response = $this->client->createProduct(['product' => $productData]);
 
         $product = ShopifyProductEntity::createFromResponse($response);
 

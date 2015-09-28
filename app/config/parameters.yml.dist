@@ -17,6 +17,9 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
-    erp_base_url:      "http://robotos.com"
-    shopify_base_url:   "http://shopify.com"
-    shopify_token:      "myToken"
+    erp_base_url:      "http://robots.lapineinc.com"
+    erp_base_username: "CSGTEST"
+    erp_base_password: "yG9uFFrLeHZ56LL4"
+
+    shopify_base_url:   "http://api.shopify.com"
+    shopify_token:      "#FMdlskdnj%L2kml2"

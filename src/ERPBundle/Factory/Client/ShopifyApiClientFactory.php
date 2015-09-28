@@ -3,6 +3,9 @@
 namespace ERPBundle\Factory\Client;
 
 use ERPBundle\Options\ShopifyOptions;
+use GuzzleHttp\Subscriber\Log\LogSubscriber;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Shopify\Client;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -30,6 +33,12 @@ class ShopifyApiClientFactory
             "shopUrl" => $config['base_url'],
             "X-Shopify-Access-Token" => $config['token']
         ));
+
+        $log = new Logger('shopify_store_name');
+        $log->pushHandler(new StreamHandler('/opt/erp/app/logs/shopify.log', Logger::WARNING));
+
+        $subscriber = new LogSubscriber($log);
+        $client->getEmitter()->attach($subscriber);
 
         return $client;
     }
