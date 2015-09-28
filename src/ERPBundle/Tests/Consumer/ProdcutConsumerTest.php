@@ -28,17 +28,29 @@ class ProductConsumerTest extends BaseWebTestCase
             'erp',
             self::$kernel,
             array(
-                'catalog.products'
+                'catalog.products',
+                'product.full',
+                'product2.full',
             )
         );
         $historyErp = $this->getGuzzleHistory('erp', self::$kernel);
+
+        $this->setGuzzleMockedResponses(
+            'shopify',
+            self::$kernel,
+            array(
+                'create.product',
+                'create.product2'
+            )
+        );
+        $historyShopify = $this->getGuzzleHistory('shopify', self::$kernel);
 
         $commandName = 'rabbitmq:consumer';
         $command = new ConsumerCommand();
         $options = ['name' => 'product', '-m' => '1'];
 
         $responseText = $this->executeAppCommand(self::$kernel, $command, $commandName, $options);
-var_dump($responseText);
+
         $this->assertRegExp('//', $responseText);
 
     }

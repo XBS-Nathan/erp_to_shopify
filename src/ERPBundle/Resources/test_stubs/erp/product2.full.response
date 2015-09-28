@@ -1,0 +1,31 @@
+HTTP/1.1 200 OK
+Server: nginx/1.4.6 (Ubuntu)
+Content-Type: application/xml
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/5.5.9-1ubuntu4.3
+Cache-Control: no-cache
+Date: Thu, 28 Aug 2014 13:33:31 GMT
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductData ItemNo="CSG-1234">
+    <Description>Commercial Grade GT 10'x10' Tent-rolling bag and steel frame</Description>
+    <LastUpdated>2015-04-09T13:58:59.93-04:00</LastUpdated>
+    <Dimensions>65x9x9</Dimensions>
+    <ImageSource href="http://images.lapineinc.com/CSG-1050CANTF.jpg">http://images.lapineinc.com/CSG-1050CANTF.jpg</ImageSource>
+    <Weight WeightUnits="lbs">54</Weight>
+    <Color>BLACK</Color>
+    <Size>LT</Size>
+    <UOM ConversionFactor="1" StockUOM="true">KT</UOM>
+    <TextDescription>This 10'x10' event tent features strong steel</TextDescription>
+    <TextDescription>construction. The canopy cranks-ups for ease of</TextDescription>
+    <TextDescription>installation without the stress. The canopy is made from</TextDescription>
+    <TextDescription>500D Polyester fire retardant and weather resistant</TextDescription>
+    <TextDescription>polyester. Includes a deluxe rolling bag with storage</TextDescription>
+    <TextDescription>compartments.  54lbs. Please allow 3-4 weeks for delivery.</TextDescription>
+    <TextDescription>Shipping cost for this item is $15.</TextDescription>
+    <TaxRate authority="AVATAX">0.00000</TaxRate>
+    <TaxRate authority="CT">6.35000</TaxRate>
+    <TaxRate authority="MA">6.25000</TaxRate>
+    <ItemSpecialString UseCode="SPECIALORDER">1</ItemSpecialString>
+</ProductData>

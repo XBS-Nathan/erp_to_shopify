@@ -31,17 +31,14 @@ class ProductConsumer implements ConsumerInterface
      */
     public function execute(AMQPMessage $msg)
     {
-        //$msg->body being the data sent over RabbitMQ.
-
         $msgBody = json_decode($msg->body);
 
         $catalog = $msgBody->payload->catalog;
 
-        $productCatalog = $this->erpClient->getProducts($catalog);
+        $productCatalog = $this->erpClient->getProducts($catalog, true);
 
-        $productArray = $this->productCatalog->createProducts($productCatalog);
+        $this->productCatalog->createProductsOrUpdate($productCatalog);
 
-        //Get products from ERP
         //Get What products needs to be update/created
         //Send products accordingly
 

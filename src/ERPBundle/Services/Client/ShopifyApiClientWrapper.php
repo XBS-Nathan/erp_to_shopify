@@ -3,8 +3,9 @@
 namespace ERPBundle\Services\Client;
 
 use ERPBundle\Entity\ErpProductEntity;
-use ERPBundle\Services\ProductCatalogEntity;
-use ERPBundle\Services\ShopifyProductEntity;
+use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Entity\ShopifyProductEntity;
+use ERPBundle\Entity\SkuToProductEntity;
 use Shopify\Client;
 
 
@@ -53,7 +54,7 @@ class ShopifyApiClientWrapper
                 'published' => true,
                 'title' => $erpProduct->getTitle(),
                 'product_type' => $erpProduct->getCategory(),
-                'body_html' => $erpProduct->getDescription(), //$this->product['Body'],
+                'body_html' => $erpProduct->getDescription(),
                 'images' => [
                     'src' => $erpProduct->getImage()
                 ],
@@ -74,5 +75,38 @@ class ShopifyApiClientWrapper
         $product = ShopifyProductEntity::createFromResponse($response);
 
         return $product;
+    }
+
+    public function updateProduct(ErpProductEntity $erpProduct, SkuToProductEntity $skuToProductEntity)
+    {
+        if(empty($skuToProductEntity->getVariantId())) {
+            throw new \InvalidArgumentException(sprintf('Product needs a variant id before it can be updated: %s', $skuToProductEntity->getSku()));
+        }
+
+        $productData =  [
+            'product' => [
+                'id' => $skuToProductEntity->getShopifyProductId(),
+                'title' => $erpProduct->getTitle(),
+                'product_type' => $erpProduct->getCategory(),
+                'body_html' => $erpProduct->getDescription(),
+                'images' => [
+                    'src' => $erpProduct->getImage()
+                ],
+                'variants' => [
+                    [
+                        'id' => $skuToProductEntity->getVariantId(),
+                        'price' => $erpProduct->getPrice(),
+                        'sku' => $erpProduct->getSku(),
+                        'inventory_management' => $erpProduct->getStockManagement(),
+                        'inventory_policy' => $erpProduct->getInventoryPolicy(),
+                        'inventory_quantity' => $erpProduct->getQty()
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->client->updateProduct(['id' => $skuToProductEntity->getShopifyProductId(), 'product' => $productData]);
+
+        return $response;
     }
 }

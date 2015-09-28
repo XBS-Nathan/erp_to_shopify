@@ -2,7 +2,9 @@
 
 namespace ERPBundle\Services;
 
+use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Repository\SkuToShopifyProductRepository;
 use ERPBundle\Services\Client\ShopifyApiClientWrapper;
 use Shopify\Client;
@@ -22,6 +24,9 @@ class ProductCatalogService
 
     private $shopifyProductLimit;
 
+    /**
+     * @var SkuToShopifyProductRepository
+     */
     protected $skuToProductRepo;
 
     public function __construct(
@@ -35,7 +40,10 @@ class ProductCatalogService
         $this->skuToProductRepo = $skuToShopifyProductRepository;
     }
 
-    public function createProducts(ProductCatalogEntity $catalog)
+    /**
+     * @param ProductCatalogEntity $catalog
+     */
+    public function createProductsOrUpdate(ProductCatalogEntity $catalog)
     {
         foreach($catalog->getProducts() as $product)
         {
@@ -43,50 +51,22 @@ class ProductCatalogService
 
             if(!$existingProduct)
             {
-                $this->shopifyClient->saveProduct($product);
-            }
-        }
+                $shopifyProduct = $this->shopifyClient->saveProduct($product);
 
-
-
-    }
-
-    public function sortProductsByCreateOrUpdate(ProductCatalogEntity $catalog)
-    {
-        //Get shopify product count
-        $productCount = $this->shopifyClient->getProductCount();
-
-        $totalPages = $productCount / $this->shopifyProductLimit;
-        $erpSKUs = [];
-
-        foreach($products as $product) {
-            $erpSKUs[$product->getId()] = $product->getSku();
-        }
-
-        if(empty($erpSKUs)) {
-            return $products;
-        }
-
-        for($currentPage=1; $currentPage<=$totalPages; $currentPage++)
-        {
-            $shopifyProducts = $this->shopifyClient->getProducts($this->shopifyProductLimit, $currentPage);
-
-            $this->checkProductAgainstErp($shopifyProducts, $erpSKUs);
-        }
-
-        return $products;
-
-    }
-
-    private function checkProductAgainstErp(array $shopifyProducts, array $erpSKUs)
-    {
-        /** @var ShopifyProductEntity $product */
-        foreach($shopifyProducts as $product)
-        {
-            if(in_array($product->getSku(), $erpSKUs)) {
-
+                $skuToProduct = new SkuToProductEntity($product, $shopifyProduct);
+                $this->skuToProductRepo->save($skuToProduct);
+            }else{
+                $this->shopifyClient->updateProduct($product, $existingProduct);
             }
         }
     }
 
+    /**
+     * @param ErpProductEntity $productEntity
+     * @param SkuToProductEntity $skuToProductEntity
+     */
+    public function updateProduct(ErpProductEntity $productEntity, SkuToProductEntity $skuToProductEntity)
+    {
+        $this->shopifyClient->updateProducts($productEntity, $skuToProductEntity);
+    }
 }

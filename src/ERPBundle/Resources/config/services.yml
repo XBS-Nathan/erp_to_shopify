@@ -11,7 +11,7 @@ services:
         arguments:
             - @erp.client.erp
             - @erp.services.productCatalog
-            - @erp.shopify.api.client
+            - @erp.guzzle.client.shopify
 
     erp.client.erp:
         class: ERPBundle\Services\Client\ErpClient
@@ -21,7 +21,7 @@ services:
     erp.client.shopifyWrapper:
         class: ERPBundle\Services\Client\ShopifyApiClientWrapper
         arguments:
-            - @erp.shopify.api.client
+            - @erp.guzzle.client.shopify
 
     erp.services.productCatalog:
         class: ERPBundle\Services\ProductCatalogService
@@ -34,7 +34,7 @@ services:
         class: GuzzleHttp\Client
         arguments: [%erp.guzzle.client.config%]
 
-    erp.shopify.api.client:
+    erp.guzzle.client.shopify:
         class: Shopify\Client
         factory: ["ERPBundle\Factory\Client\ShopifyApiClientFactory", "createClient"]
         arguments:

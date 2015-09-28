@@ -14,6 +14,7 @@ class ErpProductEntity
     private $category;
     private $description;
     private $image;
+    private $fullDescription;
 
     private $price;
     private $qty;
@@ -144,7 +145,7 @@ class ErpProductEntity
     }
 
     /**
-     * @param mixed $lastUpdated
+     * @param \DateTimeInterface $lastUpdated
      */
     public function setLastUpdated(\DateTimeInterface $lastUpdated)
     {
@@ -183,8 +184,26 @@ class ErpProductEntity
         $this->stockManagement = $stockManagement;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFullDesription()
+    {
+        return $this->fullDescription;
+    }
 
+    /**
+     * @param mixed $fullDescription
+     */
+    public function setFullDesription($fullDescription)
+    {
+        $this->fullDescription = $fullDescription;
+    }
 
+    /**
+     * @param \SimpleXMLElement $product
+     * @return ErpProductEntity
+     */
     public static function createFromCatalogXmlResponse(\SimpleXMLElement $product)
     {
         $self = new self();
@@ -209,13 +228,33 @@ class ErpProductEntity
         return $self;
     }
 
+    /**
+     * @param ErpProductEntity $product
+     * @param \SimpleXMLElement $data
+     */
     public static function updateProduct(ErpProductEntity $product, \SimpleXMLElement $data)
     {
-//        $self->setInventoryPolicy(($product->product['StockManagement'] ? 'continue' : 'deny'));
-//        $self->setStockManagement(($product->product['StockManagement'] ? '' : 'shopify'));
-//        $self->setFullDescription();
+        if($product->getSku() != $data->attributes()->ItemNo) {
+            throw new \InvalidArgumentException(sprintf('product %s is not the same as the response product %s', $product->getSku(), $data->attributes()->ItemNo));
+        }
 
-//                'body_html' => $this->product['Body'],
-        return $product;
+        $product->setInventoryPolicy(($data->product['StockManagement'] ? 'continue' : 'deny'));
+        $product->setStockManagement(($data->product['StockManagement'] ? '' : 'shopify'));
+
+        $fullDescription = '';
+        foreach($data->TextDescription as $line)
+        {
+            $fullDescription .= $line .' ';
+        }
+
+        $product->setFullDesription($fullDescription);
+
+        if ($data->ItemSpecialString && $data->ItemSpecialString == "1")
+        {
+            $product->setStockManagement(1);
+        } else {
+            $product->setStockManagement(0);
+        }
+
     }
 }

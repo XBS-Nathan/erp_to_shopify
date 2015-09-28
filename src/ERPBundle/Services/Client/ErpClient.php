@@ -19,12 +19,19 @@ class ErpClient
      */
     protected $client;
 
+    /**
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
-
+    /**
+     * @param $catalog
+     * @param bool|false $extra
+     * @return ProductCatalogEntity
+     */
     public function getProducts($catalog, $extra = false)
     {
         $request = $this->client->createRequest('GET', sprintf('catalogs/%s', $catalog));
@@ -42,20 +49,22 @@ class ErpClient
         return $productCatalog;
     }
 
+    /**
+     * @param $catalog
+     * @param ErpProductEntity $product
+     */
     public function getProductExtraInformation($catalog, ErpProductEntity $product)
     {
         $request = $this->client->createRequest('GET', sprintf('catalogs/%s/%s/all', $catalog, $product->getSku()));
 
         $response = $this->sendRequest($request)->xml();
 
-        //Inject the response into the product object.
-        //ErpProductEntity::updateProduct($product, $data);
-
-        return $response;
+        ErpProductEntity::updateProduct($product, $response);
     }
 
     /**
      * @param RequestInterface $request
+     * @return \GuzzleHttp\Message\FutureResponse|\GuzzleHttp\Message\ResponseInterface|\GuzzleHttp\Ring\Future\FutureInterface|mixed|null
      */
     public function sendRequest(RequestInterface $request)
     {

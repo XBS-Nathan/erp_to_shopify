@@ -19,7 +19,7 @@ class ShopifyApiClientFactory
     protected $client;
 
     /**
-     * @param OptionsResolver $optionsResolver
+     * @param ShopifyOptions $optionsResolver
      * @return Client
      */
     public static function createClient(ShopifyOptions $optionsResolver)
