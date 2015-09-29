@@ -27,6 +27,11 @@ class StoreEntity
      */
     private $sync_products;
 
+    public function getStoreId()
+    {
+        return $this->storeId;
+    }
+
     public function getStoreLabel()
     {
         return $this->storeLabel;

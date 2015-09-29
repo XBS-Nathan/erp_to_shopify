@@ -21,6 +21,7 @@ class ProductConsumerTest extends BaseWebTestCase
             'id'      => 'MONGO-ID',
             'payload' => [
                 'catalog'      => 'erp',
+                'storeId'   => 1
             ]
         ]);
 

@@ -2,10 +2,13 @@
 
 namespace ERPBundle\Services\Client;
 
+use ERPBundle\Entity\CatalogEntity;
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\SkuToProductEntity;
+use GuzzleHttp\Command\Exception\CommandClientException;
+use GuzzleHttp\Exception\ClientException;
 use Shopify\Client;
 
 
@@ -47,6 +50,10 @@ class ShopifyApiClientWrapper
         return $productCatalog;
     }
 
+    /**
+     * @param ErpProductEntity $erpProduct
+     * @return ShopifyProductEntity
+     */
     public function saveProduct(ErpProductEntity $erpProduct)
     {
         $productData = [
@@ -75,6 +82,11 @@ class ShopifyApiClientWrapper
         return $product;
     }
 
+    /**
+     * @param ErpProductEntity $erpProduct
+     * @param SkuToProductEntity $skuToProductEntity
+     * @return mixed
+     */
     public function updateProduct(ErpProductEntity $erpProduct, SkuToProductEntity $skuToProductEntity)
     {
         if(empty($skuToProductEntity->getVariantId())) {
@@ -106,5 +118,45 @@ class ShopifyApiClientWrapper
         $response = $this->client->updateProduct(['id' => $skuToProductEntity->getShopifyProductId(), 'product' => $productData]);
 
         return $response;
+    }
+
+    /**
+     * @param array $products
+     * @param CatalogEntity $catalog
+     */
+    public function addProductsToCollection(array $products, CatalogEntity $catalog)
+    {
+        $this->client->updateCustomCollection(['id' => $catalog->getShopifyCollectionId(), 'custom_collection' => ['collects' => $products]]);
+    }
+
+    /**
+     * @param CatalogEntity $catalog
+     */
+    public function deleteCollection(CatalogEntity $catalog)
+    {
+        //Collection has already been deleted
+        if(is_null($catalog->getShopifyCollectionId())) {
+            return;
+        }
+
+        try {
+            $this->client->deleteCustomCollection(['id' => $catalog->getShopifyCollectionId()]);
+            $catalog->setShopifyCollectionId(null);
+        }catch (CommandClientException $e) {
+            //if 404, Collection has already been deleted via shopify, lets carry on
+            if($e->getResponse()->getStatusCode() != '404') {
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * @param CatalogEntity $catalog
+     */
+    public function createCollection(CatalogEntity $catalog)
+    {
+        $response = $this->client->createCustomCollection(['custom_collection' => [ 'title' => $catalog->getCatalogName()]]);
+
+        $catalog->setShopifyCollectionId($response['custom_collection']['id']);
     }
 }

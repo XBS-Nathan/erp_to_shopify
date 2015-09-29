@@ -28,14 +28,22 @@ class SkuToProductEntity
     private $variantId;
 
     /**
+     * @ORM\Id
+     * @ORM\Column(name="store_id", type="string")
+     */
+    private $storeId;
+
+    /**
      * @param ErpProductEntity $erpPoduct
      * @param ShopifyProductEntity $shopifyProduct
+     * @param StoreEntity $store
      */
-    public function __construct(ErpProductEntity $erpPoduct, ShopifyProductEntity $shopifyProduct)
+    public function __construct(ErpProductEntity $erpPoduct, ShopifyProductEntity $shopifyProduct, StoreEntity $store)
     {
         $this->sku = $erpPoduct->getSku();
         $this->shopifyProductId = $shopifyProduct->getId();
         $this->variantId = $shopifyProduct->getVariantId();
+        $this->storeId = $store->getStoreId();
     }
 
     /**

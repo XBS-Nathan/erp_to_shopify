@@ -18,6 +18,11 @@ class ProductCatalogEntity
         $this->catalog = $catalog;
     }
 
+    public function getCatalog()
+    {
+        return $this->catalog;
+    }
+
     public function getProducts()
     {
         return $this->products;

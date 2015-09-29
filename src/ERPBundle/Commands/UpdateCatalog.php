@@ -68,7 +68,7 @@ class UpdateCatalog extends Command
         $output->writeln(sprintf('Gathering data for store id %', $store));
         foreach($catalogs as $catalog) {
 
-            $msg = json_encode(['payload' => ['catalog' => $catalog->getCatalogName()]]);
+            $msg = json_encode(['payload' => ['catalog' => $catalog->getCatalogName(), 'storeId' => $store->getStoreId()]]);
 
             $this->producer->setContentType('application/json')->publish($msg);
 

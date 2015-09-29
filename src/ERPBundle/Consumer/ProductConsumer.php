@@ -4,6 +4,7 @@ namespace ERPBundle\Consumer;
 
 use ERPBundle\Services\Client\ErpClient;
 use ERPBundle\Services\ProductCatalogService;
+use ERPBundle\Services\ShopifyStoreService;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Shopify\Client;
@@ -32,15 +33,27 @@ class ProductConsumer implements ConsumerInterface
     protected $shopifyClient;
 
     /**
+     * @var ShopifyStoreService
+     */
+    protected $store;
+
+    /**
      * @param ErpClient $erpClient
      * @param ProductCatalogService $productCatalogService
      * @param Client $shopifyClient
+     * @param ShopifyStoreService $storeService
      */
-    public function __construct(ErpClient $erpClient, ProductCatalogService $productCatalogService, Client $shopifyClient)
+    public function __construct(
+        ErpClient $erpClient,
+        ProductCatalogService $productCatalogService,
+        Client $shopifyClient,
+        ShopifyStoreService $storeService
+    )
     {
         $this->erpClient = $erpClient;
         $this->productCatalog = $productCatalogService;
         $this->shopifyClient = $shopifyClient;
+        $this->store = $storeService;
     }
 
      /**
@@ -52,10 +65,15 @@ class ProductConsumer implements ConsumerInterface
         $msgBody = json_decode($msg->body);
 
         $catalog = $msgBody->payload->catalog;
+        $storeId = $msgBody->payload->storeId;
+
+        $store = $this->store->getStore($storeId);
 
         $productCatalog = $this->erpClient->getProducts($catalog, true);
 
-        $this->productCatalog->createProductsOrUpdate($productCatalog);
+        $this->productCatalog->createProductsOrUpdate($productCatalog, $store);
+
+        $this->productCatalog->addProductsToCollection($productCatalog, $store);
     }
 
 }

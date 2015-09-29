@@ -4,7 +4,7 @@ namespace ERPBundle\Tests\Consumer;
 
 use OldSound\RabbitMqBundle\Command\ConsumerCommand;
 
-class UpdateCatalogTest extends BaseWebTestCase
+class UpdateCatalog extends BaseWebTestCase
 {
     public function setUp()
     {

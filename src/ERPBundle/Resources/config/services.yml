@@ -21,6 +21,7 @@ services:
             - @erp.client.erp
             - @erp.services.productCatalog
             - @erp.guzzle.client.shopify
+            - @erp.services.shopifystore
 
     erp.client.erp:
         class: ERPBundle\Services\Client\ErpClient
@@ -44,6 +45,7 @@ services:
             - @erp.client.shopifyWrapper
             - @erp.options.shopify
             - @erp.repository.skuToProduct
+            - @erp.repository.catalog
 
     erp.guzzle.client.erp:
         class: GuzzleHttp\Client

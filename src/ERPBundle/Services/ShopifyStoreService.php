@@ -64,9 +64,9 @@ class ShopifyStoreService
     {
         //Might not be needed this
         if($catalog == CatalogEntity::$ALL) {
-            $catalogs = $this->catalogRepository->findBy(['store' => $shopifyStore]);
+            $catalogs = $this->catalogRepository->findBy(['storeId' => $shopifyStore->getStoreId()]);
         }else{
-            $catalogs = $this->catalogRepository->findBy(['store' => $shopifyStore, 'catalogName' => $catalog]);
+            $catalogs = $this->catalogRepository->findBy(['storeId' => $shopifyStore->getStoreId(), 'catalogName' => $catalog]);
         }
 
         if(!$catalogs) {

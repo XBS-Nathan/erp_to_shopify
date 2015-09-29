@@ -31,7 +31,7 @@ class CatalogEntity
     /**
      * @ORM\Column(name="store_id", type="string")
      */
-    private $store;
+    private $storeId;
 
 
     private $createdAt;
@@ -43,6 +43,16 @@ class CatalogEntity
     public function getCatalogName()
     {
         return $this->catalogName;
+    }
+
+    public function setShopifyCollectionId($collectionId)
+    {
+        $this->shopifyCollectionId = $collectionId;
+    }
+
+    public function getShopifyCollectionId()
+    {
+        return $this->shopifyCollectionId;
     }
 
 }
