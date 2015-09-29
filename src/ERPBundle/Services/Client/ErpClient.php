@@ -4,6 +4,7 @@ namespace ERPBundle\Services\Client;
 
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Entity\StoreEntity;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\RequestInterface;
 
@@ -28,13 +29,18 @@ class ErpClient
     }
 
     /**
+     * @param StoreEntity $store
      * @param $catalog
      * @param bool|false $extra
      * @return ProductCatalogEntity
      */
-    public function getProducts($catalog, $extra = false)
+    public function getProducts(StoreEntity $store, $catalog, $extra = false)
     {
-        $request = $this->client->createRequest('GET', sprintf('catalogs/%s', $catalog));
+        $request = $this->client->createRequest('GET', sprintf('%s/catalogs/%s', $store->getErpUrl(), $catalog),
+            [
+                'auth' => [$store->getErpUsername(), $store->getErpPassword()]
+            ]
+        );
 
         $response = $this->sendRequest($request)->xml();
 
@@ -42,7 +48,7 @@ class ErpClient
 
         if($extra) {
             foreach ($productCatalog->getProducts() as $product) {
-                $this->getProductExtraInformation($catalog, $product);
+                $this->getProductExtraInformation($store, $catalog, $product);
             }
         }
 
@@ -50,12 +56,19 @@ class ErpClient
     }
 
     /**
+     * @param StoreEntity $store
      * @param $catalog
      * @param ErpProductEntity $product
      */
-    public function getProductExtraInformation($catalog, ErpProductEntity $product)
+    public function getProductExtraInformation(StoreEntity $store, $catalog, ErpProductEntity $product)
     {
-        $request = $this->client->createRequest('GET', sprintf('catalogs/%s/%s/all', $catalog, $product->getSku()));
+        $request = $this->client->createRequest(
+            'GET',
+            sprintf('%s/catalogs/%s/%s/all', $store->getErpUrl(), $catalog, $product->getSku()),
+            [
+                'auth' => [$store->getErpUsername(), $store->getErpPassword()]
+            ]
+        );
 
         $response = $this->sendRequest($request)->xml();
 

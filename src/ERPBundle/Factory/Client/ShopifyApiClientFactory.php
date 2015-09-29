@@ -2,6 +2,7 @@
 
 namespace ERPBundle\Factory\Client;
 
+use ERPBundle\Entity\StoreEntity;
 use ERPBundle\Options\ShopifyOptions;
 use GuzzleHttp\Subscriber\Log\LogSubscriber;
 use Monolog\Handler\StreamHandler;
@@ -22,16 +23,14 @@ class ShopifyApiClientFactory
     protected $client;
 
     /**
-     * @param ShopifyOptions $optionsResolver
+     * @param StoreEntity $store
      * @return Client
      */
-    public static function createClient(ShopifyOptions $optionsResolver)
+    public function createClient(StoreEntity $store)
     {
-        $config = $optionsResolver->getConfig();
-
-        $client = new Client(array(
-            "shopUrl" => $config['base_url'],
-            "X-Shopify-Access-Token" => $config['token']
+         $client = new Client(array(
+            "shopUrl" => $store->getShopifyStoreUrl(),
+            "X-Shopify-Access-Token" => $store->getShopifyAccessToken()
         ));
 
         $log = new Logger('shopify_store_name');

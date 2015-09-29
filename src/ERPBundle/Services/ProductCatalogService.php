@@ -72,23 +72,14 @@ class ProductCatalogService
 
             if(!$existingProduct)
             {
-                $shopifyProduct = $this->shopifyClient->saveProduct($product);
+                $shopifyProduct = $this->shopifyClient->saveProduct($store, $product);
 
                 $skuToProduct = new SkuToProductEntity($product, $shopifyProduct, $store);
                 $this->skuToProductRepo->save($skuToProduct);
             }else{
-                $this->shopifyClient->updateProduct($product, $existingProduct);
+                $this->shopifyClient->updateProduct($store, $product, $existingProduct);
             }
         }
-    }
-
-    /**
-     * @param ErpProductEntity $productEntity
-     * @param SkuToProductEntity $skuToProductEntity
-     */
-    public function updateProduct(ErpProductEntity $productEntity, SkuToProductEntity $skuToProductEntity)
-    {
-        $this->shopifyClient->updateProducts($productEntity, $skuToProductEntity);
     }
 
     /**
@@ -104,10 +95,10 @@ class ProductCatalogService
 
         //Process is to delete the collection and then recreate it as we cannot remove products
         //from a collection that easy.
-        $this->shopifyClient->deleteCollection($catalog);
+        $this->shopifyClient->deleteCollection($store, $catalog);
         $this->catalogRepository->save($catalog);
 
-        $this->shopifyClient->createCollection($catalog);
+        $this->shopifyClient->createCollection($store, $catalog);
         $this->catalogRepository->save($catalog);
 
         $products = [];
@@ -123,7 +114,7 @@ class ProductCatalogService
             }
         }
 
-        $this->shopifyClient->addProductsToCollection($products, $catalog);
+        $this->shopifyClient->addProductsToCollection($store, $products, $catalog);
     }
 
 }

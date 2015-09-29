@@ -27,10 +27,6 @@ class ProductConsumer implements ConsumerInterface
      */
     protected $productCatalog;
 
-    /**
-     * @var Client
-     */
-    protected $shopifyClient;
 
     /**
      * @var ShopifyStoreService
@@ -40,19 +36,16 @@ class ProductConsumer implements ConsumerInterface
     /**
      * @param ErpClient $erpClient
      * @param ProductCatalogService $productCatalogService
-     * @param Client $shopifyClient
      * @param ShopifyStoreService $storeService
      */
     public function __construct(
         ErpClient $erpClient,
         ProductCatalogService $productCatalogService,
-        Client $shopifyClient,
         ShopifyStoreService $storeService
     )
     {
         $this->erpClient = $erpClient;
         $this->productCatalog = $productCatalogService;
-        $this->shopifyClient = $shopifyClient;
         $this->store = $storeService;
     }
 
@@ -69,7 +62,7 @@ class ProductConsumer implements ConsumerInterface
 
         $store = $this->store->getStore($storeId);
 
-        $productCatalog = $this->erpClient->getProducts($catalog, true);
+        $productCatalog = $this->erpClient->getProducts($store, $catalog, true);
 
         $this->productCatalog->createProductsOrUpdate($productCatalog, $store);
 

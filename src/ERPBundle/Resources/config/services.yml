@@ -1,11 +1,6 @@
 parameters:
-    erp.guzzle.client.config:
-        base_url: %erp_base_url%
-        defaults:
-            auth: [%erp_base_username%, %erp_base_password%]
-    erp.shopify.client.config:
-        base_url: %shopify_base_url%
-        token: %shopify_token%
+    erp.shopify.config:
+        product_limit: %shopify_product_limit%
 
 services:
 
@@ -20,7 +15,6 @@ services:
         arguments:
             - @erp.client.erp
             - @erp.services.productCatalog
-            - @erp.guzzle.client.shopify
             - @erp.services.shopifystore
 
     erp.client.erp:
@@ -49,17 +43,13 @@ services:
 
     erp.guzzle.client.erp:
         class: GuzzleHttp\Client
-        arguments: [%erp.guzzle.client.config%]
 
     erp.guzzle.client.shopify:
-        class: Shopify\Client
-        factory: ["ERPBundle\Factory\Client\ShopifyApiClientFactory", "createClient"]
-        arguments:
-          - @erp.options.shopify
+        class: ERPBundle\Factory\Client\ShopifyApiClientFactory
 
     erp.options.shopify:
         class: ERPBundle\Options\ShopifyOptions
-        arguments: [%erp.shopify.client.config%]
+        arguments: ["%erp.shopify.config%"]
 
     erp.repository.skuToProduct:
           class: Doctrine\ORM\EntityRepository

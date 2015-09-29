@@ -12,10 +12,9 @@ class ShopifyOptions extends OptionsResolver
 {
     public function __construct(array $options)
     {
-        $this->setDefined(['base_url', 'token']);
+        $this->setDefined(['product_limit']);
 
-        $this->setAllowedTypes('base_url', 'string');
-        $this->setAllowedTypes('token', 'string');
+        $this->setAllowedTypes('product_limit', 'integer');
 
         $this->options = $options;
     }

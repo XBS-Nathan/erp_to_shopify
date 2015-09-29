@@ -7,10 +7,11 @@ use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\SkuToProductEntity;
+use ERPBundle\Entity\StoreEntity;
+use ERPBundle\Factory\Client\ShopifyApiClientFactory;
 use GuzzleHttp\Command\Exception\CommandClientException;
-use GuzzleHttp\Exception\ClientException;
 use Shopify\Client;
-
+use Symfony\Component\HttpKernel\HttpCache\Store;
 
 /**
  * Class ShopifyApiClientWrapper
@@ -19,24 +20,43 @@ use Shopify\Client;
 class ShopifyApiClientWrapper
 {
     /**
-     * @var Client
+     * @var ShopifyApiClientFactory
      */
-    protected $client;
+    protected $clientFactory;
 
     /**
-     * @param Client $client
+     * @var Client
      */
-    public function __construct(Client $client)
+    private $client;
+
+    /**
+     * @param ShopifyApiClientFactory $clientFactory
+     */
+    public function __construct(ShopifyApiClientFactory $clientFactory)
     {
-        $this->client = $client;
+        $this->clientFactory = $clientFactory;
     }
 
     /**
+     * @param StoreEntity $store
+     */
+    public function setSettings(StoreEntity $store)
+    {
+        if(!$this->client) {
+            $this->client = $this->clientFactory->createClient($store);
+        }
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param $limit
      * @param $page
      * @return array
      */
-    public function getProducts($limit, $page)
+    public function getProducts(StoreEntity $store, $limit, $page)
     {
+        $this->setSettings($store);
+
         $shopifyProductsResponse = $this->client->getProducts($limit, $page);
 
         $shopifyProducts = $shopifyProductsResponse->products;
@@ -51,11 +71,14 @@ class ShopifyApiClientWrapper
     }
 
     /**
+     * @param StoreEntity $store
      * @param ErpProductEntity $erpProduct
      * @return ShopifyProductEntity
      */
-    public function saveProduct(ErpProductEntity $erpProduct)
+    public function saveProduct(StoreEntity $store, ErpProductEntity $erpProduct)
     {
+        $this->setSettings($store);
+
         $productData = [
                 'published' => true,
                 'title' => $erpProduct->getTitle(),
@@ -83,15 +106,18 @@ class ShopifyApiClientWrapper
     }
 
     /**
+     * @param StoreEntity $store
      * @param ErpProductEntity $erpProduct
      * @param SkuToProductEntity $skuToProductEntity
      * @return mixed
      */
-    public function updateProduct(ErpProductEntity $erpProduct, SkuToProductEntity $skuToProductEntity)
+    public function updateProduct(StoreEntity $store, ErpProductEntity $erpProduct, SkuToProductEntity $skuToProductEntity)
     {
         if(empty($skuToProductEntity->getVariantId())) {
             throw new \InvalidArgumentException(sprintf('Product needs a variant id before it can be updated: %s', $skuToProductEntity->getSku()));
         }
+
+        $this->setSettings($store);
 
         $productData =  [
             'product' => [
@@ -121,23 +147,28 @@ class ShopifyApiClientWrapper
     }
 
     /**
+     * @param StoreEntity $store
      * @param array $products
      * @param CatalogEntity $catalog
      */
-    public function addProductsToCollection(array $products, CatalogEntity $catalog)
+    public function addProductsToCollection(StoreEntity $store, array $products, CatalogEntity $catalog)
     {
+        $this->setSettings($store);
         $this->client->updateCustomCollection(['id' => $catalog->getShopifyCollectionId(), 'custom_collection' => ['collects' => $products]]);
     }
 
     /**
+     * @param StoreEntity $store
      * @param CatalogEntity $catalog
      */
-    public function deleteCollection(CatalogEntity $catalog)
+    public function deleteCollection(StoreEntity $store, CatalogEntity $catalog)
     {
         //Collection has already been deleted
         if(is_null($catalog->getShopifyCollectionId())) {
             return;
         }
+
+        $this->setSettings($store);
 
         try {
             $this->client->deleteCustomCollection(['id' => $catalog->getShopifyCollectionId()]);
@@ -151,10 +182,13 @@ class ShopifyApiClientWrapper
     }
 
     /**
+     * @param StoreEntity $store
      * @param CatalogEntity $catalog
      */
-    public function createCollection(CatalogEntity $catalog)
+    public function createCollection(StoreEntity $store, CatalogEntity $catalog)
     {
+        $this->setSettings($store);
+
         $response = $this->client->createCustomCollection(['custom_collection' => [ 'title' => $catalog->getCatalogName()]]);
 
         $catalog->setShopifyCollectionId($response['custom_collection']['id']);
