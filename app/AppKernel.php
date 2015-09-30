@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new OldSound\RabbitMqBundle\OldSoundRabbitMqBundle(),
             new ERPBundle\ERPBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new JMose\CommandSchedulerBundle\JMoseCommandSchedulerBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

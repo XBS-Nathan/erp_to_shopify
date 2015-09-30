@@ -64,17 +64,19 @@ class ProductCatalogService
      */
     public function createProductsOrUpdate(ProductCatalogEntity $catalog, StoreEntity $store)
     {
+        /** @var ErpProductEntity $product */
         foreach($catalog->getProducts() as $product)
         {
+            /** @var SkuToProductEntity $existingProduct */
             $existingProduct = $this->skuToProductRepo->findOneBy(
-                ['sku' => $product->getSku(), 'storeId' => $store->getStoreId()]
+                ['sku' => $product->getSku(), 'storeId' => $store->getStoreId(), 'catalog' => $catalog->getCatalog()]
             );
 
             if(!$existingProduct)
             {
                 $shopifyProduct = $this->shopifyClient->saveProduct($store, $product);
 
-                $skuToProduct = new SkuToProductEntity($product, $shopifyProduct, $store);
+                $skuToProduct = new SkuToProductEntity($product, $shopifyProduct, $store, $catalog);
                 $this->skuToProductRepo->save($skuToProduct);
             }else{
                 $this->shopifyClient->updateProduct($store, $product, $existingProduct);
@@ -106,7 +108,7 @@ class ProductCatalogService
         foreach($productCatalog->getProducts() as $product) {
             /** @var SkuToProductEntity $existingProduct */
             $existingProduct = $this->skuToProductRepo->findOneBy(
-                ['sku' => $product->getSku(), 'storeId' => $store->getStoreId()]
+                ['sku' => $product->getSku(), 'storeId' => $store->getStoreId(), 'catalog' => $productCatalog->getCatalog()]
             );
 
             if($existingProduct) {

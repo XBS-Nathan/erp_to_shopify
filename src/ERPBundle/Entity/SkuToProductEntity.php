@@ -16,34 +16,39 @@ class SkuToProductEntity
     private $sku;
 
     /**
-     * @ORM\Id
      * @ORM\Column(name="shopify_product_id", type="string")
      */
     private $shopifyProductId;
 
     /**
-     * @ORM\Id
      * @ORM\Column(name="shopify_product_variant_id", type="string")
      */
     private $variantId;
 
     /**
-     * @ORM\Id
      * @ORM\Column(name="store_id", type="string")
      */
     private $storeId;
 
     /**
+     * @ORM\Id
+     * @ORM\Column(name="catalog", type="string")
+     */
+    private $catalog;
+
+    /**
      * @param ErpProductEntity $erpPoduct
      * @param ShopifyProductEntity $shopifyProduct
      * @param StoreEntity $store
+     * @param ProductCatalogEntity $productCatalog
      */
-    public function __construct(ErpProductEntity $erpPoduct, ShopifyProductEntity $shopifyProduct, StoreEntity $store)
+    public function __construct(ErpProductEntity $erpPoduct, ShopifyProductEntity $shopifyProduct, StoreEntity $store, ProductCatalogEntity $productCatalog)
     {
         $this->sku = $erpPoduct->getSku();
         $this->shopifyProductId = $shopifyProduct->getId();
         $this->variantId = $shopifyProduct->getVariantId();
         $this->storeId = $store->getStoreId();
+        $this->catalog = $productCatalog->getCatalog();
     }
 
     /**

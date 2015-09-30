@@ -24,7 +24,8 @@
         "guzzlehttp/guzzle": "5.0.3",
         "phpunit/phpunit": "4",
         "doctrine/doctrine-migrations-bundle": "^1.0",
-        "guzzlehttp/log-subscriber": "^1.0@dev"
+        "guzzlehttp/log-subscriber": "^1.0@dev",
+        "jmose/command-scheduler-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
