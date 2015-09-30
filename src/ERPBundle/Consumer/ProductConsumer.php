@@ -66,7 +66,7 @@ class ProductConsumer implements ConsumerInterface
         $productCatalog = $this->erpClient->getProducts($store, $catalog, true);
 
         $this->productCatalog->collectProductsFromShopifyAndImport($catalog, $store, $productCatalog);
-        
+
         $this->productCatalog->createProductsOrUpdate($productCatalog, $store);
 
         $this->productCatalog->addProductsToCollection($productCatalog, $store);
