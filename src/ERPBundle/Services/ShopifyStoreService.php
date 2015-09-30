@@ -57,7 +57,7 @@ class ShopifyStoreService
     /**
      * @param $catalog
      * @param StoreEntity $shopifyStore
-     * @return array|null|object
+     * @return array|null|object|CatalogEntity
      * @throws NoResultException
      */
     public function getCatalog($catalog, StoreEntity $shopifyStore)

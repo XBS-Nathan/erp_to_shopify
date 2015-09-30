@@ -57,13 +57,16 @@ class ProductConsumer implements ConsumerInterface
     {
         $msgBody = json_decode($msg->body);
 
-        $catalog = $msgBody->payload->catalog;
+        $catalogId = $msgBody->payload->catalog;
         $storeId = $msgBody->payload->storeId;
 
         $store = $this->store->getStore($storeId);
+        $catalog = $this->store->getCatalog($catalogId, $store);
 
         $productCatalog = $this->erpClient->getProducts($store, $catalog, true);
 
+        $this->productCatalog->collectProductsFromShopifyAndImport($catalog, $store, $productCatalog);
+        
         $this->productCatalog->createProductsOrUpdate($productCatalog, $store);
 
         $this->productCatalog->addProductsToCollection($productCatalog, $store);

@@ -2,6 +2,7 @@
 
 namespace ERPBundle\Services\Client;
 
+use ERPBundle\Entity\CatalogEntity;
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\StoreEntity;
@@ -34,9 +35,9 @@ class ErpClient
      * @param bool|false $extra
      * @return ProductCatalogEntity
      */
-    public function getProducts(StoreEntity $store, $catalog, $extra = false)
+    public function getProducts(StoreEntity $store, CatalogEntity $catalog, $extra = false)
     {
-        $request = $this->client->createRequest('GET', sprintf('%s/catalogs/%s', $store->getErpUrl(), $catalog),
+        $request = $this->client->createRequest('GET', sprintf('%s/catalogs/%s', $store->getErpUrl(), $catalog->getCatalogName()),
             [
                 'auth' => [$store->getErpUsername(), $store->getErpPassword()]
             ]

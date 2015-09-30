@@ -49,25 +49,41 @@ class ShopifyApiClientWrapper
 
     /**
      * @param StoreEntity $store
+     * @param CatalogEntity $catalog
      * @param $limit
      * @param $page
      * @return array
      */
-    public function getProducts(StoreEntity $store, $limit, $page)
+    public function getProductsByCollection(StoreEntity $store, CatalogEntity $catalog, $limit, $page)
     {
         $this->setSettings($store);
 
-        $shopifyProductsResponse = $this->client->getProducts($limit, $page);
+        $response = $this->client->getProducts(
+            [
+                'collection_id' => $catalog->getShopifyCollectionId(),
+                'limit' => $limit,
+                'page'=> $page
+            ]);
 
-        $shopifyProducts = $shopifyProductsResponse->products;
-
-        $productCatalog = [];
-
-        foreach($shopifyProducts as $product) {
-            $productCatalog[] = ProductCatalogEntity::createFromResponse($product);
+        foreach($response['products'] as $product) {
+            $products[] = ShopifyProductEntity::createFromResponse($product);
         }
 
-        return $productCatalog;
+        return $products;
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param $collectionId
+     * @return mixed
+     */
+    public function getProductCountByCollection(StoreEntity $store, $collectionId)
+    {
+        $this->setSettings($store);
+
+        $response = $this->client->getProductCount(['collection_id' => $collectionId]);
+
+        return $response['count'];
     }
 
     /**

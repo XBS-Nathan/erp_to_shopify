@@ -6,6 +6,7 @@ use Doctrine\ORM\NoResultException;
 use ERPBundle\Entity\CatalogEntity;
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\ShopifyStoreEntity;
 use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Entity\StoreEntity;
@@ -56,6 +57,53 @@ class ProductCatalogService
         $this->shopifyProductLimit = '250';
         $this->skuToProductRepo = $skuToShopifyProductRepository;
         $this->catalogRepository = $catalogRepository;
+    }
+
+
+    /**
+     * @param CatalogEntity $catalogEntity
+     * @param StoreEntity $storeEntity
+     * @param ProductCatalogEntity $productCatalogEntity
+     */
+    public function collectProductsFromShopifyAndImport(
+        CatalogEntity $catalogEntity,
+        StoreEntity $storeEntity,
+        ProductCatalogEntity $productCatalogEntity
+    ) {
+        $totalProducts = $this->shopifyClient->getProductCountByCollection($storeEntity, $catalogEntity->getShopifyCollectionId() );
+
+        $totalPages = $totalProducts / $this->shopifyProductLimit;
+
+        for($currentPage=1; $currentPage <= $totalPages; $currentPage++) {
+            $products[] = $this->shopifyClient->getProductsByCollection(
+                $storeEntity, $catalogEntity,$this->shopifyProductLimit, $currentPage
+            );
+        }
+
+        //Check to see if the products are in the database
+        /** @var ShopifyProductEntity $shopifyProduct */
+        foreach($products as $shopifyProduct) {
+            /** @var SkuToProductEntity $existingProduct */
+            $existingProduct = $this->skuToProductRepo->findOneBy(
+                [
+                    'shopifyProductId' => $shopifyProduct->getId(),
+                    'storeId' => $storeEntity->getStoreId(),
+                    'catalog' => $catalogEntity->getCatalog()
+                ]
+            );
+
+            if (!$existingProduct) {
+                /** @var ErpProductEntity $product */
+                foreach ($productCatalogEntity->getProducts() as $product) {
+                    if ($product->getSku() == $shopifyProduct->getSku()) {
+                        $skuToProduct = new SkuToProductEntity($product, $shopifyProduct, $storeEntity, $catalogEntity);
+                        $this->skuToProductRepo->save($skuToProduct);
+                    }
+                }
+            }
+
+        }
+
     }
 
     /**
