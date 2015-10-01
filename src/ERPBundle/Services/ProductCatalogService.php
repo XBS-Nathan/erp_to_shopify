@@ -83,6 +83,7 @@ class ProductCatalogService
         //Check to see if the products are in the database
         /** @var ShopifyProductEntity $shopifyProduct */
         foreach($products as $shopifyProduct) {
+
             /** @var SkuToProductEntity $existingProduct */
             $existingProduct = $this->skuToProductRepo->findOneBy(
                 [
@@ -96,7 +97,7 @@ class ProductCatalogService
                 /** @var ErpProductEntity $product */
                 foreach ($productCatalogEntity->getProducts() as $product) {
                     if ($product->getSku() == $shopifyProduct->getSku()) {
-                        $skuToProduct = new SkuToProductEntity($product, $shopifyProduct, $storeEntity, $catalogEntity);
+                        $skuToProduct = new SkuToProductEntity($product, $shopifyProduct, $storeEntity, $productCatalogEntity);
                         $this->skuToProductRepo->save($skuToProduct);
                     }
                 }

@@ -12,6 +12,7 @@ class ShopifyProductEntity
     private $createdAt;
     private $updatedAt;
     private $variantId;
+    private $sku;
 
     /**
      * @return mixed
@@ -77,6 +78,21 @@ class ShopifyProductEntity
         $this->variantId = $variantId;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getSku()
+    {
+        return $this->sku;
+    }
+
+    /**
+     * @param mixed $sku
+     */
+    public function setSku($sku)
+    {
+        $this->sku = $sku;
+    }
 
     /**
      * @param $product
@@ -89,6 +105,7 @@ class ShopifyProductEntity
         $self->setVariantId($product['product']['variants'][0]['id']);
         $self->setCreatedAt(new \DateTime());
         $self->setUpdatedAt(new \DateTime());
+        $self->setSku($product['product']['variants'][0]['sku']);
 
         return $self;
     }
