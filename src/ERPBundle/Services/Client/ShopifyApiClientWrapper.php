@@ -96,13 +96,16 @@ class ShopifyApiClientWrapper
     {
         $this->setSettings($store);
 
+        $image = new \StdClass();
+        $image->src =  $erpProduct->getImage();
+
         $productData = [
                 'published' => true,
                 'title' => $erpProduct->getTitle(),
                 'product_type' => $erpProduct->getCategory(),
                 'body_html' => $erpProduct->getDescription(),
                 'images' => [
-                    'src' => $erpProduct->getImage()
+                    $image
                 ],
                 'variants' => [
                     [
@@ -136,6 +139,9 @@ class ShopifyApiClientWrapper
 
         $this->setSettings($store);
 
+        $image = new \StdClass();
+        $image->src =  $erpProduct->getImage();
+
         $productData =  [
             'product' => [
                 'id' => $skuToProductEntity->getShopifyProductId(),
@@ -143,7 +149,7 @@ class ShopifyApiClientWrapper
                 'product_type' => $erpProduct->getCategory(),
                 'body_html' => $erpProduct->getDescription(),
                 'images' => [
-                    'src' => $erpProduct->getImage()
+                    $image
                 ],
                 'variants' => [
                     [
