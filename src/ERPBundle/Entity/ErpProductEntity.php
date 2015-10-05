@@ -219,8 +219,17 @@ class ErpProductEntity
         $self->setTitle((string) $product->Description);
         $self->setLastUpdated(new \DateTime((string) $product->attributes()->LastUpdated));
         $self->setDescription((string) $product->Description);
-        $self->setImage((string) $product->SupplementalData[0]);
-        $self->setCategory((string) $product->SupplementalData[2]);
+
+        foreach($product->SupplementalData as $data) {
+            foreach($data->attributes() as $k => $v) {
+                switch((string) $v) {
+                    case 'webcategory':
+                        $self->setCategory((string) $data);
+                        break;
+                }
+            }
+        }
+
         $self->setPrice((string) $product->Pricing->UnitPrice);
         $self->setQty((int) (string) $product->Availability->QtyAvailable);
 
@@ -240,6 +249,10 @@ class ErpProductEntity
 
         $product->setInventoryPolicy(($data->ItemSpecialString && $data->ItemSpecialString == "1" ? 'continue' : 'deny'));
         $product->setStockManagement(($data->ItemSpecialString && $data->ItemSpecialString == "1" ? '' : 'shopify'));
+
+        if(isset($data->ImageSource)) {
+            $product->setImage((string)$data->ImageSource);
+        }
 
         $fullDescription = '';
         foreach($data->TextDescription as $line)

@@ -130,7 +130,10 @@ class ProductCatalogService
                 $skuToProduct = new SkuToProductEntity($product, $shopifyProduct, $store, $catalog);
                 $this->skuToProductRepo->save($skuToProduct);
             }else{
-                $this->shopifyClient->updateProduct($store, $product, $existingProduct);
+                $lastUpdateData = $existingProduct->getLastUpdatedDate();
+               // if($lastUpdateData->getTimestamp() <= $product->getLastUpdated()->getTimeStamp()) {
+                    $this->shopifyClient->updateProduct($store, $product, $existingProduct);
+               // }
             }
         }
     }

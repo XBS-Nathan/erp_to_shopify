@@ -16,17 +16,17 @@ class SkuToProductEntity
     private $sku;
 
     /**
-     * @ORM\Column(name="shopify_product_id", type="integer")
+     * @ORM\Column(name="shopify_product_id", type="string")
      */
     private $shopifyProductId;
 
     /**
-     * @ORM\Column(name="shopify_product_variant_id", type="integer")
+     * @ORM\Column(name="shopify_product_variant_id", type="string")
      */
     private $variantId;
 
     /**
-     * @ORM\Column(name="store_id", type="integer")
+     * @ORM\Column(name="store_id", type="string")
      */
     private $storeId;
 
@@ -35,6 +35,11 @@ class SkuToProductEntity
      * @ORM\Column(name="catalog", type="string")
      */
     private $catalog;
+
+    /**
+     * @ORM\Column(name="last_updated_date", type="datetime")
+     */
+    private $lastUpdatedDate;
 
     /**
      * @param ErpProductEntity $erpPoduct
@@ -49,6 +54,8 @@ class SkuToProductEntity
         $this->variantId = $shopifyProduct->getVariantId();
         $this->storeId = $store->getStoreId();
         $this->catalog = $productCatalog->getCatalog();
+
+        $this->lastUpdatedDate = new \DateTime();
     }
 
     /**
@@ -75,5 +82,12 @@ class SkuToProductEntity
         return $this->variantId;
     }
 
+    /**
+     * @return \Datetime
+     */
+    public function getLastUpdatedDate()
+    {
+        return $this->lastUpdatedDate;
+    }
 
 }
