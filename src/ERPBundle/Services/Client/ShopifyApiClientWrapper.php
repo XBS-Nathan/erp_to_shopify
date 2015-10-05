@@ -103,7 +103,7 @@ class ShopifyApiClientWrapper
                 'published' => true,
                 'title' => $erpProduct->getTitle(),
                 'product_type' => $erpProduct->getCategory(),
-                'body_html' => $erpProduct->getDescription(),
+                'body_html' => $erpProduct->getFullDesription(),
                 'images' => [
                     $image
                 ],
@@ -143,11 +143,10 @@ class ShopifyApiClientWrapper
         $image->src =  $erpProduct->getImage();
 
         $productData =  [
-            'product' => [
                 'id' => $skuToProductEntity->getShopifyProductId(),
                 'title' => $erpProduct->getTitle(),
                 'product_type' => $erpProduct->getCategory(),
-                'body_html' => $erpProduct->getDescription(),
+                'body_html' => $erpProduct->getFullDesription(),
                 'images' => [
                     $image
                 ],
@@ -161,7 +160,6 @@ class ShopifyApiClientWrapper
                         'inventory_quantity' => $erpProduct->getQty()
                     ]
                 ]
-            ]
         ];
 
         $response = $this->client->updateProduct(['id' => $skuToProductEntity->getShopifyProductId(), 'product' => $productData]);
