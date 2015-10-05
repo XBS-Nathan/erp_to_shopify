@@ -46,6 +46,7 @@ services:
 
     erp.guzzle.client.shopify:
         class: ERPBundle\Factory\Client\ShopifyApiClientFactory
+        arguments: [%kernel.logs_dir%]
 
     erp.options.shopify:
         class: ERPBundle\Options\ShopifyOptions

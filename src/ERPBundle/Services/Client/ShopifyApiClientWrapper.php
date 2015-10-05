@@ -52,24 +52,25 @@ class ShopifyApiClientWrapper
      * @param CatalogEntity $catalog
      * @param $limit
      * @param $page
+     * @param $collection
      * @return array
      */
-    public function getProductsByCollection(StoreEntity $store, CatalogEntity $catalog, $limit, $page)
+    public function getProductsByCollection(StoreEntity $store, CatalogEntity $catalog, $limit, $page, &$collection)
     {
         $this->setSettings($store);
 
         $response = $this->client->getProducts(
             [
-                'collection_id' => $catalog->getShopifyCollectionId(),
-                'limit' => $limit,
+                'collection_id' => (int) $catalog->getShopifyCollectionId(),
+                'limit' => (int) $limit,
                 'page'=> $page
             ]);
 
         foreach($response['products'] as $product) {
-            $products[] = ShopifyProductEntity::createFromResponse($product);
+            $collection[] = ShopifyProductEntity::createFromResponse($product);
         }
 
-        return $products;
+        return $collection;
     }
 
     /**
@@ -116,7 +117,7 @@ class ShopifyApiClientWrapper
 
         $response = $this->client->createProduct(['product' => $productData]);
 
-        $product = ShopifyProductEntity::createFromResponse($response);
+        $product = ShopifyProductEntity::createFromProductCreationResponse($response);
 
         return $product;
     }

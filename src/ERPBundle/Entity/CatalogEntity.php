@@ -24,7 +24,7 @@ class CatalogEntity
     private $catalogName;
 
     /**
-     * @ORM\Column(name="shopify_collection_id", type="string")
+     * @ORM\Column(name="shopify_collection_id", type="integer")
      */
     private $shopifyCollectionId;
 

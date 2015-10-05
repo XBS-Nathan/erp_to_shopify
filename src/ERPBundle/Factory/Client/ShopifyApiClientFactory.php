@@ -22,6 +22,16 @@ class ShopifyApiClientFactory
      */
     protected $client;
 
+    private $logPath;
+
+    private $logLevel;
+
+    public function __construct($logPath, $logLevel = Logger::WARNING)
+    {
+        $this->logPath = $logPath;
+        $this->logLevel = $logLevel;
+    }
+
     /**
      * @param StoreEntity $store
      * @return Client
@@ -33,8 +43,11 @@ class ShopifyApiClientFactory
             "X-Shopify-Access-Token" => $store->getShopifyAccessToken()
         ));
 
-        $log = new Logger('shopify_store_name');
-        $log->pushHandler(new StreamHandler('/opt/erp/app/logs/shopify.log', Logger::WARNING));
+        $loggerName = sprintf('shopify_%s', str_replace(' ', '_', strtolower($store->getStoreLabel())));
+        $loggerPath  = sprintf('%s/%s.log', $this->logPath, $loggerName);
+
+        $log = new Logger($loggerName);
+        $log->pushHandler(new StreamHandler($loggerPath, $this->logLevel));
 
         $subscriber = new LogSubscriber($log);
         $client->getEmitter()->attach($subscriber);

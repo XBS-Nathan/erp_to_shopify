@@ -16,17 +16,17 @@ class SkuToProductEntity
     private $sku;
 
     /**
-     * @ORM\Column(name="shopify_product_id", type="string")
+     * @ORM\Column(name="shopify_product_id", type="integer")
      */
     private $shopifyProductId;
 
     /**
-     * @ORM\Column(name="shopify_product_variant_id", type="string")
+     * @ORM\Column(name="shopify_product_variant_id", type="integer")
      */
     private $variantId;
 
     /**
-     * @ORM\Column(name="store_id", type="string")
+     * @ORM\Column(name="store_id", type="integer")
      */
     private $storeId;
 

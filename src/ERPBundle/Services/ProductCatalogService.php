@@ -54,7 +54,7 @@ class ProductCatalogService
     )
     {
         $this->shopifyClient = $shopifyClient;
-        $this->shopifyProductLimit = '250';
+        $this->shopifyProductLimit = 250;
         $this->skuToProductRepo = $skuToShopifyProductRepository;
         $this->catalogRepository = $catalogRepository;
     }
@@ -72,11 +72,13 @@ class ProductCatalogService
     ) {
         $totalProducts = $this->shopifyClient->getProductCountByCollection($storeEntity, $catalogEntity->getShopifyCollectionId() );
 
-        $totalPages = $totalProducts / $this->shopifyProductLimit;
+        $totalPages = ceil($totalProducts / $this->shopifyProductLimit);
+
+        $products= [];
 
         for($currentPage=1; $currentPage <= $totalPages; $currentPage++) {
-            $products[] = $this->shopifyClient->getProductsByCollection(
-                $storeEntity, $catalogEntity,$this->shopifyProductLimit, $currentPage
+            $this->shopifyClient->getProductsByCollection(
+                $storeEntity, $catalogEntity, $this->shopifyProductLimit, $currentPage, $products
             );
         }
 
@@ -89,7 +91,7 @@ class ProductCatalogService
                 [
                     'shopifyProductId' => $shopifyProduct->getId(),
                     'storeId' => $storeEntity->getStoreId(),
-                    'catalog' => $catalogEntity->getCatalog()
+                    'catalog' => $catalogEntity->getCatalogName()
                 ]
             );
 

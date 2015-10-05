@@ -58,14 +58,14 @@ class ErpClient
 
     /**
      * @param StoreEntity $store
-     * @param $catalog
+     * @param CatalogEntity $catalog
      * @param ErpProductEntity $product
      */
-    public function getProductExtraInformation(StoreEntity $store, $catalog, ErpProductEntity $product)
+    public function getProductExtraInformation(StoreEntity $store, CatalogEntity $catalog, ErpProductEntity $product)
     {
         $request = $this->client->createRequest(
             'GET',
-            sprintf('%s/catalogs/%s/%s/all', $store->getErpUrl(), $catalog, $product->getSku()),
+            sprintf('%s/catalogs/%s/%s/all', $store->getErpUrl(), $catalog->getCatalogName(), $product->getSku()),
             [
                 'auth' => [$store->getErpUsername(), $store->getErpPassword()]
             ]

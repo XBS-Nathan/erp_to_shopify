@@ -101,6 +101,18 @@ class ShopifyProductEntity
     public static function createFromResponse($product)
     {
         $self = new self();
+        $self->setId($product['id']);
+        $self->setVariantId($product['variants'][0]['id']);
+        $self->setCreatedAt(new \DateTime());
+        $self->setUpdatedAt(new \DateTime());
+        $self->setSku($product['variants'][0]['sku']);
+
+        return $self;
+    }
+
+    public static function createFromProductCreationResponse($product)
+    {
+        $self = new self();
         $self->setId($product['product']['id']);
         $self->setVariantId($product['product']['variants'][0]['id']);
         $self->setCreatedAt(new \DateTime());
