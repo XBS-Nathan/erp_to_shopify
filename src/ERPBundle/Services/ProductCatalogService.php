@@ -131,9 +131,9 @@ class ProductCatalogService
                 $this->skuToProductRepo->save($skuToProduct);
             }else{
                 $lastUpdateData = $existingProduct->getLastUpdatedDate();
-               // if($lastUpdateData->getTimestamp() <= $product->getLastUpdated()->getTimeStamp()) {
+                if($lastUpdateData->getTimestamp() <= $product->getLastUpdated()->getTimeStamp()) {
                     $this->shopifyClient->updateProduct($store, $product, $existingProduct);
-               // }
+                }
             }
         }
     }

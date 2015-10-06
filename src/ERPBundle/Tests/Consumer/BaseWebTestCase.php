@@ -206,7 +206,7 @@ abstract class BaseWebTestCase extends SymfonyWebTestCase
     {
         $mock = new Mock();
 
-        $client = $kernel->getContainer()->get('erp.guzzle.client.'.$clientName);
+        $client = $kernel->getContainer()->get('erp.guzzle.client.'. $clientName);
         $client->getEmitter()->attach($mock);
 
         return $mock;
