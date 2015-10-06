@@ -14,24 +14,13 @@ class ProductConsumerTest extends BaseWebTestCase
         $this->initKernel(['environment' => 'test']);
         $this->initEntityManager(self::$kernel);
 
-        $this->mockShopifyApiClient(
-            self::$kernel,
-            [
-                'count.collection',
-                'product.collection',
-                'update.product',
-                'update.product',
-                'delete.collection',
-                'create.collection',
-                'update.collection'
-            ]
-        );
+        $this->mock = $this->mockShopifyApiClient(self::$kernel);
 
         //empty the queue
         $this->cleanRabbitConsumerQueue('product', self::$kernel);
     }
 
-    public function mockShopifyApiClient(KernelInterface $kernel, $responses)
+    public function mockShopifyApiClient(KernelInterface $kernel)
     {
         $shopClientFactory = $this->getMockBuilder('\ERPBundle\Factory\Client\ShopifyApiClientFactory')->disableOriginalConstructor()->getMock();
 
@@ -49,17 +38,29 @@ class ProductConsumerTest extends BaseWebTestCase
 
         $kernel->getContainer()->set('erp.guzzle.client.shopify', $shopClientFactory);
 
+        return $mock;
+    }
+
+    public function mockShopifyClient(array $responses)
+    {
         $path = __DIR__.'/../../Resources/test_stubs/shopify/';
+
         foreach ($responses as $response) {
-            $file = $path.$response.'.response';
+            $file = $path . $response . '.response';
             if (!file_exists($file)) {
-                throw new \InvalidArgumentException('Mock '.$response.' for client shopify not found at '.$file);
+                throw new \InvalidArgumentException('Mock ' . $response . ' for client shopify not found at ' . $file);
             }
-            $mock->addResponse($file);
+            $this->mock->addResponse($file);
         }
     }
 
-    public function testCreateProducts()
+
+    public function createProducts()
+    {
+
+    }
+
+    public function testUpdateProducts()
     {
           $this->addMessageToExchange(self::$kernel, [
             'id'      => 'MONGO-ID',
@@ -80,6 +81,17 @@ class ProductConsumerTest extends BaseWebTestCase
         );
 
         $historyErp = $this->getGuzzleHistory('erp', self::$kernel);
+
+        $this->mockShopifyClient(
+            [
+                'count.collection',
+                'product.collection',
+                'update.product',
+                'update.product',
+                'delete.collection',
+                'create.collection',
+                'update.collection'
+            ]);
 
         $commandName = 'rabbitmq:consumer';
         $command = new ConsumerCommand();
