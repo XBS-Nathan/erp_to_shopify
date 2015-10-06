@@ -8,6 +8,7 @@ use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Entity\StoreEntity;
+use ERPBundle\Exception\NoShopifyProductFound;
 use ERPBundle\Factory\Client\ShopifyApiClientFactory;
 use GuzzleHttp\Command\Exception\CommandClientException;
 use Shopify\Client;
@@ -130,6 +131,7 @@ class ShopifyApiClientWrapper
      * @param ErpProductEntity $erpProduct
      * @param SkuToProductEntity $skuToProductEntity
      * @return mixed
+     * @throws NoShopifyProductFound
      */
     public function updateProduct(StoreEntity $store, ErpProductEntity $erpProduct, SkuToProductEntity $skuToProductEntity)
     {
@@ -162,7 +164,16 @@ class ShopifyApiClientWrapper
                 ]
         ];
 
-        $response = $this->client->updateProduct(['id' => $skuToProductEntity->getShopifyProductId(), 'product' => $productData]);
+
+
+        try {
+            $response = $this->client->updateProduct(['id' => $skuToProductEntity->getShopifyProductId(), 'product' => $productData]);
+        }catch (CommandClientException $e) {
+            //if 404, Collection has already been deleted via shopify, lets carry on
+            if($e->getResponse()->getStatusCode() == '404') {
+                throw new NoShopifyProductFound(sprintf('Product Id: %s cannot be found within shopify', $skuToProductEntity->getShopifyProductId()));
+            }
+        }
 
         return $response;
     }

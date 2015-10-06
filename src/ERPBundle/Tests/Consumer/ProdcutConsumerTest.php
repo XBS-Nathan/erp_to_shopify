@@ -41,7 +41,7 @@ class ProductConsumerTest extends BaseWebTestCase
         return $mock;
     }
 
-    public function mockShopifyClient(array $responses)
+    public function mockShopifyClientResponses(array $responses)
     {
         $path = __DIR__.'/../../Resources/test_stubs/shopify/';
 
@@ -54,11 +54,6 @@ class ProductConsumerTest extends BaseWebTestCase
         }
     }
 
-
-    public function createProducts()
-    {
-
-    }
 
     public function testUpdateProducts()
     {
@@ -82,7 +77,7 @@ class ProductConsumerTest extends BaseWebTestCase
 
         $historyErp = $this->getGuzzleHistory('erp', self::$kernel);
 
-        $this->mockShopifyClient(
+        $this->mockShopifyClientResponses(
             [
                 'count.collection',
                 'product.collection',
@@ -101,6 +96,20 @@ class ProductConsumerTest extends BaseWebTestCase
 
         $this->assertRegExp('//', $responseText);
 
+    }
+
+    public function createProducts()
+    {
+        $this->mockShopifyClient(
+            [
+                'count.collection',
+                'product.collection',
+                'create.product',
+                'create.product',
+                'delete.collection',
+                'create.collection',
+                'update.collection'
+            ]);
     }
 
     public function NoCatalogExists()

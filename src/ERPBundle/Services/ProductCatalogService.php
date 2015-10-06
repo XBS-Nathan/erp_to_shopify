@@ -10,6 +10,7 @@ use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\ShopifyStoreEntity;
 use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Entity\StoreEntity;
+use ERPBundle\Exception\NoShopifyProductFound;
 use ERPBundle\Repository\CatalogRepository;
 use ERPBundle\Repository\SkuToShopifyProductRepository;
 use ERPBundle\Services\Client\ShopifyApiClientWrapper;
@@ -132,7 +133,15 @@ class ProductCatalogService
             }else{
                 $lastUpdateData = $existingProduct->getLastUpdatedDate();
                 if($lastUpdateData->getTimestamp() <= $product->getLastUpdated()->getTimeStamp()) {
-                    $this->shopifyClient->updateProduct($store, $product, $existingProduct);
+                    try {
+                        $this->shopifyClient->updateProduct($store, $product, $existingProduct);
+                    }catch (NoShopifyProductFound $e) {
+                        //Lets recreate this within shopify
+                        $shopifyProduct = $this->shopifyClient->saveProduct($store, $product);
+
+                        $existingProduct->updateShopifyIds($shopifyProduct);
+                        $this->skuToProductRepo->save($existingProduct);
+                    }
                 }
             }
         }

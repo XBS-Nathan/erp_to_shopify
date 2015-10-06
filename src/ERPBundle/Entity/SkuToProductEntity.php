@@ -59,6 +59,18 @@ class SkuToProductEntity
     }
 
     /**
+     * @param ShopifyProductEntity $shopifyProduct
+     */
+    public function updateShopifyIds(ShopifyProductEntity $shopifyProduct)
+    {
+        $this->shopifyProductId = $shopifyProduct->getId();
+        $this->variantId = $shopifyProduct->getVariantId();
+
+        $this->lastUpdatedDate = new \DateTime();
+    }
+
+
+    /**
      * @return mixed
      */
     public function getSku()
