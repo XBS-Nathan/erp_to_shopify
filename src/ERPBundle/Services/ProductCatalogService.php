@@ -140,7 +140,7 @@ class ProductCatalogService
                         $shopifyProduct = $this->shopifyClient->saveProduct($store, $product);
 
                         $existingProduct->updateShopifyIds($shopifyProduct);
-                        $this->skuToProductRepo->save($existingProduct);
+                        $this->skuToProductRepo->update($existingProduct);
                     }
                 }
             }

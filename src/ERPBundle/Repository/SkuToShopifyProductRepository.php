@@ -15,4 +15,11 @@ class SkuToShopifyProductRepository extends EntityRepository
         $this->_em->flush();
     }
 
+    public function update(SkuToProductEntity $skuToProductEntity)
+    {
+        $this->_em->persist($skuToProductEntity);
+        $this->_em->flush();
+        $this->_em->refresh($skuToProductEntity);
+    }
+
 }
