@@ -186,7 +186,7 @@ class ShopifyApiClientWrapper
     public function addProductsToCollection(StoreEntity $store, array $products, CatalogEntity $catalog)
     {
         $this->setSettings($store);
-        $this->client->updateCustomCollection(['id' => $catalog->getShopifyCollectionId(), 'custom_collection' => ['collects' => $products]]);
+        $this->client->updateCustomCollection(['id' => $catalog->getShopifyCollectionId(), 'custom_collection' => ['id' => $catalog->getShopifyCollectionId(), 'collects' => $products]]);
     }
 
     /**
