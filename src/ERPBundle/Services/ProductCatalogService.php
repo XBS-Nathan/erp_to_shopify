@@ -192,6 +192,10 @@ class ProductCatalogService
             ['storeId' => $store->getStoreId(), 'catalogName' => $productCatalog->getCatalog()]
         );
 
+        if(!$catalog) {
+            throw new \InvalidArgumentException(sprintf('Cannot find catalog %s', $productCatalog->getCatalog()));
+        }
+
         //Process is to delete the collection and then recreate it as we cannot remove products
         //from a collection that easy.
         $this->shopifyClient->deleteCollection($store, $catalog);

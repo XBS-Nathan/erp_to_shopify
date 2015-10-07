@@ -8,7 +8,7 @@ Cache-Control: no-cache
 Date: Thu, 28 Aug 2014 13:33:31 GMT
 
 <?xml version="1.0" encoding="UTF-8"?>
-<Catalog xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" PriceListCode="CSGWEB" EffectiveDate="2015-04-24">
+<Catalog xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" PriceListCode="CSGMKT" EffectiveDate="2015-04-24">
     <Category Code="LAI">
         <Product ItemNo="CSG-1050CANTF" LastUpdated="2015-04-09T13:58:59.93">
             <Description>Commercial Grade GT 10'x10' Tent-rolling bag and steel frame</Description>

@@ -10,7 +10,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\HttpKernel\KernelInterface;
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Subscriber\History;
-
+use Shopify\Client as ShopifyClient;
 
 abstract class BaseWebTestCase extends SymfonyWebTestCase
 {
@@ -68,7 +68,9 @@ abstract class BaseWebTestCase extends SymfonyWebTestCase
         $command = $application->find($commandName);
         $commandTester = new CommandTester($command);
 
-        $command->setContainer($kernel->getContainer());
+        if(method_exists($command, 'setContainer')) {
+            $command->setContainer($kernel->getContainer());
+        }
 
         $commandParameters = $options;
         $commandParameters[] = ['command' => $command->getName()];
@@ -76,20 +78,6 @@ abstract class BaseWebTestCase extends SymfonyWebTestCase
         $commandTester->execute($commandParameters);
 
         return $commandTester->getDisplay();
-    }
-
-    protected function checkAndDecodeJsonResponse($response, $returnArray = false, $arrayDepth = 512)
-    {
-        $this->assertTrue(
-            $response->headers->contains('Content-Type', 'application/json'),
-            $response->headers
-        );
-
-        $arrayResponse = json_decode($response->getContent(), $returnArray, $arrayDepth);
-
-        $this->assertNotNull($arrayResponse, "Response could not be converted to json");
-
-        return $arrayResponse;
     }
 
     /**
@@ -128,32 +116,6 @@ abstract class BaseWebTestCase extends SymfonyWebTestCase
         $guzzleClient->getEmitter()->attach($history);
 
         return $history;
-    }
-
-    /**
-     * @param $client
-     * @param $verb
-     * @param $uri
-     * @param $post
-     * @param string $token
-     */
-    protected function requestJson($client, $verb, $uri, $token = null, $post = array())
-    {
-        $headers = [
-            'Content-Type' => 'application/json'
-        ];
-        if (!is_null($token))
-        {
-            $headers['HTTP_AUTHORIZATION'] = sprintf('Bearer %s', $token);
-        }
-
-        $client->request(
-            $verb,
-            $uri,
-            $post,
-            array(),
-            $headers
-        );
     }
 
     /**
@@ -231,5 +193,40 @@ abstract class BaseWebTestCase extends SymfonyWebTestCase
             $mock->addResponse($file);
         }
     }
+
+    public function mockShopifyApiClient(KernelInterface $kernel)
+    {
+        $shopClientFactory = $this->getMockBuilder('\ERPBundle\Factory\Client\ShopifyApiClientFactory')->disableOriginalConstructor()->getMock();
+
+        $shopifyApiClient = new ShopifyClient(array(
+            "shopUrl" => 'myStore',
+            "X-Shopify-Access-Token" => 'MyAccessToken'
+        ));
+
+        $mock = new Mock();
+        $shopifyApiClient->getEmitter()->attach($mock);
+
+        $shopClientFactory->expects($this->any())
+                          ->method('createClient')
+                          ->willReturn($shopifyApiClient);
+
+        $kernel->getContainer()->set('erp.guzzle.client.shopify', $shopClientFactory);
+
+        return $mock;
+    }
+
+    public function mockShopifyClientResponses(array $responses)
+    {
+        $path = __DIR__.'/../../Resources/test_stubs/shopify/';
+
+        foreach ($responses as $response) {
+            $file = $path . $response . '.response';
+            if (!file_exists($file)) {
+                throw new \InvalidArgumentException('Mock ' . $response . ' for client shopify not found at ' . $file);
+            }
+            $this->mock->addResponse($file);
+        }
+    }
+
 
 }

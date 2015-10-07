@@ -13,7 +13,7 @@ class CatalogEntity
 
     /**
      * @ORM\Id
-     * @ORM\Column(name="id", type="string")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -54,5 +54,22 @@ class CatalogEntity
     {
         return $this->shopifyCollectionId;
     }
+
+    /**
+     * @param mixed $catalogName
+     */
+    public function setCatalogName($catalogName)
+    {
+        $this->catalogName = $catalogName;
+    }
+
+    /**
+     * @param mixed $storeId
+     */
+    public function setStoreId($storeId)
+    {
+        $this->storeId = $storeId;
+    }
+
 
 }

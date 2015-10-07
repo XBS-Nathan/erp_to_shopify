@@ -96,4 +96,69 @@ class StoreEntity
         return $this->erpPassword;
     }
 
+    /**
+     * @param mixed $storeId
+     */
+    public function setStoreId($storeId)
+    {
+        $this->storeId = $storeId;
+    }
+
+    /**
+     * @param mixed $storeLabel
+     */
+    public function setStoreLabel($storeLabel)
+    {
+        $this->storeLabel = $storeLabel;
+    }
+
+    /**
+     * @param mixed $syncProducts
+     */
+    public function setSyncProducts($syncProducts)
+    {
+        $this->syncProducts = $syncProducts;
+    }
+
+    /**
+     * @param mixed $shopifyAccessToken
+     */
+    public function setShopifyAccessToken($shopifyAccessToken)
+    {
+        $this->shopifyAccessToken = $shopifyAccessToken;
+    }
+
+    /**
+     * @param mixed $shopifyStoreUrl
+     */
+    public function setShopifyStoreUrl($shopifyStoreUrl)
+    {
+        $this->shopifyStoreUrl = $shopifyStoreUrl;
+    }
+
+    /**
+     * @param mixed $erpUrl
+     */
+    public function setErpUrl($erpUrl)
+    {
+        $this->erpUrl = $erpUrl;
+    }
+
+    /**
+     * @param mixed $erpUsername
+     */
+    public function setErpUsername($erpUsername)
+    {
+        $this->erpUsername = $erpUsername;
+    }
+
+    /**
+     * @param mixed $erpPassword
+     */
+    public function setErpPassword($erpPassword)
+    {
+        $this->erpPassword = $erpPassword;
+    }
+
+
 }
