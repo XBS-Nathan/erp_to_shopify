@@ -17,6 +17,14 @@ services:
             - @erp.services.productCatalog
             - @erp.services.shopifystore
 
+    erp.shipment_consumer:
+        class: ERPBundle\Consumer\ShipmentConsumer
+        arguments:
+            - @erp.client.erp
+            - @erp.services.erpshipment
+            - @erp.services.shopifystore
+            - @erp.client.shopifywrapper
+
     erp.client.erp:
         class: ERPBundle\Services\Client\ErpClient
         arguments:
@@ -32,6 +40,10 @@ services:
         arguments:
             - @erp.repository.catalog
             - @erp.repository.store
+
+    erp.services.erpshipment:
+        class: ERPBundle\Services\ErpShipmentService
+
 
     erp.services.productCatalog:
         class: ERPBundle\Services\ProductCatalogService

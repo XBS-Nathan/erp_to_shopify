@@ -3,9 +3,13 @@
 namespace ERPBundle\Services\Client;
 
 use ERPBundle\Entity\CatalogEntity;
+use ERPBundle\Entity\ErpOrderEntity;
 use ERPBundle\Entity\ErpProductEntity;
+use ERPBundle\Entity\ErpShipmentEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\StoreEntity;
+use ERPBundle\Exception\ErpShipmentNotFound;
+use ERPBundle\Exception\OrderNotFound;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\RequestInterface;
 
@@ -74,6 +78,52 @@ class ErpClient
         $response = $this->sendRequest($request)->xml();
 
         ErpProductEntity::updateProduct($product, $response);
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param $orderId
+     * @return ErpOrderEntity
+     * @throws OrderNotFound
+     */
+    public function getOrder(StoreEntity $store, $orderId)
+    {
+        $request = $this->client->createRequest('GET', sprintf('%s/orders/%s', $store->getErpUrl(), $orderId),
+            [
+                'auth' => [$store->getErpUsername(), $store->getErpPassword()]
+            ]
+        );
+
+        try {
+            $response = $this->sendRequest($request)->xml();
+            $order = ErpOrderEntity::createFromOrderXMLObject($response, $orderId);
+        }catch (\Exception $e) {
+            throw new OrderNotFound(sprint('Order Id %s is not yet ready'));
+        }
+
+        return $order;
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param ErpOrderEntity $erpOrder
+     * @return ErpShipmentEntity
+     */
+    public function getShipment(StoreEntity $store, ErpOrderEntity $erpOrder)
+    {
+        $request = $this->client->createRequest('GET', sprintf('%s/shipments/?order=%s', $store->getErpUrl(), $erpOrder->getOrderId()),
+            [
+                'auth' => [$store->getErpUsername(), $store->getErpPassword()]
+            ]
+        );
+
+        try {
+            $response = $this->sendRequest($request)->xml();
+        } catch (\Exception $e) {
+            throw new ErpShipmentNotFound(sprintf('Not shipment can be found with the order id %s', $erpOrder->getOrderId()));
+        }
+
+        return ErpShipmentEntity::createFromShipmentXMLObject($response);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace ERPBundle\Services\Client;
 use ERPBundle\Entity\CatalogEntity;
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Entity\ShopifyOrderEntity;
 use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Entity\StoreEntity;
@@ -76,8 +77,44 @@ class ShopifyApiClientWrapper
 
     /**
      * @param StoreEntity $store
+     * @param $orderId
+     * @return ShopifyOrderEntity
+     */
+    public function getOrder(StoreEntity $store, $orderId)
+    {
+        $this->setSettings($store);
+
+        $response = $this->client->getOrder(['id' => $orderId]);
+
+        return ShopifyOrderEntity::createFromResponse($response);
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param ShopifyOrderEntity $shopifyOrder
+     */
+    public function completeOrder(StoreEntity $store, ShopifyOrderEntity $shopifyOrder)
+    {
+        $this->setSettings($store);
+
+        $this->client->closeOrder(['id' => $shopifyOrder->getId()]);
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param ShopifyOrderEntity $shopifyOrder
+     */
+    public function updateShipping(StoreEntity $store, ShopifyOrderEntity $shopifyOrder)
+    {
+        $this->setSettings($store);
+
+        $response = $this->client->createFulfillment(['order_id' => $shopifyOrder->getId()]);
+    }
+
+    /**
+     * @param StoreEntity $store
      * @param $collectionId
-     * @return mixed
+     * @return ShopifyProductEntity
      */
     public function getProductCountByCollection(StoreEntity $store, $collectionId)
     {
@@ -85,7 +122,7 @@ class ShopifyApiClientWrapper
 
         $response = $this->client->getProductCount(['collection_id' => $collectionId]);
 
-        return (int) $response['count'];
+        return ShopifyOrderEntity::createFromResponse($response);
     }
 
     /**

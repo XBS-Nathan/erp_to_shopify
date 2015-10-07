@@ -10,7 +10,7 @@ use ERPBundle\Entity\SkuToProductEntity;
 use OldSound\RabbitMqBundle\Command\ConsumerCommand;
 
 
-class ProductConsumerTest extends BaseWebTestCase
+class ShipmentConsumerTest extends BaseWebTestCase
 {
     protected $mock;
 
@@ -22,7 +22,7 @@ class ProductConsumerTest extends BaseWebTestCase
         $this->mock = $this->mockShopifyApiClient(self::$kernel);
 
         //empty the queue
-        $this->cleanRabbitConsumerQueue('product', self::$kernel);
+        $this->cleanRabbitConsumerQueue('shipment', self::$kernel);
 
         $this->executeAppCommand(self::$kernel, new DropSchemaDoctrineCommand(), "doctrine:schema:drop", ["--force" => true]);
         $this->executeAppCommand(self::$kernel, new CreateSchemaDoctrineCommand(), "doctrine:schema:create");
@@ -31,12 +31,13 @@ class ProductConsumerTest extends BaseWebTestCase
 
     }
 
-    public function testCreateProducts()
+    public function testGetShipment()
     {
           $this->addMessageToExchange(self::$kernel, [
             'id'      => 'MONGO-ID',
             'payload' => [
-                'catalog'   => 'CSGMKT',
+                'erpOrderId'   => '12345',
+                'shopifyOrderId' => '6789',
                 'storeId'   => 1
             ]
         ]);
@@ -45,9 +46,8 @@ class ProductConsumerTest extends BaseWebTestCase
             'erp',
             self::$kernel,
             array(
-                'catalog.products',
-                'product.full',
-                'product2.full',
+                'order',
+                'order.shipment',
             )
         );
 
@@ -55,18 +55,12 @@ class ProductConsumerTest extends BaseWebTestCase
 
         $this->mockShopifyClientResponses(
             [
-                'count.collection',
-                'product.collection',
-                'update.product',
-                'update.product2',
-                'delete.collection',
-                'create.collection',
-                'update.collection'
+                'order',
             ]);
 
         $commandName = 'rabbitmq:consumer';
         $command = new ConsumerCommand();
-        $options = ['name' => 'product', '-m' => '1'];
+        $options = ['name' => 'shipment', '-m' => '1'];
 
         $responseText = $this->executeAppCommand(self::$kernel, $command, $commandName, $options);
 
@@ -97,73 +91,6 @@ class ProductConsumerTest extends BaseWebTestCase
         $this->assertEquals('CSG-1234', $productOne->getSku());
         $this->assertEquals('632910395', $productOne->getShopifyProductId());
         $this->assertEquals('808950815', $productOne->getVariantId());
-    }
-
-    public function testNoProductInCollectionInShopify()
-    {
-        $this->addMessageToExchange(self::$kernel, [
-            'id'      => 'MONGO-ID',
-            'payload' => [
-                'catalog'   => 'CSGMKT',
-                'storeId'   => 1
-            ]
-        ]);
-
-        $this->setGuzzleMockedResponses(
-            'erp',
-            self::$kernel,
-            array(
-                'catalog.products',
-                'product.full',
-                'product2.full',
-            )
-        );
-
-        $this->mockShopifyClientResponses(
-            [
-                'count.empty.collection',
-                'create.product',
-                'create.product2',
-                'delete.collection',
-                'create.collection',
-                'update.collection'
-            ]);
-
-
-        $commandName = 'rabbitmq:consumer';
-        $command = new ConsumerCommand();
-        $options = ['name' => 'product', '-m' => '1'];
-
-        $responseText = $this->executeAppCommand(self::$kernel, $command, $commandName, $options);
-
-        $this->assertRegExp('//', $responseText);
-
-
-        $catalogRepository = $this->em->getRepository('\ERPBundle\Entity\CatalogEntity');
-
-        /** @var CatalogEntity $catalog */
-        $catalog = $catalogRepository->findOneByCatalogName('CSGMKT');
-
-        $this->assertInstanceOf('\ERPBundle\Entity\CatalogEntity', $catalog, 'Cannot find catalog within database');
-        $this->assertEquals('1063001331', $catalog->getShopifyCollectionId());
-
-        $skuToProductRepo = $this->em->getRepository('\ERPBundle\Entity\SkuToProductEntity');
-
-        $products = $skuToProductRepo->findByStoreId(1);
-
-        $this->assertCount(2, $products);
-
-        /** @var SkuToProductEntity $productOne */
-        $productOne = $products[0];
-        $this->assertEquals('CSG-1050CANTF', $productOne->getSku());
-        $this->assertEquals('1071559987', $productOne->getShopifyProductId());
-        $this->assertEquals('1044399345', $productOne->getVariantId());
-
-        /** @var SkuToProductEntity $productOne */
-        $productOne = $products[1];
-        $this->assertEquals('CSG-1234', $productOne->getSku());
-        $this->assertEquals('1071559555', $productOne->getShopifyProductId());
-        $this->assertEquals('1044399113', $productOne->getVariantId());
     }
 
     public function tearDown()

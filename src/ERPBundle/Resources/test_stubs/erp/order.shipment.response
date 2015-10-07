@@ -1,0 +1,130 @@
+HTTP/1.1 200 OK
+Server: nginx/1.4.6 (Ubuntu)
+Content-Type: application/xml
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/5.5.9-1ubuntu4.3
+Cache-Control: no-cache
+Date: Thu, 28 Aug 2014 13:33:31 GMT
+
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/table-view.xsl"?>
+<ShipNotice xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" CustomerID="123312">
+    <ShipmentNumber>SH0482813</ShipmentNumber>
+    <ShipDate>2015-05-05</ShipDate>
+    <ShipTime>14:05:52</ShipTime>
+    <CartonCount>3</CartonCount>
+    <GrossWeight>124.17</GrossWeight>
+    <ShipVia>3UPS</ShipVia>
+    <Reference>100823</Reference>
+    <PROTracking>1Z0399E00345247988</PROTracking>
+    <BillTo xs:type="Address">
+        <Name>mitchell, todd</Name>
+        <Address1>832 w washington</Address1>
+        <Address2/>
+        <Address3/>
+        <Address4/>
+        <City>springfield</City>
+        <State>IL</State>
+        <PostalCode>62702</PostalCode>
+        <Country>USA</Country>
+        <Phone>217-544-9550</Phone>
+        <Email>rmcyclery@comcast.net</Email>
+        <ContactName>mitchell, todd</ContactName>
+        <ContactPhone>217-544-9550</ContactPhone>
+        <ContactEmail>rmcyclery@comcast.net</ContactEmail>
+    </BillTo>
+    <ShipTo xs:type="Address" AddressCode="1">
+        <Name>mitchell, todd</Name>
+        <Address1>832 w washington</Address1>
+        <Address2/>
+        <Address3/>
+        <Address4/>
+        <City>springfield</City>
+        <State>IL</State>
+        <PostalCode>62702</PostalCode>
+        <Phone>217-544-9550</Phone>
+        <Email>rmcyclery@comcast.net</Email>
+        <ContactName>mitchell, todd</ContactName>
+        <ContactPhone>217-544-9550</ContactPhone>
+        <ContactEmail>rmcyclery@comcast.net</ContactEmail>
+    </ShipTo>
+    <ShipmentSpecialString UseCode="IUSERID">100823</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPS31COMPANY">Fulfillment America Inc. C/O L</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPS32ADDR1">4 Enterprise RD</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPS34CITY">BILLERICA</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPS35STATE">MA</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPS36ZIP">01821</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPS37PHONE">2038458372</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPS39ACCT">89961F</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="UPSADDRTYPE">COM</ShipmentSpecialString>
+    <ShipmentSpecialString UseCode="X12INVNUMBER">0622316</ShipmentSpecialString>
+    <ShipFrom xs:type="Address" AddressCode="FAI">
+        <Name>Fulfillment America Inc</Name>
+        <Address1>C/O Lapine Associates</Address1>
+        <Address2>4 Enterprise Road</Address2>
+        <Address3>(978) 988-7576</Address3>
+        <City>Billerica</City>
+        <State>MA</State>
+        <PostalCode>01821</PostalCode>
+        <Phone>978-988-7576</Phone>
+        <ContactName>Brian Healey</ContactName>
+        <ContactPhone>978-988-7576 x 437</ContactPhone>
+        <ContactEmail>bhealey@fulfillmentamerica.com</ContactEmail>
+    </ShipFrom>
+    <Order>
+        <PONumber>CND15000002162205</PONumber>
+        <OrderDate>2015-05-04</OrderDate>
+        <Pack>
+            <TrackingNo>1Z0399E00345248076</TrackingNo>
+            <UCC128>00006826300482813023</UCC128>
+            <PackSpecialString UseCode="WEIGHT">43.74</PackSpecialString>
+            <LineItem>
+                <LineID>2</LineID>
+                <ItemNo>CSG-GSTANDCNDL</ItemNo>
+                <Qty>1</Qty>
+                <UOM>EA</UOM>
+                <UnitPrice>0.00</UnitPrice>
+                <Description>Grand Stand - Five Scorpion Racks</Description>
+                <LineWarehouseCode>FAI</LineWarehouseCode>
+            </LineItem>
+            <LineItem>
+                <LineID>2</LineID>
+                <ItemNo>CSG-GSTANDCNDL</ItemNo>
+                <Qty>1</Qty>
+                <UOM>EA</UOM>
+                <UnitPrice>0.00</UnitPrice>
+                <Description>Grand Stand - Five Scorpion Racks</Description>
+                <LineWarehouseCode>FAI</LineWarehouseCode>
+            </LineItem>
+        </Pack>
+        <Pack>
+            <TrackingNo>1Z0399E00345248085</TrackingNo>
+            <UCC128>00006826300482813030</UCC128>
+            <PackSpecialString UseCode="WEIGHT">43.72</PackSpecialString>
+            <LineItem>
+                <LineID>2</LineID>
+                <ItemNo>CSG-GSTANDCNDL</ItemNo>
+                <Qty>1</Qty>
+                <UOM>EA</UOM>
+                <UnitPrice>0.00</UnitPrice>
+                <Description>Grand Stand - Five Scorpion Racks</Description>
+                <LineWarehouseCode>FAI</LineWarehouseCode>
+            </LineItem>
+        </Pack>
+        <Pack>
+            <TrackingNo>1Z0399E00345247988</TrackingNo>
+            <UCC128>00006826300482813016</UCC128>
+            <PackSpecialString UseCode="WEIGHT">36.71</PackSpecialString>
+            <LineItem>
+                <LineID>1</LineID>
+                <ItemNo>CSG-COBRASTAND</ItemNo>
+                <Qty>1</Qty>
+                <UOM>EA</UOM>
+                <UnitPrice>0.00</UnitPrice>
+                <Description>Cobra Stand</Description>
+                <LineWarehouseCode>FAI</LineWarehouseCode>
+            </LineItem>
+        </Pack>
+    </Order>
+</ShipNotice>
