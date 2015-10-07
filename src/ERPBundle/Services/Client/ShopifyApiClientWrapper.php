@@ -85,7 +85,7 @@ class ShopifyApiClientWrapper
 
         $response = $this->client->getProductCount(['collection_id' => $collectionId]);
 
-        return $response['count'];
+        return (int) $response['count'];
     }
 
     /**

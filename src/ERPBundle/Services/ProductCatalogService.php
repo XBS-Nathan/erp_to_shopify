@@ -73,6 +73,8 @@ class ProductCatalogService
     ) {
         $totalProducts = $this->shopifyClient->getProductCountByCollection($storeEntity, $catalogEntity->getShopifyCollectionId() );
 
+        if($totalProducts == 0) return;
+
         $totalPages = ceil($totalProducts / $this->shopifyProductLimit);
 
         $products= [];

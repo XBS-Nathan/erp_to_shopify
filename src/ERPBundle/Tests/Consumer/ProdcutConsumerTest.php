@@ -35,7 +35,7 @@ class ProductConsumerTest extends BaseWebTestCase
 
     }
 
-    public function testUpdateProducts()
+    public function testCreateProducts()
     {
           $this->addMessageToExchange(self::$kernel, [
             'id'      => 'MONGO-ID',
@@ -103,29 +103,36 @@ class ProductConsumerTest extends BaseWebTestCase
         $this->assertEquals('808950815', $productOne->getVariantId());
     }
 
-    public function createProducts()
-    {
-        $this->mockShopifyClient(
-            [
-                'count.collection',
-                'product.collection',
-                'create.product',
-                'create.product',
-                'delete.collection',
-                'create.collection',
-                'update.collection'
-            ]);
-    }
-
-    public function NoCatalogExists()
+    public function testNoProductInCollectionInShopify()
     {
         $this->addMessageToExchange(self::$kernel, [
             'id'      => 'MONGO-ID',
             'payload' => [
-                'catalog'      => 'dontExistCatalog',
+                'catalog'   => 'CSGMKT',
                 'storeId'   => 1
             ]
         ]);
+
+        $this->setGuzzleMockedResponses(
+            'erp',
+            self::$kernel,
+            array(
+                'catalog.products',
+                'product.full',
+                'product2.full',
+            )
+        );
+
+        $this->mockShopifyClientResponses(
+            [
+                'count.empty.collection',
+                'create.product',
+                'create.product2',
+                'delete.collection',
+                'create.collection',
+                'update.collection'
+            ]);
+
 
         $commandName = 'rabbitmq:consumer';
         $command = new ConsumerCommand();
@@ -133,8 +140,34 @@ class ProductConsumerTest extends BaseWebTestCase
 
         $responseText = $this->executeAppCommand(self::$kernel, $command, $commandName, $options);
 
-        $this->assertRegExp('/No result was found for query although at least one row was expected./', $responseText);
+        $this->assertRegExp('//', $responseText);
 
+
+        $catalogRepository = $this->em->getRepository('\ERPBundle\Entity\CatalogEntity');
+
+        /** @var CatalogEntity $catalog */
+        $catalog = $catalogRepository->findOneByCatalogName('CSGMKT');
+
+        $this->assertInstanceOf('\ERPBundle\Entity\CatalogEntity', $catalog, 'Cannot find catalog within database');
+        $this->assertEquals('1063001331', $catalog->getShopifyCollectionId());
+
+        $skuToProductRepo = $this->em->getRepository('\ERPBundle\Entity\SkuToProductEntity');
+
+        $products = $skuToProductRepo->findByStoreId(1);
+
+        $this->assertCount(2, $products);
+
+        /** @var SkuToProductEntity $productOne */
+        $productOne = $products[0];
+        $this->assertEquals('CSG-1050CANTF', $productOne->getSku());
+        $this->assertEquals('1071559987', $productOne->getShopifyProductId());
+        $this->assertEquals('1044399345', $productOne->getVariantId());
+
+        /** @var SkuToProductEntity $productOne */
+        $productOne = $products[1];
+        $this->assertEquals('CSG-1234', $productOne->getSku());
+        $this->assertEquals('1071559555', $productOne->getShopifyProductId());
+        $this->assertEquals('1044399113', $productOne->getVariantId());
     }
 
     public function tearDown()

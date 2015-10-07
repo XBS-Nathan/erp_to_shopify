@@ -9,7 +9,7 @@ Date: Thu, 28 Aug 2014 13:33:31 GMT
 
 {
 "product": {
-"id": 1071559539,
+"id": 1071559555,
 "title": "Burton Custom Freestlye 151",
 "body_html": "<strong>Good snowboard!<\/strong>",
     "vendor": "Burton",
@@ -23,7 +23,7 @@ Date: Thu, 28 Aug 2014 13:33:31 GMT
     "tags": "",
     "variants": [
     {
-    "id": 1044399237,
+    "id": 1044399113,
     "product_id": 1071559589,
     "title": "Default Title",
     "sku": "",
