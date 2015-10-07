@@ -108,7 +108,41 @@ class ProductCatalogService
 
         }
 
+        $this->removeMissingShopifyProducts($storeEntity, $catalogEntity, $products);
+
     }
+
+
+    /**
+     * @param StoreEntity $storeEntity
+     * @param CatalogEntity $catalogEntity
+     * @param array $shopifyProducts
+     */
+    private function removeMissingShopifyProducts(StoreEntity $storeEntity, CatalogEntity $catalogEntity, array $shopifyProducts)
+    {
+        if(empty($shopifySkus)) return;
+
+        $existingProducts = $this->skuToProductRepo->findBy( [
+            'storeId' => $storeEntity->getStoreId(),
+            'catalog' => $catalogEntity->getCatalogName()
+        ]);
+
+        /** @var ShopifyProductEntity $shopifyProduct */
+        foreach($shopifyProducts as $shopifyProduct)
+        {
+            $shopifySkus[] = $shopifyProduct->getSku();
+        }
+
+        /** @var SkuToProductEntity $product */
+        foreach($existingProducts as $product) {
+            if(!in_array($product->getSku(), $shopifySkus)) {
+                $this->skuToProductRepo->remove($product);
+            }
+        }
+
+        $this->skuToProductRepo->flush();
+    }
+
 
     /**
      * @param ProductCatalogEntity $catalog
