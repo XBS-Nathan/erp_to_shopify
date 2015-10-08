@@ -8,6 +8,7 @@ use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ErpShipmentEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\StoreEntity;
+use ERPBundle\Exception\ErpOrderNotFound;
 use ERPBundle\Exception\ErpShipmentNotFound;
 use ERPBundle\Exception\OrderNotFound;
 use GuzzleHttp\Client;
@@ -98,7 +99,7 @@ class ErpClient
             $response = $this->sendRequest($request)->xml();
             $order = ErpOrderEntity::createFromOrderXMLObject($response, $orderId);
         }catch (\Exception $e) {
-            throw new OrderNotFound(sprint('Order Id %s is not yet ready'));
+            throw new ErpOrderNotFound(sprint('Order Id %s is not yet ready'));
         }
 
         return $order;
