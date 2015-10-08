@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class ErpShipmentEntity
  * @package ERPBundle\Entity
  */
-class ErpShipmentEntity
+class ErpShipmentBoxEntity
 {
     /**
      * @var array
@@ -52,10 +52,15 @@ class ErpShipmentEntity
         foreach($shipment->Order->Pack as $box)
         {
             foreach($box->LineItem as $item) {
-                $self->shipmentItems[] = ErpOrderItemEntity::createFromXMLObject($item);
+                $shipmentItems[] = ErpOrderItemEntity::createFromXMLObject($item);
             }
 
             $self->trackingNumbers[] = (string) $box->TrackingNo;
+
+            $self->boxes[] = [
+                '',
+                'shipmentItems' => $shipmentItems
+            ];
         }
 
         return $self;

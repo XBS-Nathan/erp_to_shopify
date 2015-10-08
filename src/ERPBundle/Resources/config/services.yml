@@ -10,6 +10,12 @@ services:
         tags:
             -  { name: console.command }
 
+    erp.command.collecShipment:
+        class: ERPBundle\Commands\CollectShipments
+        arguments: [@erp.services.shopifyStore, @erp.client.shopifywrapper, @old_sound_rabbit_mq.product_producer]
+        tags:
+            -  { name: console.command }
+
     erp.product_consumer:
         class: ERPBundle\Consumer\ProductConsumer
         arguments:

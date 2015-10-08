@@ -46,14 +46,20 @@ class ShopifyOrderEntity
      */
     public static function createFromResponse($order)
     {
-        $self = new self();
-        $self->id  = $order['order']['id'];
+        if(isset($order['order'])) {
+            $order = $order['order'];
+        }
 
-        foreach($order['order']['line_items'] as $lineItem) {
+        $self = new self();
+        $self->id  = $order['id'];
+
+        foreach($order['line_items'] as $lineItem) {
             $self->items[] = ShopifyOrderLineItemEntity::createFromResponse($lineItem);
         }
 
-        $self->fulfillmentId = $order['order']['fulfillments'][0]['id'];
+        if(!empty($order['fulfillments'])) {
+            $self->fulfillmentId = $order['fulfillments'][0]['id'];
+        }
 
         return $self;
     }

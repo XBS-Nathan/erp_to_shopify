@@ -98,7 +98,6 @@ class ShipmentConsumer implements ConsumerInterface
             //Send the order off for completion
             $this->shopifyApiClient->completeOrder($store, $shopifyOrder);
         }
-
     }
 
 }

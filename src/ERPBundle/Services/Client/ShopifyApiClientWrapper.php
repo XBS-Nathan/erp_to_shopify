@@ -8,6 +8,7 @@ use ERPBundle\Entity\ErpShipmentEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\ShopifyOrderEntity;
 use ERPBundle\Entity\ShopifyOrderLineItemEntity;
+use ERPBundle\Entity\ShopifyOrderMetaFieldsEntity;
 use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Entity\StoreEntity;
@@ -93,6 +94,35 @@ class ShopifyApiClientWrapper
 
     /**
      * @param StoreEntity $store
+     * @return array
+     */
+    public function getOrders(StoreEntity $store)
+    {
+        $this->setSettings($store);
+
+        $response = $this->client->getOrders();
+
+        $orders = [];
+
+        if(!empty($response['orders'])) {
+            foreach ($response['orders'] as $order) {
+                $orders[] = ShopifyOrderEntity::createFromResponse($order);
+            }
+        }
+
+        return $orders;
+    }
+
+    public function getOrderMetaData(StoreEntity $store, ShopifyOrderEntity $shopifyOrder)
+    {
+        $response = $this->client->getOrderMetaFields(['id' => $shopifyOrder->getId()]);
+
+        return ShopifyOrderMetaFieldsEntity::createFromResponse($response);
+
+    }
+
+    /**
+     * @param StoreEntity $store
      * @param ShopifyOrderEntity $shopifyOrder
      */
     public function completeOrder(StoreEntity $store, ShopifyOrderEntity $shopifyOrder)
@@ -133,9 +163,9 @@ class ShopifyApiClientWrapper
         ];
 
         if($shopifyOrder->getFulfillmentId()) {
-            $response = $this->client->createFulfillment(['order_id' => $shopifyOrder->getId(), 'fulfillment' => $fulfillmentData]);
+            $this->client->createFulfillment(['order_id' => $shopifyOrder->getId(), 'fulfillment' => $fulfillmentData]);
         }else{
-            $response = $this->client->updateFulfillment(
+            $this->client->updateFulfillment(
                 ['order_id' => $shopifyOrder->getId(), 'id' => $shopifyOrder->getFulfillmentId(), 'fulfillment' => $fulfillmentData]
             );
         }
