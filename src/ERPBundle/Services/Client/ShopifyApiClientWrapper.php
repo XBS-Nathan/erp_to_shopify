@@ -238,17 +238,11 @@ class ShopifyApiClientWrapper
 
         $this->setSettings($store);
 
-        $image = new \StdClass();
-        $image->src =  $erpProduct->getImage();
-
         $productData =  [
                 'id' => $skuToProductEntity->getShopifyProductId(),
                 'title' => $erpProduct->getTitle(),
                 'product_type' => $erpProduct->getCategory(),
                 'body_html' => $erpProduct->getFullDesription(),
-                'images' => [
-                    $image
-                ],
                 'variants' => [
                     [
                         'id' => $skuToProductEntity->getVariantId(),
