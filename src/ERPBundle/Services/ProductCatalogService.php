@@ -29,7 +29,7 @@ class ProductCatalogService
      */
     protected $shopifyClient;
 
-    private $shopifyProductLimit;
+    private $shopifyProductLimit = 250;
 
     /**
      * @var SkuToShopifyProductRepository
@@ -55,7 +55,6 @@ class ProductCatalogService
     )
     {
         $this->shopifyClient = $shopifyClient;
-        $this->shopifyProductLimit = 250;
         $this->skuToProductRepo = $skuToShopifyProductRepository;
         $this->catalogRepository = $catalogRepository;
     }
@@ -107,7 +106,6 @@ class ProductCatalogService
                     }
                 }
             }
-
         }
 
         $this->removeMissingShopifyProducts($storeEntity, $catalogEntity, $products);
@@ -168,17 +166,27 @@ class ProductCatalogService
                 $this->skuToProductRepo->save($skuToProduct);
             }else{
                 $lastUpdateData = $existingProduct->getLastUpdatedDate();
-                if($lastUpdateData->getTimestamp() <= $product->getLastUpdated()->getTimeStamp()) {
-                    try {
-                        $this->shopifyClient->updateProduct($store, $product, $existingProduct);
-                    }catch (NoShopifyProductFound $e) {
-                        //Lets recreate this within shopify
-                        $shopifyProduct = $this->shopifyClient->saveProduct($store, $product);
 
-                        $existingProduct->updateShopifyIds($shopifyProduct);
-                        $this->skuToProductRepo->update($existingProduct);
+                try {
+
+                    $shopifyProduct = $this->shopifyClient->getProduct($store, $existingProduct);
+
+                    if(
+                        ($lastUpdateData->getTimestamp() <= $product->getLastUpdated()->getTimeStamp())
+                        || ($product->getQty() < $shopifyProduct->getQty())
+                        || ($product->getQty() > $shopifyProduct->getQty())
+                    ){
+                        $this->shopifyClient->updateProduct($store, $product, $existingProduct);
                     }
+
+                }catch (NoShopifyProductFound $e) {
+                    //Lets recreate this within shopify
+                    $shopifyProduct = $this->shopifyClient->saveProduct($store, $product);
+
+                    $existingProduct->updateShopifyIds($shopifyProduct);
+                    $this->skuToProductRepo->update($existingProduct);
                 }
+
             }
         }
     }

@@ -113,6 +113,11 @@ class ShopifyApiClientWrapper
         return $orders;
     }
 
+    /**
+     * @param StoreEntity $store
+     * @param ShopifyOrderEntity $shopifyOrder
+     * @return ShopifyOrderMetaFieldsEntity
+     */
     public function getOrderMetaData(StoreEntity $store, ShopifyOrderEntity $shopifyOrder)
     {
         $response = $this->client->getOrderMetaFields(['id' => $shopifyOrder->getId()]);
@@ -182,7 +187,7 @@ class ShopifyApiClientWrapper
 
         $response = $this->client->getProductCount(['collection_id' => $collectionId]);
 
-        return ShopifyOrderEntity::createFromResponse($response);
+        return $response['count'];
     }
 
     /**
@@ -255,8 +260,6 @@ class ShopifyApiClientWrapper
                 ]
         ];
 
-
-
         try {
             $response = $this->client->updateProduct(['id' => $skuToProductEntity->getShopifyProductId(), 'product' => $productData]);
         }catch (CommandClientException $e) {
@@ -315,5 +318,19 @@ class ShopifyApiClientWrapper
         $response = $this->client->createCustomCollection(['custom_collection' => [ 'title' => $catalog->getCatalogName()]]);
 
         $catalog->setShopifyCollectionId($response['custom_collection']['id']);
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param SkuToProductEntity $skuToProductEntity
+     * @return ShopifyProductEntity
+     */
+    public function getProduct(StoreEntity $store, SkuToProductEntity $skuToProductEntity)
+    {
+        $this->setSettings($store);
+
+        $response = $this->client->getProduct(['id' => $skuToProductEntity->getShopifyProductId()]);
+
+        return ShopifyProductEntity::createFromResponse($response);
     }
 }

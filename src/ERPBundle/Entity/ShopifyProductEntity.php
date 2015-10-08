@@ -13,6 +13,7 @@ class ShopifyProductEntity
     private $updatedAt;
     private $variantId;
     private $sku;
+    private $qty;
 
     /**
      * @return mixed
@@ -95,6 +96,22 @@ class ShopifyProductEntity
     }
 
     /**
+     * @return mixed
+     */
+    public function getQty()
+    {
+        return $this->qty;
+    }
+
+    /**
+     * @param mixed $qty
+     */
+    public function setQty($qty)
+    {
+        $this->qty = $qty;
+    }
+
+    /**
      * @param $product
      * @return ShopifyProductEntity
      */
@@ -106,10 +123,15 @@ class ShopifyProductEntity
         $self->setCreatedAt(new \DateTime());
         $self->setUpdatedAt(new \DateTime());
         $self->setSku($product['variants'][0]['sku']);
+        $self->setQty($product['variants'][0]['inventory_quantity']);
 
         return $self;
     }
 
+    /**
+     * @param $product
+     * @return ShopifyProductEntity
+     */
     public static function createFromProductCreationResponse($product)
     {
         $self = new self();
