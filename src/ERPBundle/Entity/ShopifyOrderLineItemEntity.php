@@ -9,8 +9,10 @@ namespace ERPBundle\Entity;
 class ShopifyOrderLineItemEntity
 {
 
+    private $id;
     private $sku;
     private $qty;
+    private $isFulfilled;
 
     /**
      * @return mixed
@@ -29,14 +31,36 @@ class ShopifyOrderLineItemEntity
     }
 
     /**
+     * @return mixed
+     */
+    public function isFulfilled()
+    {
+        return $this->isFulfilled;
+    }
+
+    /**
+     * @param integer $isFulfilled
+     */
+    public function setIsFulfilled($isFulfilled)
+    {
+        $this->isFulfilled = $isFulfilled;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @param $lineItem
      * @return ShopifyOrderLineItemEntity
      */
     public static function createFromResponse(array $lineItem)
     {
         $self = new self();
-        $self->sku  = $lineItem['sku'];
+        $self->sku = $lineItem['sku'];
         $self->qty = $lineItem['quantity'];
+        $self->id = $lineItem['id'];
         
         return $self;
     }

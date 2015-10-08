@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Server: nginx/1.4.6 (Ubuntu)
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+X-Powered-By: PHP/5.5.9-1ubuntu4.3
+Cache-Control: no-cache
+Date: Thu, 28 Aug 2014 13:33:31 GMT
+
+{
+"fulfillment": {
+"tracking_number": "987654321",
+"id": 255858046
+}
+}

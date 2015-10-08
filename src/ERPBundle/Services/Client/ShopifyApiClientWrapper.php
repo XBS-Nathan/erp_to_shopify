@@ -4,8 +4,10 @@ namespace ERPBundle\Services\Client;
 
 use ERPBundle\Entity\CatalogEntity;
 use ERPBundle\Entity\ErpProductEntity;
+use ERPBundle\Entity\ErpShipmentEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
 use ERPBundle\Entity\ShopifyOrderEntity;
+use ERPBundle\Entity\ShopifyOrderLineItemEntity;
 use ERPBundle\Entity\ShopifyProductEntity;
 use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Entity\StoreEntity;
@@ -103,12 +105,40 @@ class ShopifyApiClientWrapper
     /**
      * @param StoreEntity $store
      * @param ShopifyOrderEntity $shopifyOrder
+     * @param ErpShipmentEntity $erpShipment
+     * @throws \Exception
      */
-    public function updateShipping(StoreEntity $store, ShopifyOrderEntity $shopifyOrder)
+    public function updateOrCreateFulfillments(StoreEntity $store, ShopifyOrderEntity $shopifyOrder, ErpShipmentEntity $erpShipment)
     {
         $this->setSettings($store);
 
-        $response = $this->client->createFulfillment(['order_id' => $shopifyOrder->getId()]);
+        $fulFilledItems = [];
+
+        /** @var ShopifyOrderLineItemEntity $item */
+        foreach($shopifyOrder->getItems() as $item) {
+            if($item->isFulfilled()) {
+                $fulfilled          = new \stdClass();
+                $fulfilled->id      = $item->getId();
+                $fulFilledItems[]   = $fulfilled;
+            }
+        }
+
+        if($erpShipment->getTrackingNumbers() && empty($fulFilledItems)) {
+            throw new \Exception('Error: something is wrong here, got tracking numbers but no fulfilled items?');
+        }
+
+        $fulfillmentData = [
+            'tracking_number' => $erpShipment->getTrackingNumbers(),
+            'line_items' => $fulFilledItems
+        ];
+
+        if($shopifyOrder->getFulfillmentId()) {
+            $response = $this->client->createFulfillment(['order_id' => $shopifyOrder->getId(), 'fulfillment' => $fulfillmentData]);
+        }else{
+            $response = $this->client->updateFulfillment(
+                ['order_id' => $shopifyOrder->getId(), 'id' => $shopifyOrder->getFulfillmentId(), 'fulfillment' => $fulfillmentData]
+            );
+        }
     }
 
     /**

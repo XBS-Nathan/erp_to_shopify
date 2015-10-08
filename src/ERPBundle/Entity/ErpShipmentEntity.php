@@ -4,12 +4,20 @@ namespace ERPBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Class ErpShipmentEntity
+ * @package ERPBundle\Entity
+ */
 class ErpShipmentEntity
 {
+    /**
+     * @var array
+     */
+    private $trackingNumbers = [];
 
-
-    private $trackingNumber;
-
+    /**
+     * @var array
+     */
     private $shipmentItems = [];
 
     /**
@@ -21,11 +29,11 @@ class ErpShipmentEntity
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getTrackingNumber()
+    public function getTrackingNumbers()
     {
-        return $this->trackingNumber;
+        return $this->trackingNumbers;
     }
 
     /**
@@ -36,16 +44,15 @@ class ErpShipmentEntity
     {
         $self = new self();
 
-        $self->trackingNumber = (string) $shipment->PROTracking;
-
         foreach($shipment->Order->Pack as $box)
         {
             foreach($box->LineItem as $item) {
                 $self->shipmentItems[] = ErpOrderItemEntity::createFromXMLObject($item);
             }
+
+            $self->trackingNumbers[] = (string) $box->TrackingNo;
         }
 
         return $self;
-
     }
 }

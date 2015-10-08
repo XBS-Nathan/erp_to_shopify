@@ -28,7 +28,7 @@ class ErpShipmentService
         /** @var ShopifyOrderLineItemEntity $lineItem */
         foreach($shopifyOrder->getItems() as $orderItem)
         {
-            $shopifyTotalQty += $orderItem->getQty() ;
+            $shopifyTotalQty += $orderItem->getQty();
         }
 
         /** @var ErpOrderItemEntity $shippingItem */
@@ -38,5 +38,22 @@ class ErpShipmentService
         }
 
         return ($shopifyTotalQty === $shipmentTotalQty) ? true : false;
+    }
+
+    /**
+     * @param ErpShipmentEntity $erpShipment
+     * @param ShopifyOrderEntity $shopifyOrder
+     */
+    public function setFulfilledItems(ErpShipmentEntity $erpShipment, ShopifyOrderEntity $shopifyOrder)
+    {
+        /** @var ErpOrderItemEntity $item */
+        foreach($erpShipment->getShipmentItems() as $item) {
+            /** @var ShopifyOrderLineItemEntity $shopifyItem */
+            foreach($shopifyOrder->getItems() as $shopifyItem) {
+                if($item->getSku() == $shopifyItem->getSku()) {
+                    $shopifyItem->setIsFulfilled(1);
+                }
+            }
+        }
     }
 }

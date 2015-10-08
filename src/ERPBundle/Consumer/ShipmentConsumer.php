@@ -30,7 +30,6 @@ class ShipmentConsumer implements ConsumerInterface
      */
     protected $productCatalog;
 
-
     /**
      * @var ShopifyStoreService
      */
@@ -81,21 +80,23 @@ class ShipmentConsumer implements ConsumerInterface
         }
 
         try {
-            $shipmentData = $this->erpClient->getShipment($store, $order);
+            $erpShipment = $this->erpClient->getShipment($store, $order);
         } catch (ErpShipmentNotFound $e) {
             return false;
         }
 
         $shopifyOrder = $this->shopifyApiClient->getOrder($store, $shopifyOrderId);
 
-        $isShipmentFulfilled = $this->erpShipmentService->isShipmentFulfilled($shipmentData, $shopifyOrder);
+        $isShipmentFulfilled = $this->erpShipmentService->isShipmentFulfilled($erpShipment, $shopifyOrder);
+
+        $this->erpShipmentService->setFulfilledItems($erpShipment, $shopifyOrder);
+
+        //Send the order off to be updated
+        $this->shopifyApiClient->updateOrCreateFulfillments($store, $shopifyOrder, $erpShipment);
 
         if($isShipmentFulfilled) {
             //Send the order off for completion
             $this->shopifyApiClient->completeOrder($store, $shopifyOrder);
-        }else{
-            //Send the order off to update
-            $this->shopifyApiClient->updateShipping($store, $shopifyOrder);
         }
 
     }

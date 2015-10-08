@@ -31,7 +31,7 @@ class ShipmentConsumerTest extends BaseWebTestCase
 
     }
 
-    public function testGetShipment()
+    public function testGetShipmentUpdateFulfilment()
     {
           $this->addMessageToExchange(self::$kernel, [
             'id'      => 'MONGO-ID',
@@ -56,6 +56,7 @@ class ShipmentConsumerTest extends BaseWebTestCase
         $this->mockShopifyClientResponses(
             [
                 'order',
+                'update.fulfillment'
             ]);
 
         $commandName = 'rabbitmq:consumer';
@@ -65,32 +66,45 @@ class ShipmentConsumerTest extends BaseWebTestCase
         $responseText = $this->executeAppCommand(self::$kernel, $command, $commandName, $options);
 
         $this->assertRegExp('//', $responseText);
+    }
 
-        $catalogRepository = $this->em->getRepository('\ERPBundle\Entity\CatalogEntity');
+    public function testGetShipmentAndCompleteOrder()
+    {
+        $this->addMessageToExchange(self::$kernel, [
+            'id'      => 'MONGO-ID',
+            'payload' => [
+                'erpOrderId'   => '12345',
+                'shopifyOrderId' => '6789',
+                'storeId'   => 1
+            ]
+        ]);
 
-        /** @var CatalogEntity $catalog */
-        $catalog = $catalogRepository->findOneByCatalogName('CSGMKT');
+        $this->setGuzzleMockedResponses(
+            'erp',
+            self::$kernel,
+            array(
+                'order',
+                'order.shipment',
+            )
+        );
 
-        $this->assertInstanceOf('\ERPBundle\Entity\CatalogEntity', $catalog, 'Cannot find catalog within database');
-        $this->assertEquals('1063001331', $catalog->getShopifyCollectionId());
+        $historyErp = $this->getGuzzleHistory('erp', self::$kernel);
 
-        $skuToProductRepo = $this->em->getRepository('\ERPBundle\Entity\SkuToProductEntity');
+        $this->mockShopifyClientResponses(
+            [
+                'order',
+                'update.fulfillment',
+                'order.close'
+            ]
+        );
 
-        $products = $skuToProductRepo->findByStoreId(1);
+        $commandName = 'rabbitmq:consumer';
+        $command = new ConsumerCommand();
+        $options = ['name' => 'shipment', '-m' => '1'];
 
-        $this->assertCount(2, $products);
+        $responseText = $this->executeAppCommand(self::$kernel, $command, $commandName, $options);
 
-        /** @var SkuToProductEntity $productOne */
-        $productOne = $products[0];
-        $this->assertEquals('CSG-1050CANTF', $productOne->getSku());
-        $this->assertEquals('632910392', $productOne->getShopifyProductId());
-        $this->assertEquals('808950810', $productOne->getVariantId());
-
-        /** @var SkuToProductEntity $productOne */
-        $productOne = $products[1];
-        $this->assertEquals('CSG-1234', $productOne->getSku());
-        $this->assertEquals('632910395', $productOne->getShopifyProductId());
-        $this->assertEquals('808950815', $productOne->getVariantId());
+        $this->assertRegExp('//', $responseText);
     }
 
     public function tearDown()

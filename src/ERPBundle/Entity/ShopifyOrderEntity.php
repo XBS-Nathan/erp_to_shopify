@@ -13,6 +13,8 @@ class ShopifyOrderEntity
 
     private $items;
 
+    private $fulfillmentId;
+
     /**
      * @return mixed
      */
@@ -30,6 +32,13 @@ class ShopifyOrderEntity
         return $this->items;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getFulfillmentId()
+    {
+        return $this->fulfillmentId;
+    }
 
     /**
      * @param $order
@@ -43,6 +52,8 @@ class ShopifyOrderEntity
         foreach($order['order']['line_items'] as $lineItem) {
             $self->items[] = ShopifyOrderLineItemEntity::createFromResponse($lineItem);
         }
+
+        $self->fulfillmentId = $order['order']['fulfillments'][0]['id'];
 
         return $self;
     }
