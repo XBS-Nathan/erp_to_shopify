@@ -75,28 +75,28 @@ class ShipmentConsumer implements ConsumerInterface
 
         try {
             $order = $this->erpClient->getOrder($store, $erpOrderId);
+            $erpShipment = $this->erpClient->getShipment($store, $order);
+
+            $shopifyOrder = $this->shopifyApiClient->getOrder($store, $shopifyOrderId);
+
+            $isShipmentFulfilled = $this->erpShipmentService->isShipmentFulfilled($erpShipment, $shopifyOrder);
+
+            $this->erpShipmentService->setFulfilledItems($erpShipment, $shopifyOrder);
+
+            //Send the order off to be updated
+            $this->shopifyApiClient->updateOrCreateFulfillments($store, $shopifyOrder, $erpShipment);
+
+            if ($isShipmentFulfilled) {
+                //Send the order off for completion
+                $this->shopifyApiClient->completeOrder($store, $shopifyOrder);
+            }
+
         } catch ( ErpOrderNotFound $e) {
             return false;
-        }
-
-        try {
-            $erpShipment = $this->erpClient->getShipment($store, $order);
         } catch (ErpShipmentNotFound $e) {
             return false;
-        }
-
-        $shopifyOrder = $this->shopifyApiClient->getOrder($store, $shopifyOrderId);
-
-        $isShipmentFulfilled = $this->erpShipmentService->isShipmentFulfilled($erpShipment, $shopifyOrder);
-
-        $this->erpShipmentService->setFulfilledItems($erpShipment, $shopifyOrder);
-
-        //Send the order off to be updated
-        $this->shopifyApiClient->updateOrCreateFulfillments($store, $shopifyOrder, $erpShipment);
-
-        if($isShipmentFulfilled) {
-            //Send the order off for completion
-            $this->shopifyApiClient->completeOrder($store, $shopifyOrder);
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
