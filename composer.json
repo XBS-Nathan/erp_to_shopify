@@ -8,6 +8,13 @@
             "SymfonyStandard\\": "app/SymfonyStandard/"
         }
     },
+    "repositories":
+    [
+        {
+            "type": "vcs",
+            "url": "https://github.com/XBS-Nathan/PHP-Shopify-API-Wrapper"
+        }
+    ],
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",

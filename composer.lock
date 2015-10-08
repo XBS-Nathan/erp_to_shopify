@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "45ecd95fa0b462ca08f27ffea13ca53e",
-    "content-hash": "dea13bee0202ec7d986455dc12963f56",
+    "hash": "78bbf91a2f36a994aae66abab4cfe92d",
+    "content-hash": "bf9e9ddfe22826e1a561a655f30e5c29",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2546,13 +2546,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ShopifyExtras/PHP-Shopify-API-Wrapper.git",
-                "reference": "6f50d0d01eb05ea6217ee7c769113996dd723997"
+                "url": "https://github.com/XBS-Nathan/PHP-Shopify-API-Wrapper.git",
+                "reference": "d7b868fc9fef97801dca07388308451dc4586da0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ShopifyExtras/PHP-Shopify-API-Wrapper/zipball/6f50d0d01eb05ea6217ee7c769113996dd723997",
-                "reference": "6f50d0d01eb05ea6217ee7c769113996dd723997",
+                "url": "https://api.github.com/repos/XBS-Nathan/PHP-Shopify-API-Wrapper/zipball/d7b868fc9fef97801dca07388308451dc4586da0",
+                "reference": "d7b868fc9fef97801dca07388308451dc4586da0",
                 "shasum": ""
             },
             "require": {
@@ -2569,7 +2569,11 @@
                     "Shopify\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Shopify\\Tests\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -2581,7 +2585,10 @@
             ],
             "description": "Shopify PHP (Guzzle) API Wrapper",
             "homepage": "http://www.shopifyextras.com",
-            "time": "2015-07-15 18:59:37"
+            "support": {
+                "source": "https://github.com/XBS-Nathan/PHP-Shopify-API-Wrapper/tree/master"
+            },
+            "time": "2015-10-08 13:28:28"
         },
         {
             "name": "swiftmailer/swiftmailer",
