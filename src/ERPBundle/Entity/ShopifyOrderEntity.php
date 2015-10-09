@@ -19,6 +19,14 @@ class ShopifyOrderEntity
 
     private $name;
 
+    private $billingAddress;
+
+    private $shippingAddress;
+
+    private $customer;
+
+    private $totalTax;
+
     /**
      * @return mixed
      */
@@ -58,6 +66,38 @@ class ShopifyOrderEntity
         return $this->createdAt;
     }
 
+    /**
+     * @return ShopifyCustomerAddress
+     */
+    public function getBillingAddress()
+    {
+        return $this->billingAddress;
+    }
+
+    /**
+     * @return ShopifyCustomer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @return ShopifyCustomerAddress
+     */
+    public function getShippingAddress()
+    {
+        return $this->shippingAddress;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalTax()
+    {
+        return $this->totalTax;
+    }
+
     public static function convertToXmlForErp(ShopifyOrderEntity $order)
     {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><Order></Order>');
@@ -73,29 +113,38 @@ class ShopifyOrderEntity
         $shippingMethod = $this->getShippingMethod($this->integration, $this->order['shipping_lines'][0]['title']);
         $xml->addChild('ShipVia', $shippingMethod);
 
+
+        $billingAddress = $order->getBillingAddress();
+
         $bill = $xml->addChild('BillTo');
-        $bill->addChild('Name', $this->order['billing_address']['name']);
-        $bill->addChild('Address1', $this->order['billing_address']['address1']);
-        $bill->addChild('Address2', $this->order['billing_address']['address2']);
-        $bill->addChild('City', $this->order['billing_address']['city']);
-        $bill->addChild('State', $this->order['billing_address']['province_code']);
-        $bill->addChild('PostalCode', $this->order['billing_address']['zip']);
-        $bill->addChild('ContactName', $this->order['billing_address']['name']);
-        $bill->addChild('ContactPhone', $this->order['billing_address']['phone']);
-        $bill->addChild('ContactEmail', $this->order['customer']['email']);
+        $bill->addChild('Name', $billingAddress->getName());
+        $bill->addChild('Address1', $billingAddress->getAddressLine1());
+        $bill->addChild('Address2', $billingAddress->getAddressLine2());
+        $bill->addChild('City', $billingAddress->getCity());
+        $bill->addChild('State', $billingAddress->getProvinceCode());
+        $bill->addChild('PostalCode', $billingAddress->getPostalCode());
+        $bill->addChild('ContactName', $billingAddress->getContactName());
+        $bill->addChild('ContactPhone', $billingAddress->getContactPhone());
+
+        $customer = $order->getCustomer();
+
+        $bill->addChild('ContactEmail', $customer->getEmail());
+
+        $shippingAddress = $order->getShippingAddress();
 
         $ship = $xml->addChild('ShipTo');
-        $ship->addChild('Name', $this->order['shipping_address']['name']);
-        $ship->addChild('Address1', $this->order['shipping_address']['address1']);
-        $ship->addChild('Address2', $this->order['shipping_address']['address2']);
-        $ship->addChild('City', $this->order['shipping_address']['city']);
-        $ship->addChild('State', $this->order['shipping_address']['province_code']);
-        $ship->addChild('PostalCode', $this->order['shipping_address']['zip']);
-        $ship->addChild('ContactName', $this->order['shipping_address']['name']);
-        $ship->addChild('ContactPhone', $this->order['shipping_address']['phone']);
-        $ship->addChild('ContactEmail', $this->order['customer']['email']);
+        $ship->addChild('Name', $shippingAddress->getName());
+        $ship->addChild('Address1', $shippingAddress->getAddressLine1());
+        $ship->addChild('Address2', $shippingAddress->getAddressLine2());
+        $ship->addChild('City', $shippingAddress->getCity());
+        $ship->addChild('State', $shippingAddress->getProvinceCode());
+        $ship->addChild('PostalCode', $shippingAddress->getPostalCode());
+        $ship->addChild('ContactName', $shippingAddress->getContactName());
+        $ship->addChild('ContactPhone', $shippingAddress->getContactPhone());
 
-        $xml->addChild('HeaderSpecialString', $this->order['customer']['id'])->addAttribute('UseCode', 'IUSERID');
+        $ship->addChild('ContactEmail', $customer->getEmail());
+
+        $xml->addChild('HeaderSpecialString', $customer->getId())->addAttribute('UseCode', 'IUSERID');
         $xml->addChild('HeaderSpecialString', $this->order['shipping_lines'][0]['price'])->addAttribute('UseCode', 'ISHAMT');
 
         // add handling fee
@@ -110,8 +159,8 @@ class ShopifyOrderEntity
         }
 
         $xml->addChild('HeaderSpecialString', $handling_fee)->addAttribute('UseCode', 'IHANDAMT');
-        $xml->addChild('HeaderSpecialString', date_create_from_format( "Y-m-d\TH:i:se" , $this->order['created_at'] )->format('H:i:s'))->addAttribute('UseCode', 'IORDTIME');
-        $xml->addChild('HeaderSpecialString', $this->order['total_tax'])->addAttribute('UseCode', 'ITXAMT');
+        $xml->addChild('HeaderSpecialString', $order->getCreatedAt()->format('H:i:s'))->addAttribute('UseCode', 'IORDTIME');
+        $xml->addChild('HeaderSpecialString', $order->getTotalTax())->addAttribute('UseCode', 'ITXAMT');
 
         if (isset($this->transaction->authorization))
         {
@@ -163,6 +212,8 @@ class ShopifyOrderEntity
         $self->id  = $order['id'];
         $self->createdAt = new \DateTime($order['created_at']);
         $self->name = $order['name'];
+        $self->billingAddress = ShopifyCustomerAddress::createFromOrderResponse($order['billing_address']);
+        $self->shippingAddress = ShopifyCustomerAddress::createFromOrderResponse($order['shipping_address']);
 
         foreach($order['line_items'] as $lineItem) {
             $self->items[] = ShopifyOrderLineItemEntity::createFromResponse($lineItem);
