@@ -52,6 +52,11 @@ class StoreEntity
      */
     private $erpPassword;
 
+    /**
+     * @ORM\Column(name="shopify_secret_token", type="string")
+     */
+    private $shopifySecretToken;
+
     public function getStoreId()
     {
         return $this->storeId;
@@ -71,6 +76,15 @@ class StoreEntity
     {
         return $this->shopifyAccessToken;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getShopifySecretToken()
+    {
+        return $this->shopifySecretToken;
+    }
+
 
     /**
      * @return mixed

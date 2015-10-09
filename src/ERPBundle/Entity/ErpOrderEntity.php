@@ -21,14 +21,19 @@ class ErpOrderEntity
 
     /**
      * @param \SimpleXMLElement $order
+     * @param $orderId
      * @return ErpOrderEntity
      */
-    public static function createFromOrderXMLObject(\SimpleXMLElement $order, $orderId)
+    public static function createFromOrderXMLObject(\SimpleXMLElement $order, $orderId = null)
     {
         $self = new self();
+        if(is_null($orderId)) {
+            $orderId = $order->OrderNumber;
+        }
         $self->orderId = $orderId;
 
         return $self;
 
     }
+
 }

@@ -90,3 +90,6 @@ services:
         factory_method: getRepository
         arguments:
             - ERPBundle\Entity\StoreEntity
+
+    erp.controller.webhook:
+        class: ERPBundle\Controller\WebHookController

@@ -33,7 +33,11 @@
         "doctrine/doctrine-migrations-bundle": "^1.0",
         "guzzlehttp/log-subscriber": "^1.0@dev",
         "jmose/command-scheduler-bundle": "dev-master",
-        "doctrine/doctrine-fixtures-bundle": "^2.2@dev"
+        "doctrine/doctrine-fixtures-bundle": "^2.2@dev",
+        "doctrine/mongodb-odm": "^1.0@dev",
+        "doctrine/mongodb-odm-bundle": "^3.0@dev",
+        "friendsofsymfony/rest-bundle": "^2.0@dev",
+        "jms/serializer-bundle": "^1.1@dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

@@ -7,6 +7,7 @@ use ERPBundle\Entity\ErpOrderEntity;
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ErpShipmentEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
+use ERPBundle\Entity\ShopifyOrderEntity;
 use ERPBundle\Entity\StoreEntity;
 use ERPBundle\Exception\ErpOrderNotFound;
 use ERPBundle\Exception\ErpShipmentNotFound;
@@ -85,7 +86,7 @@ class ErpClient
      * @param StoreEntity $store
      * @param $orderId
      * @return ErpOrderEntity
-     * @throws OrderNotFound
+     * @throws ErpOrderNotFound
      */
     public function getOrder(StoreEntity $store, $orderId)
     {
@@ -105,10 +106,26 @@ class ErpClient
         return $order;
     }
 
+    public function createOrder(StoreEntity $store, ShopifyOrderEntity $orderEntity)
+    {
+        $xmlObject = ShopifyOrderEntity::convertToXmlForErp($orderEntity);
+
+        $request = $this->client->createRequest('GET', sprintf('%s/orders', $store->getErpUrl()),
+            [
+                'auth' => [$store->getErpUsername(), $store->getErpPassword()]
+            ]
+        );
+
+        $response = $this->sendRequest($request)->xml();
+
+        return ErpOrderEntity::createFromOrderXMLObject($response);
+    }
+
     /**
      * @param StoreEntity $store
      * @param ErpOrderEntity $erpOrder
      * @return ErpShipmentEntity
+     * @throws ErpShipmentNotFound
      */
     public function getShipment(StoreEntity $store, ErpOrderEntity $erpOrder)
     {

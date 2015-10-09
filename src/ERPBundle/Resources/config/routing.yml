@@ -1,0 +1,3 @@
+rest_webhook:
+    resource: erp.controller.webhook
+    type:     rest

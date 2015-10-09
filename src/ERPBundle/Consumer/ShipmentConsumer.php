@@ -71,9 +71,8 @@ class ShipmentConsumer implements ConsumerInterface
         $shopifyOrderId = $msgBody->payload->shopifyOrderId;
         $storeId = $msgBody->payload->storeId;
 
-        $store = $this->store->getStore($storeId);
-
         try {
+            $store = $this->store->getStore($storeId);
             $order = $this->erpClient->getOrder($store, $erpOrderId);
             $erpShipment = $this->erpClient->getShipment($store, $order);
 
@@ -91,7 +90,7 @@ class ShipmentConsumer implements ConsumerInterface
                 $this->shopifyApiClient->completeOrder($store, $shopifyOrder);
             }
 
-        } catch ( ErpOrderNotFound $e) {
+        } catch (ErpOrderNotFound $e) {
             return false;
         } catch (ErpShipmentNotFound $e) {
             return false;
