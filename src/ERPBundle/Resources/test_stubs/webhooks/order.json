@@ -1,0 +1,194 @@
+{
+    "id":1482475077,
+    "email":"nathan2@thegenielab.com",
+    "closed_at":null,
+    "created_at":"2015-10-14T12:17:12-04:00",
+    "updated_at":"2015-10-14T12:17:13-04:00",
+    "number":3,
+    "note":"",
+    "token":"8b936d19ad84a95d0122d7b9fcb73855",
+    "gateway":"shopify_payments",
+    "test":true,
+    "total_price":"104.68",
+    "subtotal_price":"84.68",
+    "total_weight":0,
+    "total_tax":"0.00",
+    "taxes_included":false,
+    "currency":"USD",
+    "financial_status":"authorized",
+    "confirmed":true,
+    "total_discounts":"0.00",
+    "total_line_items_price":"84.68",
+    "cart_token":"d2501b11a8b220a371bdeea5af8d9d90",
+    "buyer_accepts_marketing":false,
+    "name":"#1003",
+    "referring_site":"",
+    "landing_site":"\/",
+    "cancelled_at":null,
+    "cancel_reason":null,
+    "total_price_usd":"104.68",
+    "checkout_token":"41e72f55c89622f8d95d524df7e955a6",
+    "reference":null,
+    "user_id":null,
+    "location_id":null,
+    "source_identifier":null,
+    "source_url":null,
+    "processed_at":"2015-10-14T12:17:12-04:00",
+    "device_id":null,
+    "browser_ip":"81.134.199.118",
+    "landing_site_ref":null,
+    "order_number":1003,
+    "discount_codes":[
+
+    ],
+    "note_attributes":[
+
+    ],
+    "payment_gateway_names":[
+        "shopify_payments"
+    ],
+    "processing_method":"direct",
+    "source":"checkout_next",
+    "checkout_id":4316959749,
+    "source_name":"web",
+    "fulfillment_status":null,
+    "tax_lines":[
+
+    ],
+    "tags":"",
+    "contact_email":"nathan2@thegenielab.com",
+    "line_items":[
+        {
+            "id":2703074885,
+            "variant_id":6811529157,
+            "title":"3'x5' Floor Impressions Nitril Rubber Mat",
+            "quantity":1,
+            "price":"84.68",
+            "grams":0,
+            "sku":"CSG-GTMAT",
+            "variant_title":"",
+            "vendor":"erpapitest",
+            "fulfillment_service":"manual",
+            "product_id":2354330757,
+            "requires_shipping":true,
+            "taxable":true,
+            "gift_card":false,
+            "name":"3'x5' Floor Impressions Nitril Rubber Mat",
+            "variant_inventory_management":"shopify",
+            "properties":[
+
+            ],
+            "product_exists":true,
+            "fulfillable_quantity":1,
+            "total_discount":"0.00",
+            "fulfillment_status":null,
+            "tax_lines":[
+
+            ]
+        }
+    ],
+    "shipping_lines":[
+        {
+            "title":"International Shipping",
+            "price":"20.00",
+            "code":"International Shipping",
+            "source":"shopify",
+            "phone":null,
+            "tax_lines":[
+
+            ]
+        }
+    ],
+    "billing_address":{
+        "first_name":"Nathan",
+        "address1":"1234",
+        "phone":"",
+        "city":"cardiff",
+        "zip":"cf14 2ld",
+        "province":null,
+        "country":"United Kingdom",
+        "last_name":"Jones",
+        "address2":"",
+        "company":"",
+        "latitude":51.5065737,
+        "longitude":-3.1846446,
+        "name":"Nathan Jones",
+        "country_code":"GB",
+        "province_code":null
+    },
+    "shipping_address":{
+        "first_name":"Nathan",
+        "address1":"1234",
+        "phone":"",
+        "city":"cardiff",
+        "zip":"cf14 2ld",
+        "province":null,
+        "country":"United Kingdom",
+        "last_name":"Jones",
+        "address2":"",
+        "company":"",
+        "latitude":51.5065737,
+        "longitude":-3.1846446,
+        "name":"Nathan Jones",
+        "country_code":"GB",
+        "province_code":null
+    },
+    "fulfillments":[
+
+    ],
+    "client_details":{
+        "browser_ip":"81.134.199.118",
+        "accept_language":"en-US,en;q=0.8",
+        "user_agent":"Mozilla\/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/45.0.2454.101 Safari\/537.36",
+        "session_hash":"e7a6f6b8196e77f589005f2966413e038197a4fb0b23f5d1015f91732483303a",
+        "browser_width":1494,
+        "browser_height":950
+    },
+    "refunds":[
+
+    ],
+    "payment_details":{
+        "credit_card_bin":"424242",
+        "avs_result_code":"Y",
+        "cvv_result_code":"M",
+        "credit_card_number":"•••• •••• •••• 4242",
+        "credit_card_company":"Visa"
+    },
+    "customer":{
+        "id":1551153029,
+        "email":"nathan2@thegenielab.com",
+        "accepts_marketing":false,
+        "created_at":"2015-10-14T12:15:07-04:00",
+        "updated_at":"2015-10-14T12:17:12-04:00",
+        "first_name":"Nathan",
+        "last_name":"Jones",
+        "orders_count":0,
+        "state":"disabled",
+        "total_spent":"0.00",
+        "last_order_id":null,
+        "note":null,
+        "verified_email":true,
+        "multipass_identifier":null,
+        "tax_exempt":false,
+        "tags":"",
+        "last_order_name":null,
+        "default_address":{
+            "id":1711162245,
+            "first_name":"Nathan",
+            "last_name":"Jones",
+            "company":"",
+            "address1":"1234",
+            "address2":"",
+            "city":"cardiff",
+            "province":null,
+            "country":"United Kingdom",
+            "zip":"cf14 2ld",
+            "phone":"",
+            "name":"Nathan Jones",
+            "province_code":null,
+            "country_code":"GB",
+            "country_name":"United Kingdom",
+            "default":true
+        }
+    }
+}

@@ -106,19 +106,25 @@ class ErpClient
         return $order;
     }
 
+    /**
+     * @param StoreEntity $store
+     * @param ShopifyOrderEntity $orderEntity
+     * @return ErpOrderEntity
+     */
     public function createOrder(StoreEntity $store, ShopifyOrderEntity $orderEntity)
     {
-        $xmlObject = ShopifyOrderEntity::convertToXmlForErp($orderEntity);
+        $xmlObject = ShopifyOrderEntity::convertToXmlForErp($orderEntity, $store);
 
         $request = $this->client->createRequest('GET', sprintf('%s/orders', $store->getErpUrl()),
             [
-                'auth' => [$store->getErpUsername(), $store->getErpPassword()]
+                'auth' => [$store->getErpUsername(), $store->getErpPassword()],
+                'body' => $xmlObject
             ]
         );
 
         $response = $this->sendRequest($request)->xml();
 
-        return ErpOrderEntity::createFromOrderXMLObject($response);
+        return ErpOrderEntity::createFromShopifyOrder($response, $orderEntity);
     }
 
     /**

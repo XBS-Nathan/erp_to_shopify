@@ -104,7 +104,7 @@ class WebHookController
             $event = Event::createFromRequest($request, $eventId);
             $this->eventRepository->save($event);
 
-            $cmd = $this->commandFactory->create($event);
+            $cmd = $this->commandFactory->create($event, $store);
             $handler = $this->handlerFactory->create($event);
 
             $handler->execute($cmd);
@@ -113,12 +113,17 @@ class WebHookController
             $this->logger->alert(sprintf('Completed Processing event id %s', $eventId));
         }catch(\Exception $e) {
 
-            $event->updateStatus(Event::STATUS_FAILED);
+            if($event instanceof Event) {
+                $event->updateStatus(Event::STATUS_FAILED);
+            }
+
             $this->logger->alert($e->getMessage());
 
         }finally{
 
-            $this->eventRepository->update($event);
+            if($event instanceof Event) {
+                $this->eventRepository->update($event);
+            }
 
             return true;
         }

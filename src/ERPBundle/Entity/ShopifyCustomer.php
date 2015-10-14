@@ -26,20 +26,14 @@ class ShopifyCustomer
     }
 
     /**
-     * @param array $address
-     * @return ShopifyCustomerAddress
+     * @param array $customer
+     * @return ShopifyCustomer
      */
-    public static function createFromOrderResponse(array $address)
+    public static function createFromOrderResponse(array $customer)
     {
         $self               = new self();
-        $self->name         = $address['name'];
-        $self->addressLine1 = $address['address1'];
-        $self->addressLine2 = $address['address2'];
-        $self->city         = $address['city'];
-        $self->provinceCode = $address['province_code'];
-        $self->postalCode   = $address['zip'];
-        $self->contactName  = $address['first_name'] .' '. $address['last_name'];
-        $self->contactPhone = $address['phone'];
+        $self->id         = $customer['id'];
+        $self->email        = $customer['email'];
 
         return $self;
     }

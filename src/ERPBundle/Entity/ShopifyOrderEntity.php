@@ -27,6 +27,10 @@ class ShopifyOrderEntity
 
     private $totalTax;
 
+    private $transaction;
+
+    private $shipping;
+
     /**
      * @return mixed
      */
@@ -43,10 +47,8 @@ class ShopifyOrderEntity
         return $this->name;
     }
 
-
-
     /**
-     * @return mixed
+     * @return \ERPBundle\Entity\ShopifyOrderLineItemEntity|array
      */
     public function getItems()
     {
@@ -61,6 +63,9 @@ class ShopifyOrderEntity
         return $this->fulfillmentId;
     }
 
+    /**
+     * @return \DateTime
+     */
     public function getCreatedAt()
     {
         return $this->createdAt;
@@ -98,9 +103,30 @@ class ShopifyOrderEntity
         return $this->totalTax;
     }
 
-    public static function convertToXmlForErp(ShopifyOrderEntity $order)
+    /**
+     * @return ShopifyTransactionEntity
+     */
+    public function getTransaction()
     {
-        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><Order></Order>');
+        return $this->transaction;
+    }
+
+    /**
+     * @return ShopifyOrderShippingEntity
+     */
+    public function getShipping()
+    {
+        return $this->shipping;
+    }
+
+    /**
+     * @param ShopifyOrderEntity $order
+     * @param StoreEntity $store
+     * @return SimpleXMLElement
+     */
+    public static function convertToXmlForErp(ShopifyOrderEntity $order, StoreEntity $store)
+    {
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><Order></Order>');
         $xml->addAttribute('OrderType', 'StandAlone');
 
         //Get from the order
@@ -109,10 +135,20 @@ class ShopifyOrderEntity
         $xml->addChild('PONumber', $order->getName());
         $xml->addChild('OrderDate', $order->getCreatedAt()->format('Y-m-d'));
 
-        //TODO CHECK OVER
-        $shippingMethod = $this->getShippingMethod($this->integration, $this->order['shipping_lines'][0]['title']);
-        $xml->addChild('ShipVia', $shippingMethod);
+        $orderShipping = $order->getShipping();
 
+        if ($store->getShipmentMaps())
+        {
+            /** @var ErpShipmentMapEntity $map */
+            foreach ($store->getShipmentMaps() as $map)
+            {
+                if ($map->getErpMethod() == $orderShipping->getTitle())
+                {
+                    $xml->addChild('ShipVia', $map->getErpMethod());
+                    break;
+                }
+            }
+        }
 
         $billingAddress = $order->getBillingAddress();
 
@@ -145,30 +181,34 @@ class ShopifyOrderEntity
         $ship->addChild('ContactEmail', $customer->getEmail());
 
         $xml->addChild('HeaderSpecialString', $customer->getId())->addAttribute('UseCode', 'IUSERID');
-        $xml->addChild('HeaderSpecialString', $this->order['shipping_lines'][0]['price'])->addAttribute('UseCode', 'ISHAMT');
+
+        $xml->addChild('HeaderSpecialString', $orderShipping->getPrice())->addAttribute('UseCode', 'ISHAMT');
 
         // add handling fee
-        $handling_fee = 0;
+        $handlingFee = 0;
 
-        foreach ($this->order['line_items'] as $item)
+        /** @var \ERPBundle\Entity\ShopifyOrderLineItemEntity $item */
+        foreach($order->getItems() as $item)
         {
-            if ($item['product_id'] == $this->integration->handling_fee_id)
+            if ($item->getId() == $store->getShopifyHandlingFeeProductId())
             {
-                $handling_fee = $item['quantity'] * $item['price'];
+                $handlingFee = $item['quantity'] * $item['price'];
             }
         }
 
-        $xml->addChild('HeaderSpecialString', $handling_fee)->addAttribute('UseCode', 'IHANDAMT');
+        $xml->addChild('HeaderSpecialString', $handlingFee)->addAttribute('UseCode', 'IHANDAMT');
         $xml->addChild('HeaderSpecialString', $order->getCreatedAt()->format('H:i:s'))->addAttribute('UseCode', 'IORDTIME');
         $xml->addChild('HeaderSpecialString', $order->getTotalTax())->addAttribute('UseCode', 'ITXAMT');
 
-        if (isset($this->transaction->authorization))
-        {
-            $xml->addChild('HeaderSpecialString', $this->transaction->authorization)->addAttribute('UseCode', 'ICCAUTH');
+        $transaction = $order->getTransaction();
 
-            if (isset($this->transaction->amount))
+        if ($transaction && $transaction->getAuthorization())
+        {
+            $xml->addChild('HeaderSpecialString', $transaction->getAuthorization())->addAttribute('UseCode', 'ICCAUTH');
+
+            if ($transaction->getAmount())
             {
-                $xml->addChild('HeaderSpecialString', $this->transaction->amount)->addAttribute('UseCode', 'ICCAMT');
+                $xml->addChild('HeaderSpecialString', $transaction->getAmount())->addAttribute('UseCode', 'ICCAMT');
             }
             else
             {
@@ -176,22 +216,23 @@ class ShopifyOrderEntity
             }
         }
 
-        foreach ($this->order['line_items'] as $item)
+        /** @var \ERPBundle\Entity\ShopifyOrderLineItemEntity $item */
+        foreach ($order->getItems() as $item)
         {
-            if ($item['product_id'] == $this->integration->handling_fee_id)
+            if ($item->getId() == $store->getShopifyHandlingFeeProductId())
             {
                 continue;
             }
 
             $lineItem = $xml->addChild('LineItem');
-            $lineItem->addChild('LineID', $item['id']);
-            $lineItem->addChild('ItemNo', $item['sku']);
-            $lineItem->addChild('Qty', $item['quantity']);
-            $lineItem->addChild('UnitPrice', $item['price']);
+            $lineItem->addChild('LineID', $item->getId());
+            $lineItem->addChild('ItemNo', $item->getSku());
+            $lineItem->addChild('Qty', $item->getQty());
+            $lineItem->addChild('UnitPrice', $item->getPrice());
 
-            $extPrice = $item['price'] * $item['quantity'];
+            $extPrice = $item->getPrice() * $item->getQty();
 
-            $lineItem->addChild('DetailSpecialString', $item['price'])->addAttribute('UseCode', 'ITMUNITPR');
+            $lineItem->addChild('DetailSpecialString', $item->getPrice())->addAttribute('UseCode', 'ITMUNITPR');
             $lineItem->addChild('DetailSpecialString', $extPrice)->addAttribute('UseCode', 'ITMEXTPR');
         }
 
@@ -214,6 +255,15 @@ class ShopifyOrderEntity
         $self->name = $order['name'];
         $self->billingAddress = ShopifyCustomerAddress::createFromOrderResponse($order['billing_address']);
         $self->shippingAddress = ShopifyCustomerAddress::createFromOrderResponse($order['shipping_address']);
+        $self->customer = ShopifyCustomer::createFromOrderResponse($order['customer']);
+
+        $self->totalTax = $order['total_tax'];
+
+        if(isset($order['transaction'])) {
+            $self->transaction = ShopifyTransactionEntity::createFromOrderResponse($order['transaction']);
+        }
+        $self->shipping = ShopifyOrderShippingEntity::createFromOrderResponse($order['shipping_lines']);
+
 
         foreach($order['line_items'] as $lineItem) {
             $self->items[] = ShopifyOrderLineItemEntity::createFromResponse($lineItem);

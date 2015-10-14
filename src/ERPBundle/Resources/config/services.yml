@@ -84,6 +84,13 @@ services:
         arguments:
             - ERPBundle\Entity\CatalogEntity
 
+    erp.repository.event:
+        class: Doctrine\ODM\DocumentRepository
+        factory_service: doctrine.odm.mongodb.document_manager
+        factory_method: getRepository
+        arguments:
+            - ERPBundle\Document\Event
+
     erp.repository.store:
         class: Doctrine\ORM\EntityRepository
         factory_service: doctrine.orm.default_entity_manager
@@ -91,5 +98,32 @@ services:
         arguments:
             - ERPBundle\Entity\StoreEntity
 
+    erp.shopify.event.retriver:
+        class: ERPBundle\Webhook\ShopifyEventRetriever
+        arguments: [@erp.repository.event]
+
+    erp.handler.createOrder:
+        class: ERPBundle\Webhook\Handler\CreateOrderHandler
+        arguments:
+            - @erp.client.erp
+            - @erp.client.shopifywrapper
+
+
+    erp.handlerFactory:
+        class: ERPBundle\Webhook\Factory\HandlerFactory
+        arguments:
+            - @erp.handler.createOrder
+
+    erp.shopify.commandFactory:
+        class: ERPBundle\Webhook\Factory\ShopifyCommandFactory
+
+
     erp.controller.webhook:
         class: ERPBundle\Controller\WebHookController
+        arguments:
+            - @monolog.logger.webhook
+            - @erp.shopify.event.retriver
+            - @erp.handlerFactory
+            - @erp.shopify.commandFactory
+            - @erp.services.shopifystore
+            - @erp.repository.event

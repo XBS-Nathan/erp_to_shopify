@@ -13,6 +13,7 @@ class ShopifyOrderLineItemEntity
     private $sku;
     private $qty;
     private $isFulfilled;
+    private $price;
 
     /**
      * @return mixed
@@ -52,6 +53,15 @@ class ShopifyOrderLineItemEntity
     }
 
     /**
+     * @return mixed
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+
+    /**
      * @param $lineItem
      * @return ShopifyOrderLineItemEntity
      */
@@ -61,6 +71,7 @@ class ShopifyOrderLineItemEntity
         $self->sku = $lineItem['sku'];
         $self->qty = $lineItem['quantity'];
         $self->id = $lineItem['id'];
+        $self->price = $lineItem['price'];
         
         return $self;
     }

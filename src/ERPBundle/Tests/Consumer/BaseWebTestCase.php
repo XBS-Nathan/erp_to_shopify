@@ -19,6 +19,8 @@ abstract class BaseWebTestCase extends SymfonyWebTestCase
     /** @var  \Doctrine\ORM\EntityManager */
     protected $em;
 
+    protected $dm;
+
     public function setUp()
     {
         $this->initEntityManager();
@@ -50,6 +52,7 @@ abstract class BaseWebTestCase extends SymfonyWebTestCase
             $kernel = $this->initKernel();
         }
         $this->em   = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $this->dm   = $kernel->getContainer()->get('doctrine.odm.mongodb.document_manager');
 
         return $this->em;
     }

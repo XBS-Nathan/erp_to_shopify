@@ -3,6 +3,7 @@
 namespace ERPBundle\Services\Client;
 
 use ERPBundle\Entity\CatalogEntity;
+use ERPBundle\Entity\ErpOrderEntity;
 use ERPBundle\Entity\ErpProductEntity;
 use ERPBundle\Entity\ErpShipmentEntity;
 use ERPBundle\Entity\ProductCatalogEntity;
@@ -120,6 +121,8 @@ class ShopifyApiClientWrapper
      */
     public function getOrderMetaData(StoreEntity $store, ShopifyOrderEntity $shopifyOrder)
     {
+        $this->setSettings($store);
+
         $response = $this->client->getOrderMetaFields(['id' => $shopifyOrder->getId()]);
 
         return ShopifyOrderMetaFieldsEntity::createFromResponse($response);
@@ -332,5 +335,28 @@ class ShopifyApiClientWrapper
         $response = $this->client->getProduct(['id' => $skuToProductEntity->getShopifyProductId()]);
 
         return ShopifyProductEntity::createFromResponse($response);
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @param ErpOrderEntity $order
+     */
+    public function updateOrderWithErpData(StoreEntity $store, ErpOrderEntity $order)
+    {
+        $this->setSettings($store);
+
+        $this->client->updateOrder(
+            [
+                'id' => $order->getShopifyOrderId(),
+                'order' => [
+                    'metafields' => [
+                        'key' => 'erp-id',
+                        'value' => $order->getOrderId(),
+                        'value_type' => 'string',
+                        'namespace' => 'global'
+                    ]
+                ]
+            ]
+        );
     }
 }

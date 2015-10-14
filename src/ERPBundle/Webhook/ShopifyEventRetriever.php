@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class ShopifyEventRetriever
  * @package ERPBundle\Webhook
  */
-class ShopifyEventRetriever implements EventRetrieverInterface
+class ShopifyEventRetriever
 {
 
     const SHOPIFY_HEADER_EVENT_NAME = 'X-Shopify-Topic';
@@ -49,7 +49,7 @@ class ShopifyEventRetriever implements EventRetrieverInterface
      */
     public function verifyWebhookRequest(Request $request, StoreEntity $store)
     {
-        $hmac_header = $request->headers->get('HTTP_X_SHOPIFY_HMAC_SHA256');
+        $hmac_header = $request->headers->get('X_SHOPIFY_HMAC_SHA256');
 
         $calculated_hmac = base64_encode(hash_hmac('sha256', $request->getContent(), $store->getShopifySecretToken(), true));
         if($hmac_header != $calculated_hmac) {

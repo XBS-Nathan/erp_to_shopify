@@ -24,6 +24,8 @@ class LoadStoreEntity implements FixtureInterface
         $store->setErpUrl('http://robots.lapineinc.com');
         $store->setErpUsername('CSGTEST');
         $store->setErpPassword('yG9uFFrLeHZ56LL4');
+        $store->setShopifySecretToken('MySecretToken');
+        $store->setShopifyHandlingFeeProductId(1);
 
         $manager->persist($store);
         $manager->flush();

@@ -90,7 +90,7 @@ class ShopifyStoreService
             throw new InvalidStoreName('No Store name is present');
         }
 
-        $store = $this->storeRepository->findOnByStoreLabel($storeName);
+        $store = $this->storeRepository->findOneByShopifyStoreUrl($storeName);
 
         if(!$store)
         {

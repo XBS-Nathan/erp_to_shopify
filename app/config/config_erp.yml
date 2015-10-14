@@ -62,3 +62,13 @@ doctrine_mongodb:
     document_managers:
         default:
             auto_mapping: true
+
+monolog:
+    channels: ["webhook"]
+    handlers:
+        webhook:
+            # log all messages (since debug is the lowest level)
+            level:    debug
+            type:     stream
+            path:     "%kernel.logs_dir%/webhook.log"
+            channels: [webhook]

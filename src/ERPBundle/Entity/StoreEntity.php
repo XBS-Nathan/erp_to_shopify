@@ -57,6 +57,40 @@ class StoreEntity
      */
     private $shopifySecretToken;
 
+    /**
+     * @ORM\Column(name="shopify_handling_fee_product", type="string")
+     */
+    private $shopifyHandlingFeeProductId;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ErpShipmentMapEntity", mappedBy="store")
+     **/
+    private $shipmentMaps;
+
+    /**
+     * @param mixed $shopifySecretToken
+     */
+    public function setShopifySecretToken($shopifySecretToken)
+    {
+        $this->shopifySecretToken = $shopifySecretToken;
+    }
+
+    /**
+     * @param mixed $shopifyHandlingFeeProductId
+     */
+    public function setShopifyHandlingFeeProductId($shopifyHandlingFeeProductId)
+    {
+        $this->shopifyHandlingFeeProductId = $shopifyHandlingFeeProductId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShipmentMaps()
+    {
+        return $this->shipmentMaps;
+    }
+
     public function getStoreId()
     {
         return $this->storeId;
@@ -75,6 +109,14 @@ class StoreEntity
     public function getShopifyAccessToken()
     {
         return $this->shopifyAccessToken;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShopifyHandlingFeeProductId()
+    {
+        return $this->shopifyHandlingFeeProductId;
     }
 
     /**
