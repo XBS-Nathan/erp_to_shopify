@@ -295,8 +295,8 @@ class ErpProductEntity
         $self->sku = 'HANDLING FEES';
         $self->qty = 1;
         $self->inventoryPolicy = 'continue';
-        $self->stockManagement = 'blank'; //blank = dont track inventory
-        $self->fulFilmentService = 'blank';
+        $self->stockManagement = ''; //blank = dont track inventory
+        $self->fulFilmentService = '';
 
         return $self;
     }

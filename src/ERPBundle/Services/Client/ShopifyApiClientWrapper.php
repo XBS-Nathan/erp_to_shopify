@@ -229,6 +229,8 @@ class ShopifyApiClientWrapper
 
         $product = ShopifyProductEntity::createFromProductCreationResponse($response);
 
+        $store->setShopifyHandlingFeeProductId($product->getId());
+
         return $product;
     }
 
