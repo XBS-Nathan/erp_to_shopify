@@ -219,7 +219,8 @@ class ShopifyApiClientWrapper
                         'sku' => $erpProduct->getSku(),
                         'inventory_management' => $erpProduct->getStockManagement(),
                         'inventory_policy' => $erpProduct->getInventoryPolicy(),
-                        'inventory_quantity' => $erpProduct->getQty()
+                        'inventory_quantity' => $erpProduct->getQty(),
+                        'fulfillment_service' => $erpProduct->getFulFilmentService()
                     ]
                 ]
         ];

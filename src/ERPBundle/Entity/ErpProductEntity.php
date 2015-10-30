@@ -21,6 +21,7 @@ class ErpProductEntity
 
     private $stockManagement;
     private $inventoryPolicy;
+    private $fulFilmentService;
 
     private $lastUpdated;
 
@@ -201,6 +202,24 @@ class ErpProductEntity
     }
 
     /**
+     * @return mixed
+     */
+    public function getFulFilmentService()
+    {
+        return $this->fulFilmentService;
+    }
+
+    /**
+     * @param mixed $fulFilmentService
+     */
+    public function setFulFilmentService($fulFilmentService)
+    {
+        $this->fulFilmentService = $fulFilmentService;
+    }
+
+
+
+    /**
      * @param \SimpleXMLElement $product
      * @return ErpProductEntity
      */
@@ -249,6 +268,7 @@ class ErpProductEntity
 
         $product->setInventoryPolicy(($data->ItemSpecialString && $data->ItemSpecialString == "1" ? 'continue' : 'deny'));
         $product->setStockManagement(($data->ItemSpecialString && $data->ItemSpecialString == "1" ? '' : 'shopify'));
+        $product->setFulFilmentService('manual');
 
         if(isset($data->ImageSource)) {
             $product->setImage((string)$data->ImageSource);
@@ -263,6 +283,9 @@ class ErpProductEntity
         $product->setFullDesription($fullDescription);
      }
 
+    /**
+     * @return ErpProductEntity
+     */
     public static function createHandlingFeeProduct()
     {
         $self = new self();
@@ -270,6 +293,10 @@ class ErpProductEntity
         $self->title = 'Handling Fees';
         $self->price = '0.50';
         $self->sku = 'HANDLING FEES';
+        $self->qty = 1;
+        $self->inventoryPolicy = 'continue';
+        $self->stockManagement = 'blank'; //blank = dont track inventory
+        $self->fulFilmentService = 'blank';
 
         return $self;
     }
