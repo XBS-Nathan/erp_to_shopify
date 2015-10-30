@@ -18,19 +18,19 @@ old_sound_rabbit_mq:
     consumers:
         product:
             connection:       default
-            exchange_options: {name: 'erp', type: direct}
+            exchange_options: {name: 'product', type: direct}
             queue_options:    {name: 'product'}
             callback:         erp.product_consumer
         shipment:
             connection:       default
-            exchange_options: {name: 'erp', type: direct}
+            exchange_options: {name: 'shipment', type: direct}
             queue_options:    {name: 'shipment'}
             callback:         erp.shipment_consumer
 
     producers:
         product:
             connection:       default
-            exchange_options: {name: 'erp', type: direct}
+            exchange_options: {name: 'product', type: direct}
 
 jmose_command_scheduler:
 

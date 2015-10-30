@@ -327,14 +327,22 @@ class ShopifyApiClientWrapper
      * @param StoreEntity $store
      * @param SkuToProductEntity $skuToProductEntity
      * @return ShopifyProductEntity
+     * @throws NoShopifyProductFound
      */
     public function getProduct(StoreEntity $store, SkuToProductEntity $skuToProductEntity)
     {
         $this->setSettings($store);
 
-        $response = $this->client->getProduct(['id' => $skuToProductEntity->getShopifyProductId()]);
+        try {
+            $response = $this->client->getProduct(['id' => $skuToProductEntity->getShopifyProductId()]);
 
-        return ShopifyProductEntity::createFromResponse($response);
+            return ShopifyProductEntity::createFromResponse($response);
+        }catch (CommandClientException $e) {
+            //if 404, Collection has already been deleted via shopify, lets carry on
+            if($e->getResponse()->getStatusCode() == '404') {
+                throw new NoShopifyProductFound(sprintf('Product Id: %s cannot be found within shopify', $skuToProductEntity->getShopifyProductId()));
+            }
+        }
     }
 
     /**
@@ -358,5 +366,44 @@ class ShopifyApiClientWrapper
                 ]
             ]
         );
+    }
+
+    /**
+     * @param StoreEntity $store
+     * @throws NoShopifyProductFound
+     */
+    public function checkHandlingFeeProduct(StoreEntity $store)
+    {
+        $this->setSettings($store);
+
+        try {
+            $response = $this->client->getProduct(['id' => $store->getShopifyHandlingFeeProductId()]);
+        }catch (CommandClientException $e) {
+            if($e->getResponse()->getStatusCode() == '404') {
+                throw new NoShopifyProductFound(sprintf('Handling fee Id: %s cannot be found within shopify', $store->getShopifyHandlingFeeProductId()));
+            }
+        }
+    }
+
+    public function saveHandlingFeeProduct(StoreEntity $store)
+    {
+        $this->setSettings($store);
+
+        $productData = [
+            'published' => true,
+            'title' => 'Handling Fees',
+            'handle' => 'handling-fees',
+            'variants' => [
+                [
+                    'price' => '$0.50',
+                    'sku' => 'HANDLING FEES',
+                    'inventory_management' => 'none'
+                ]
+            ]
+        ];
+
+        $response = $this->client->createProduct(['product' => $productData]);
+
+        $store->setShopifyHandlingFeeProductId($response['id']);
     }
 }

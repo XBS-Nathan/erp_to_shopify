@@ -27,7 +27,6 @@ class ProductConsumer implements ConsumerInterface
      */
     protected $productCatalog;
 
-
     /**
      * @var ShopifyStoreService
      */
@@ -70,6 +69,8 @@ class ProductConsumer implements ConsumerInterface
         $this->productCatalog->createProductsOrUpdate($productCatalog, $store);
 
         $this->productCatalog->addProductsToCollection($productCatalog, $store);
+
+        $this->productCatalog->checkHandlingFeeProductAndCreateIt($store);
     }
 
 }

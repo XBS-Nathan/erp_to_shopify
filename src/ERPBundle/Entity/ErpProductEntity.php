@@ -262,4 +262,15 @@ class ErpProductEntity
 
         $product->setFullDesription($fullDescription);
      }
+
+    public static function createHandlingFeeProduct()
+    {
+        $self = new self();
+
+        $self->title = 'Handling Fees';
+        $self->price = '0.50';
+        $self->sku = 'HANDLING FEES';
+
+        return $self;
+    }
 }

@@ -13,6 +13,7 @@ use ERPBundle\Entity\StoreEntity;
 use ERPBundle\Exception\NoShopifyProductFound;
 use ERPBundle\Repository\CatalogRepository;
 use ERPBundle\Repository\SkuToShopifyProductRepository;
+use ERPBundle\Repository\StoreRepository;
 use ERPBundle\Services\Client\ShopifyApiClientWrapper;
 use Shopify\Client;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -42,21 +43,29 @@ class ProductCatalogService
     protected $catalogRepository;
 
     /**
+     * @var StoreRepository
+     */
+    protected $storeRepository;
+
+    /**
      * @param ShopifyApiClientWrapper $shopifyClient
      * @param OptionsResolver $shopifyApiConfig
      * @param SkuToShopifyProductRepository $skuToShopifyProductRepository
      * @param CatalogRepository $catalogRepository
+     * @param StoreRepository $storeRepository
      */
     public function __construct(
         ShopifyApiClientWrapper $shopifyClient,
         OptionsResolver $shopifyApiConfig,
         SkuToShopifyProductRepository $skuToShopifyProductRepository,
-        CatalogRepository $catalogRepository
+        CatalogRepository $catalogRepository,
+        StoreRepository $storeRepository
     )
     {
         $this->shopifyClient = $shopifyClient;
         $this->skuToProductRepo = $skuToShopifyProductRepository;
         $this->catalogRepository = $catalogRepository;
+        $this->storeRepository = $storeRepository;
     }
 
 
@@ -228,6 +237,27 @@ class ProductCatalogService
         }
 
         $this->shopifyClient->addProductsToCollection($store, $products, $catalog);
+    }
+
+    /**
+     * @param StoreEntity $store
+     */
+    public function checkHandlingFeeProductAndCreateIt(StoreEntity $store)
+    {
+        try {
+
+            if($store->getShopifyHandlingFeeProductId()) {
+                $this->shopifyClient->checkHandlingFeeProduct($store);
+            }else{
+                $this->shopifyClient->saveProduct($store);
+                $this->storeRepository->save($store);
+            }
+
+        }catch(NoShopifyProductFound $e) {
+            //Add the handling fee product
+            $this->shopifyClient->saveProduct($store);
+            $this->storeRepository->save($store);
+        }
     }
 
 }

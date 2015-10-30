@@ -58,6 +58,7 @@ services:
             - @erp.options.shopify
             - @erp.repository.skuToProduct
             - @erp.repository.catalog
+            - @erp.repository.store
 
     erp.guzzle.client.erp:
         class: GuzzleHttp\Client

@@ -44,20 +44,11 @@ class WebhookCreateOrderTest extends BaseWebTestCase
             )
         );
 
-        $historyErp = $this->getGuzzleHistory('erp', self::$kernel);
-
-        $this->mockShopifyClientResponses(
-            [
-                'order',
-                'update.fulfillment'
-            ]);
-
         $headers = [
             'HTTP_X-Shopify-Shop-Domain' => 'erpapitest.myshopify.com',
             'HTTP_X_SHOPIFY_HMAC_SHA256' => 'EPNrGEidakGyssezRCThra+cLRtkuAAXgsVB88i+xpo=',
             'HTTP_X-Shopify-Topic' => 'orders/create'
         ];
-
 
         $path = __DIR__ . '/../../Resources/test_stubs/webhooks/';
         $body = json_decode(file_get_contents($path . 'order.json'), true);

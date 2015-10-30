@@ -37,7 +37,8 @@
         "doctrine/mongodb-odm": "^1.0@dev",
         "doctrine/mongodb-odm-bundle": "^3.0@dev",
         "friendsofsymfony/rest-bundle": "^2.0@dev",
-        "jms/serializer-bundle": "^1.1@dev"
+        "jms/serializer-bundle": "^1.1@dev",
+        "league/oauth2-client": "^1.0@dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

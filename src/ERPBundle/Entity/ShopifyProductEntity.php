@@ -14,6 +14,7 @@ class ShopifyProductEntity
     private $variantId;
     private $sku;
     private $qty;
+    private $handle;
 
     /**
      * @return mixed
@@ -112,6 +113,22 @@ class ShopifyProductEntity
     }
 
     /**
+     * @return mixed
+     */
+    public function getHandle()
+    {
+        return $this->handle;
+    }
+
+    /**
+     * @param mixed $handle
+     */
+    public function setHandle($handle)
+    {
+        $this->handle = $handle;
+    }
+
+    /**
      * @param $product
      * @return ShopifyProductEntity
      */
@@ -124,6 +141,7 @@ class ShopifyProductEntity
         $self->setUpdatedAt(new \DateTime());
         $self->setSku($product['variants'][0]['sku']);
         $self->setQty($product['variants'][0]['inventory_quantity']);
+        $self->setHandle($product['handle']);
 
         return $self;
     }
@@ -140,7 +158,14 @@ class ShopifyProductEntity
         $self->setCreatedAt(new \DateTime());
         $self->setUpdatedAt(new \DateTime());
         $self->setSku($product['product']['variants'][0]['sku']);
+        $self->setHandle($product['product']['handle']);
 
         return $self;
+    }
+
+    public static function createHandlingFeeProduct()
+    {
+        $self = new self();
+        $self->handle = 'handling-fees';
     }
 }

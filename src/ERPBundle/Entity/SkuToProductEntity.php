@@ -69,7 +69,6 @@ class SkuToProductEntity
         $this->lastUpdatedDate = new \DateTime();
     }
 
-
     /**
      * @return mixed
      */

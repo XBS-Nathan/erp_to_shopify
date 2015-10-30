@@ -125,7 +125,7 @@ class WebHookController
                 $this->eventRepository->update($event);
             }
 
-            return true;
+            return 'success';
         }
 
     }

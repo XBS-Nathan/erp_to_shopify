@@ -27,5 +27,4 @@ class EventRepository extends DocumentRepository
         $this->dm->flush($event);
     }
 
-
 }

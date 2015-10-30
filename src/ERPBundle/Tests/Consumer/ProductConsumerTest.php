@@ -22,7 +22,7 @@ class ProductConsumerTest extends BaseWebTestCase
         $this->mock = $this->mockShopifyApiClient(self::$kernel);
 
         //empty the queue
-        $this->cleanRabbitConsumerQueue('product', self::$kernel);
+       // $this->cleanRabbitConsumerQueue('product', self::$kernel);
 
         $this->executeAppCommand(self::$kernel, new DropSchemaDoctrineCommand(), "doctrine:schema:drop", ["--force" => true]);
         $this->executeAppCommand(self::$kernel, new CreateSchemaDoctrineCommand(), "doctrine:schema:create");
