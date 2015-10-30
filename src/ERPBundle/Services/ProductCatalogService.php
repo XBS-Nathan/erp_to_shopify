@@ -250,7 +250,10 @@ class ProductCatalogService
                 $this->shopifyClient->checkHandlingFeeProduct($store);
             }else{
                 $erpProduct = ErpProductEntity::createHandlingFeeProduct();
-                $this->shopifyClient->saveProduct($store, $erpProduct);
+                $product = $this->shopifyClient->saveProduct($store, $erpProduct);
+
+                $store->setShopifyHandlingFeeProductId($product->getId());
+
                 $this->storeRepository->save($store);
             }
 
