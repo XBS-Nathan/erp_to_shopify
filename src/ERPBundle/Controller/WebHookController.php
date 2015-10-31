@@ -14,6 +14,7 @@ use ERPBundle\Webhook\ShopifyEventRetriever;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class WebHookController
@@ -91,6 +92,7 @@ class WebHookController
 
         try {
 
+            $event = null;
             $store = $this->storeService->getStoreByRequest($request);
             $eventId = $this->shopifyEventRetriever->verifyWebhookRequest($request, $store);
 
@@ -125,7 +127,7 @@ class WebHookController
                 $this->eventRepository->update($event);
             }
 
-            return 'success';
+            return new Response('', 201);
         }
 
     }

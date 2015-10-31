@@ -15,6 +15,7 @@ class ShopifyOrderLineItemEntity
     private $isFulfilled;
     private $price;
     private $variantId;
+    private $productId;
 
     /**
      * @return mixed
@@ -56,6 +57,15 @@ class ShopifyOrderLineItemEntity
     /**
      * @return mixed
      */
+    public function getProductId()
+    {
+        return $this->productId;
+    }
+
+
+    /**
+     * @return mixed
+     */
     public function getPrice()
     {
         return $this->price;
@@ -81,6 +91,7 @@ class ShopifyOrderLineItemEntity
         $self->id = $lineItem['id'];
         $self->variantId = $lineItem['variant_id'];
         $self->price = $lineItem['price'];
+        $self->productId = $lineItem['product_id'];
         
         return $self;
     }
