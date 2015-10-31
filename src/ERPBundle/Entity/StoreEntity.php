@@ -68,6 +68,11 @@ class StoreEntity
     private $shipmentMaps;
 
     /**
+     * @ORM\Column(name="erp_customer_id", type="string")
+     */
+    private $erpCustomerId;
+
+    /**
      * @param mixed $shopifySecretToken
      */
     public function setShopifySecretToken($shopifySecretToken)
@@ -216,5 +221,12 @@ class StoreEntity
         $this->erpPassword = $erpPassword;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getErpCustomerId()
+    {
+        return $this->erpCustomerId;
+    }
 
 }

@@ -130,7 +130,7 @@ class ShopifyOrderEntity
         $xml->addAttribute('OrderType', 'StandAlone');
 
         //Get from the order
-        $xml->addAttribute('CustomerID', 'MyCustomerId');
+        $xml->addAttribute('CustomerID', $store->getErpCustomerId());
 
         $xml->addChild('PONumber', $order->getName());
         $xml->addChild('OrderDate', $order->getCreatedAt()->format('Y-m-d'));
