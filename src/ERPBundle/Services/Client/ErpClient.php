@@ -128,7 +128,7 @@ class ErpClient
         $request = $this->client->createRequest('POST', sprintf('%s/orders/', $store->getErpUrl()),
             [
                 'auth' => [$store->getErpUsername(), $store->getErpPassword()],
-                'body' => $xmlObject
+                'body' => $xmlObject->asXML()
             ]
         );
 

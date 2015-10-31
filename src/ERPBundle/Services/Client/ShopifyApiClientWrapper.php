@@ -355,15 +355,19 @@ class ShopifyApiClientWrapper
     {
         $this->setSettings($store);
 
+        $erpData = new \stdClass();
+        $erpData->key = 'erp-id';
+        $erpData->value = $order->getOrderId();
+        $erpData->value_type = 'string';
+        $erpData->namespace = 'global';
+
         $this->client->updateOrder(
             [
                 'id' => $order->getShopifyOrderId(),
                 'order' => [
+                    'id' => $order->getShopifyOrderId(),
                     'metafields' => [
-                        'key' => 'erp-id',
-                        'value' => $order->getOrderId(),
-                        'value_type' => 'string',
-                        'namespace' => 'global'
+                        $erpData
                     ]
                 ]
             ]
