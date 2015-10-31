@@ -202,9 +202,9 @@ class ShopifyOrderEntity
         /** @var \ERPBundle\Entity\ShopifyOrderLineItemEntity $item */
         foreach($order->getItems() as $item)
         {
-            if ($item->getProductId() == $store->getShopifyHandlingFeeProductId())
+            if ($item->getVariantId() == $store->getShopifyHandlingFeeProductId())
             {
-                $handlingFee = $item['quantity'] * $item['price'];
+                $handlingFee = $item->getQty() * $item->getPrice();
             }
         }
 
@@ -231,7 +231,7 @@ class ShopifyOrderEntity
         /** @var \ERPBundle\Entity\ShopifyOrderLineItemEntity $item */
         foreach ($order->getItems() as $item)
         {
-            if ($item->getProductId() == $store->getShopifyHandlingFeeProductId())
+            if ($item->getVariantId() == $store->getShopifyHandlingFeeProductId())
             {
                 continue;
             }
