@@ -252,14 +252,16 @@ class ProductCatalogService
                 $erpProduct = ErpProductEntity::createHandlingFeeProduct();
                 $product = $this->shopifyClient->saveProduct($store, $erpProduct);
 
-                $store->setShopifyHandlingFeeProductId($product->getId());
+                $store->setShopifyHandlingFeeProductId($product->getVariantId());
 
                 $this->storeRepository->save($store);
             }
 
         }catch(NoShopifyProductFound $e) {
             //Add the handling fee product
-            $this->shopifyClient->saveProduct($store);
+            $erpProduct = ErpProductEntity::createHandlingFeeProduct();
+            $product = $this->shopifyClient->saveProduct($store, $erpProduct);
+            $store->setShopifyHandlingFeeProductId($product->getVariantId());
             $this->storeRepository->save($store);
         }
     }
