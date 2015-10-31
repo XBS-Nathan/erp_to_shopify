@@ -35,6 +35,7 @@ services:
         class: ERPBundle\Services\Client\ErpClient
         arguments:
             - @erp.guzzle.client.erp
+            - %kernel.logs_dir%
 
     erp.client.shopifyWrapper:
         class: ERPBundle\Services\Client\ShopifyApiClientWrapper

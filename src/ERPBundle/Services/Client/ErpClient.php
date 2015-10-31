@@ -14,6 +14,9 @@ use ERPBundle\Exception\ErpShipmentNotFound;
 use ERPBundle\Exception\OrderNotFound;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\RequestInterface;
+use GuzzleHttp\Subscriber\Log\LogSubscriber;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * Class ErpClient
@@ -29,10 +32,17 @@ class ErpClient
 
     /**
      * @param Client $client
+     * @param $logPathg
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client, $logPath)
     {
         $this->client = $client;
+        $loggerPath  = sprintf('%s/%s.log', $logPath, 'erp_client_logger');
+        $log = new Logger('erp_client_logger');
+        $log->pushHandler(new StreamHandler($loggerPath, Logger::DEBUG));
+        $subscriber = new LogSubscriber($log);
+        $this->client->getEmitter()->attach($subscriber);
+
     }
 
     /**
