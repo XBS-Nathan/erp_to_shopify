@@ -32,7 +32,7 @@ class ErpClient
 
     /**
      * @param Client $client
-     * @param $logPathg
+     * @param string $logPath
      */
     public function __construct(Client $client, $logPath)
     {

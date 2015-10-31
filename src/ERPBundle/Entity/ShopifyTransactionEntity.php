@@ -15,6 +15,9 @@ class ShopifyTransactionEntity
     private $amount;
     private $currency;
 
+    const KIND_CAPTURE = 'capture';
+    const KIND_AUTHORIZATION = 'authorization';
+
     /**
      * @return mixed
      */
@@ -60,6 +63,22 @@ class ShopifyTransactionEntity
      * @return ShopifyTransactionEntity
      */
     public static function createFromOrderResponse(array $transaction)
+    {
+        $self = new self();
+        $self->id = $transaction['id'];
+        $self->authorization = $transaction['authorization'];
+        $self->status = $transaction['status'];
+        $self->amount = $transaction['amount'];
+        $self->currency = $transaction['currency'];
+
+        return $self;
+    }
+
+    /**
+     * @param array $transaction
+     * @return ShopifyTransactionEntity
+     */
+    public static function createFromTransactionResponse(array $transaction)
     {
         $self = new self();
         $self->id = $transaction['id'];

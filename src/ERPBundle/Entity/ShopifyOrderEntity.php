@@ -27,6 +27,9 @@ class ShopifyOrderEntity
 
     private $totalTax;
 
+    /**
+     * @var ShopifyTransactionEntity
+     */
     private $transaction;
 
     private $shipping;
@@ -118,6 +121,15 @@ class ShopifyOrderEntity
     {
         return $this->shipping;
     }
+
+    /**
+     * @param ShopifyTransactionEntity $transaction
+     */
+    public function setTransaction(ShopifyTransactionEntity $transaction)
+    {
+        $this->transaction = $transaction;
+    }
+
 
     /**
      * @param ShopifyOrderEntity $order

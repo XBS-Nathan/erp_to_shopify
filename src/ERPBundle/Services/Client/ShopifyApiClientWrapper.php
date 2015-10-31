@@ -11,6 +11,7 @@ use ERPBundle\Entity\ShopifyOrderEntity;
 use ERPBundle\Entity\ShopifyOrderLineItemEntity;
 use ERPBundle\Entity\ShopifyOrderMetaFieldsEntity;
 use ERPBundle\Entity\ShopifyProductEntity;
+use ERPBundle\Entity\ShopifyTransactionEntity;
 use ERPBundle\Entity\SkuToProductEntity;
 use ERPBundle\Entity\StoreEntity;
 use ERPBundle\Exception\NoShopifyProductFound;
@@ -386,25 +387,32 @@ class ShopifyApiClientWrapper
         }
     }
 
-    public function saveHandlingFeeProduct(StoreEntity $store)
+    /**
+     * @param StoreEntity $store
+     * @param ShopifyOrderEntity $order
+     * @return ShopifyTransactionEntity|null
+     */
+    public function getTransaction(StoreEntity $store, ShopifyOrderEntity $order)
     {
         $this->setSettings($store);
 
-        $productData = [
-            'published' => true,
-            'title' => 'Handling Fees',
-            'handle' => 'handling-fees',
-            'variants' => [
-                [
-                    'price' => '$0.50',
-                    'sku' => 'HANDLING FEES',
-                    'inventory_management' => 'none'
-                ]
-            ]
-        ];
+        $response = $this->client->getTransactions(['order_id' => $order->getId()]);
 
-        $response = $this->client->createProduct(['product' => $productData]);
+        $orderTransaction = null;
 
-        $store->setShopifyHandlingFeeProductId($response['id']);
+        if($response['transactions']) {
+            foreach($response['transactions'] as $transaction) {
+                if(
+                    $transaction['kind'] == ShopifyTransactionEntity::KIND_AUTHORIZATION ||
+                    $transaction['kind'] == ShopifyTransactionEntity::KIND_CAPTURE
+                ) {
+                    $orderTransaction = ShopifyTransactionEntity::createFromTransactionResponse($transaction);
+                    $order->setTransaction($orderTransaction);
+                    break;
+                }
+            }
+        }
+
+
     }
 }

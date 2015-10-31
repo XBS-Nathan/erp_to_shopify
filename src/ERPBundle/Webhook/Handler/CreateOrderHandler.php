@@ -30,6 +30,9 @@ class CreateOrderHandler extends BaseHandler
         $order = $cmd->getOrder();
         $store = $cmd->getStore();
 
+
+        $this->shopifyClient->getTransaction($store, $order);
+
         $erpOrder = $this->client->createOrder($store, $order);
 
         $this->shopifyClient->updateOrderWithErpData($store, $erpOrder);
