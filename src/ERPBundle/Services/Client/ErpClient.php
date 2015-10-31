@@ -125,7 +125,7 @@ class ErpClient
     {
         $xmlObject = ShopifyOrderEntity::convertToXmlForErp($orderEntity, $store);
 
-        $request = $this->client->createRequest('GET', sprintf('%s/orders', $store->getErpUrl()),
+        $request = $this->client->createRequest('POST', sprintf('%s/orders/', $store->getErpUrl()),
             [
                 'auth' => [$store->getErpUsername(), $store->getErpPassword()],
                 'body' => $xmlObject
