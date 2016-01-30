@@ -58,6 +58,7 @@ class CollectShipments extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -80,9 +81,20 @@ class CollectShipments extends Command
                 continue;
             }
 
-            $msg = json_encode(['payload' => ['erpOrderId' => $orderMetaFields->getErpOrderId(), 'storeId' => $store->getStoreId(), 'shopifyOrderId' => $order->getId()]]);
+            $msg = json_encode(
+                [
+                    'payload' =>
+                        [
+                            'erpOrderId' => $orderMetaFields->getErpOrderId(),
+                            'storeId' => $store->getStoreId(),
+                            'shopifyOrderId' => $order->getId()
+                        ]
+                ]
+            );
 
             $this->producer->setContentType('application/json')->publish($msg);
+
+            $output->writeln(sprintf('Added %s to queue to be processed', $orderMetaFields->getErpOrderId()));
 
         }
 
